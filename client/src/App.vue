@@ -14,7 +14,6 @@ import PageHeader from './components/PageHeader.vue';
 
 export default {
   name: 'App',
-
   data: () => ({}),
   components: {
     VApp, VMain, RouterView, PageHeader,
