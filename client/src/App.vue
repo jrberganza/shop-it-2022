@@ -1,8 +1,8 @@
 <template>
   <VApp>
-    <PageHeader></PageHeader>
     <VMain>
-      <RouterView />
+      <PageHeader></PageHeader>
+      <RouterView class="mx-16 mt-8" />
     </VMain>
   </VApp>
 </template>
