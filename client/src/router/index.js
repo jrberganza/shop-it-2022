@@ -3,6 +3,7 @@ import VueRouter from 'vue-router';
 import Home from '../views/Home.vue';
 import NotFound from '../views/NotFound.vue';
 import ProductPage from '../views/ProductPage.vue';
+import Search from '../views/Search.vue';
 
 Vue.use(VueRouter);
 
@@ -16,6 +17,11 @@ const routes = [
     path: '/product/:id',
     name: 'ProductPage',
     component: ProductPage,
+  },
+  {
+    path: '/search/',
+    name: 'Search',
+    component: Search,
   },
   {
     path: '*',
