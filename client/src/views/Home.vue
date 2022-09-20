@@ -1,6 +1,6 @@
 <template>
   <div class="home">
-    <ProductList :shops="shops"></ProductList>
+    <ProductList :products="products"></ProductList>
   </div>
 </template>
 
@@ -10,7 +10,7 @@ import ProductList from '../components/ProductList.vue';
 export default {
   name: 'Home',
   data: () => ({
-    shops: [
+    products: [
       {
         id: 1,
         name: 'ola',

@@ -1,11 +1,11 @@
 <template>
   <VRow>
-    <template v-if="shops.length > 0">
-      <VCol v-for="shop in shops" :key="shop.id" cols="4">
-        <VCard>
-          <VCardTitle>{{shop.name}}</VCardTitle>
-          <VCardSubtitle>{{shop.price}} - {{shop.shopName}}</VCardSubtitle>
-          <VCardText>{{shop.shortDesc}}</VCardText>
+    <template v-if="products.length > 0">
+      <VCol v-for="product in products" :key="product.id" cols="4">
+        <VCard @click="() => $router.push('/product/' + product.id)">
+          <VCardTitle>{{product.name}}</VCardTitle>
+          <VCardSubtitle>{{product.price}} - {{product.shopName}}</VCardSubtitle>
+          <VCardText>{{product.shortDesc}}</VCardText>
         </VCard>
       </VCol>
     </template>
@@ -24,7 +24,7 @@ import {
 
 export default {
   name: 'Home',
-  props: ['shops'],
+  props: ['products'],
   components: {
     VRow, VCol, VSkeletonLoader, VCard, VCardTitle, VCardSubtitle, VCardText,
   },
