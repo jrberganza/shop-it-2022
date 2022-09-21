@@ -2,7 +2,7 @@
   <div class="forgot-password">
     <VRow>
       <VSpacer></VSpacer>
-      <VCol cols="12" sm="10" md="6" lg="6">
+      <VCol cols="12" sm="10" md="8" lg="6">
         <VCard class="py-5 px-10">
           <template v-if="resetToken">
             <VForm>

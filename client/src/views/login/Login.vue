@@ -2,7 +2,7 @@
   <div class="login">
     <VRow>
       <VSpacer></VSpacer>
-      <VCol cols="12" sm="10" md="6" lg="6">
+      <VCol cols="12" sm="10" md="8" lg="6">
         <VCard class="py-5 px-10">
           <VForm>
             <VTextField label="Username" type="text" hide-details></VTextField>
