@@ -3,8 +3,9 @@
     <VMain>
       <PageHeader @openDrawer="() => drawer = true"></PageHeader>
       <RouterView class="mx-16 mt-8" />
-      <NavDrawer v-model="drawer"></NavDrawer>
     </VMain>
+    <PageFooter></PageFooter>
+    <NavDrawer v-model="drawer"></NavDrawer>
   </VApp>
 </template>
 
@@ -13,6 +14,7 @@ import { VApp, VMain } from 'vuetify/lib';
 import { RouterView } from 'vue-router';
 import PageHeader from './components/PageHeader.vue';
 import NavDrawer from './components/NavDrawer.vue';
+import PageFooter from './components/PageFooter.vue';
 
 export default {
   name: 'App',
@@ -24,7 +26,8 @@ export default {
     VMain,
     RouterView,
     PageHeader,
-    NavDrawer
+    NavDrawer,
+    PageFooter
   },
 };
 </script>
