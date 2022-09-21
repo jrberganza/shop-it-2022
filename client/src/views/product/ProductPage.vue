@@ -18,7 +18,6 @@ import CommentTree from '../../components/comments/CommentTree.vue';
 
 export default {
   name: 'ProductPage',
-  props: ['id'],
   data: () => ({
     /** @type {any | null} */ product: null,
     comments: [
