@@ -4,6 +4,8 @@
       <h1>{{product.name}}</h1>
       <p>{{product.price}} - {{product.shopName}}</p>
       <p>{{product.shortDesc}}</p>
+
+      <CommentTree :comments="comments"></CommentTree>
     </template>
     <template v-else>
       <VSkeletonLoader type="card"></VSkeletonLoader>
@@ -12,12 +14,77 @@
 </template>
 
 <script>
+import CommentTree from '../../components/comments/CommentTree.vue';
 
 export default {
   name: 'ProductPage',
   props: ['id'],
   data: () => ({
     /** @type {any | null} */ product: null,
+    comments: [
+      {
+        data: {
+          author: 'Jake Jake',
+          publishedAt: "31/12/2022",
+          content: 'Hey!',
+        },
+        children: [
+          {
+            data: {
+              author: 'Jake Jake',
+              publishedAt: "31/12/2022",
+              content: 'Hey!',
+            },
+            children: [
+              {
+                data: {
+                  author: 'Jake Jake',
+                  publishedAt: "31/12/2022",
+                  content: 'Hey!',
+                },
+              },
+              {
+                data: {
+                  author: 'Jake Jake',
+                  publishedAt: "31/12/2022",
+                  content: 'Hey!',
+                },
+              },
+            ]
+          },
+          {
+            data: {
+              author: 'Jake Jake',
+              publishedAt: "31/12/2022",
+              content: 'Hey!',
+            },
+          },
+        ]
+      },
+      {
+        data: {
+          author: 'Jake Jake',
+          publishedAt: "31/12/2022",
+          content: 'Hey!',
+        },
+        children: [
+          {
+            data: {
+              author: 'Jake Jake',
+              publishedAt: "31/12/2022",
+              content: 'Hey!',
+            },
+          },
+          {
+            data: {
+              author: 'Jake Jake',
+              publishedAt: "31/12/2022",
+              content: 'Hey!',
+            },
+          },
+        ]
+      },
+    ]
   }),
   methods: {
     getProduct(id) {
@@ -44,6 +111,6 @@ export default {
   mounted() {
     this.product = this.getProduct(this.$route.params.id);
   },
-  components: {},
+  components: { CommentTree },
 };
 </script>

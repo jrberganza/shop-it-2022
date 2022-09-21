@@ -1,5 +1,6 @@
 <template>
-  <div class="shop"><template v-if="shop">
+  <div class="shop">
+    <template v-if="shop">
       <VRow>
         <VCol cols="12" md="8">
           <h1>{{shop.name}}</h1>
@@ -10,6 +11,7 @@
           <img src="@/assets/logo.png" width="100%" height="100%" /> <!-- TODO: Change to map -->
         </VCol>
       </VRow>
+      <CommentTree :comments="comments"></CommentTree>
     </template>
     <template v-else>
       <VSkeletonLoader type="card"></VSkeletonLoader>
@@ -19,12 +21,77 @@
 
 <script>
 import { VRow, VCol, VSkeletonLoader } from 'vuetify/lib';
+import CommentTree from '../../components/comments/CommentTree.vue';
 
 export default {
   name: 'ShopPage',
   props: ['id'],
   data: () => ({
     /** @type {any | null} */ shop: null,
+    comments: [
+      {
+        data: {
+          author: 'Jake Jake',
+          publishedAt: "31/12/2022",
+          content: 'Hey!',
+        },
+        children: [
+          {
+            data: {
+              author: 'Jake Jake',
+              publishedAt: "31/12/2022",
+              content: 'Hey!',
+            },
+            children: [
+              {
+                data: {
+                  author: 'Jake Jake',
+                  publishedAt: "31/12/2022",
+                  content: 'Hey!',
+                },
+              },
+              {
+                data: {
+                  author: 'Jake Jake',
+                  publishedAt: "31/12/2022",
+                  content: 'Hey!',
+                },
+              },
+            ]
+          },
+          {
+            data: {
+              author: 'Jake Jake',
+              publishedAt: "31/12/2022",
+              content: 'Hey!',
+            },
+          },
+        ]
+      },
+      {
+        data: {
+          author: 'Jake Jake',
+          publishedAt: "31/12/2022",
+          content: 'Hey!',
+        },
+        children: [
+          {
+            data: {
+              author: 'Jake Jake',
+              publishedAt: "31/12/2022",
+              content: 'Hey!',
+            },
+          },
+          {
+            data: {
+              author: 'Jake Jake',
+              publishedAt: "31/12/2022",
+              content: 'Hey!',
+            },
+          },
+        ]
+      },
+    ]
   }),
   methods: {
     getShop(id) {
@@ -51,6 +118,6 @@ export default {
   mounted() {
     this.shop = this.getShop(this.$route.params.id);
   },
-  components: { VRow, VCol, VSkeletonLoader },
+  components: { VRow, VCol, VSkeletonLoader, CommentTree },
 };
 </script>
