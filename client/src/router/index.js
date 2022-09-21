@@ -1,12 +1,12 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
 import Home from '../views/Home.vue';
-import NotFound from '../views/NotFound.vue';
-import ProductPage from '../views/ProductPage.vue';
 import Search from '../views/Search.vue';
 import Login from '../views/login/Login.vue';
+import ForgotPassword from '../views/login/ForgotPassword.vue';
 import Register from '../views/login/Register.vue';
-import ForgotPassword from '../views/login/ForgotPassword.vue'
+import ProductPage from '../views/product/ProductPage.vue';
+import NotFound from '../views/NotFound.vue';
 
 Vue.use(VueRouter);
 
@@ -15,11 +15,6 @@ const routes = [
     path: '/',
     name: 'Home',
     component: Home,
-  },
-  {
-    path: '/product/:id',
-    name: 'ProductPage',
-    component: ProductPage,
   },
   {
     path: '/search/',
@@ -40,6 +35,11 @@ const routes = [
     path: '/register/',
     name: 'Register',
     component: Register,
+  },
+  {
+    path: '/product/:id',
+    name: 'ProductPage',
+    component: ProductPage,
   },
   {
     path: '*',
