@@ -2,7 +2,7 @@
   <VApp>
     <VMain>
       <PageHeader @openDrawer="() => drawer = true"></PageHeader>
-      <RouterView class="mx-16 mt-8" />
+      <RouterView class="mx-16 my-8" />
     </VMain>
     <PageFooter></PageFooter>
     <NavDrawer v-model="drawer"></NavDrawer>
