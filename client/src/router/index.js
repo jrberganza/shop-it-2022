@@ -4,6 +4,8 @@ import Home from '../views/Home.vue';
 import NotFound from '../views/NotFound.vue';
 import ProductPage from '../views/ProductPage.vue';
 import Search from '../views/Search.vue';
+import Login from '../views/login/Login.vue';
+import Register from '../views/login/Register.vue';
 
 Vue.use(VueRouter);
 
@@ -22,6 +24,16 @@ const routes = [
     path: '/search/',
     name: 'Search',
     component: Search,
+  },
+  {
+    path: '/login/',
+    name: 'Login',
+    component: Login,
+  },
+  {
+    path: '/register/',
+    name: 'Register',
+    component: Register,
   },
   {
     path: '*',
