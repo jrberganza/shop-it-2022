@@ -8,6 +8,7 @@ import Register from '../views/login/Register.vue';
 import ProductPage from '../views/product/ProductPage.vue';
 import ShopPage from '../views/shop/ShopPage.vue';
 import YourShops from '../views/shop/YourShops.vue';
+import YourShopProducts from '../views/product/YourShopProducts.vue';
 import NotFound from '../views/NotFound.vue';
 
 Vue.use(VueRouter);
@@ -52,6 +53,11 @@ const routes = [
     path: '/your/shops/',
     name: 'YourShops',
     component: YourShops,
+  },
+  {
+    path: '/your/shop/:shopId/products',
+    name: 'YourShopProducts',
+    component: YourShopProducts,
   },
   {
     path: '*',
