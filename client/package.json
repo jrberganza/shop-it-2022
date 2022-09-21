@@ -13,13 +13,8 @@
     "vuetify": "^2.6.0"
   },
   "devDependencies": {
-    "@vue/cli-plugin-eslint": "~4.5.19",
     "@vue/cli-plugin-router": "~4.5.19",
     "@vue/cli-service": "~4.5.19",
-    "@vue/eslint-config-airbnb": "^5.0.2",
-    "eslint": "^6.7.2",
-    "eslint-plugin-import": "^2.20.2",
-    "eslint-plugin-vue": "^6.2.2",
     "sass": "~1.32.0",
     "sass-loader": "^10.0.0",
     "vue-cli-plugin-vuetify": "~2.5.8",
