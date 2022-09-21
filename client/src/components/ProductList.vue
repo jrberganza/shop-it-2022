@@ -23,7 +23,7 @@ import {
 } from 'vuetify/lib';
 
 export default {
-  name: 'Home',
+  name: 'ProductList',
   props: ['products'],
   components: {
     VRow, VCol, VSkeletonLoader, VCard, VCardTitle, VCardSubtitle, VCardText,
