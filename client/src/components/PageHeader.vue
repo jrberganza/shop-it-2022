@@ -47,6 +47,13 @@ export default {
       }
     },
   },
+  mounted() {
+    if (this.$route.name == "Search") {
+      if (typeof this.$route.query.q == "string") {
+        this.searchTerm = this.$route.query.q;
+      }
+    }
+  },
   components: {
     VToolbar, VToolbarTitle, VTextField, VBtn, VIcon, VRow, VCol, VSpacer,
   },

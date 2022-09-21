@@ -1,6 +1,5 @@
 <template>
   <div class="search">
-    <p>Searched for: {{$route.query.q}}</p>
     <VRow>
       <VCol cols="12" md="6">
         <h1>Products</h1>
