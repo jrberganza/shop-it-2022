@@ -1,10 +1,25 @@
 <template>
-  <div class="search">Searched for: {{$route.query.q}}</div>
+  <div class="search">
+    <p>Searched for: {{$route.query.q}}</p>
+    <VRow>
+      <VCol cols="12" md="6">
+        <h1>Productos</h1>
+        <ProductList :products="[]"></ProductList>
+      </VCol>
+      <VCol cols="12" md="6">
+        <h1>Tiendas</h1>
+        <ProductList :products="[]"></ProductList> <!-- TODO: Change to ShopList -->
+      </VCol>
+    </VRow>
+  </div>
 </template>
 
 <script>
+import { VRow, VCol } from 'vuetify/lib';
+import ProductList from '../components/ProductList.vue';
+
 export default {
   name: 'Search',
-  components: {},
+  components: { VRow, VCol, ProductList },
 };
 </script>
