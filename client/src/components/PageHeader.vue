@@ -14,7 +14,8 @@
       </VCol>
       <VSpacer></VSpacer>
     </VRow>
-    <VBtn>Sign in</VBtn>
+    <VBtn @click="() => $router.push('/login/')" class="mx-2">Sign in</VBtn>
+    <VBtn @click="() => $router.push('/register/')" class="mx-2">Register</VBtn>
   </VToolbar>
 </template>
 
