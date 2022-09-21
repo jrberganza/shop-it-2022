@@ -3,9 +3,9 @@
     <h1>Your shops</h1>
     <VRow>
       <VCol cols="12" lg="4">
-        <VVirtualScroll :items="shops" :itemHeight="300" height="500" bench="1">
+        <VVirtualScroll :items="shops" :itemHeight="320" height="500" bench="1">
           <template v-slot:default="{ item }">
-            <VCard height="300" @click="() => selectedShop = item">
+            <VCard class="mx-2" height="300" @click="() => selectedShop = item">
               <img src="@/assets/logo.png" width="100%" height="100" /> <!-- TODO: Change to map -->
               <VCardTitle>{{item.name}}</VCardTitle>
               <VCardSubtitle>{{item.address}} - {{item.phoneNumber}}</VCardSubtitle>

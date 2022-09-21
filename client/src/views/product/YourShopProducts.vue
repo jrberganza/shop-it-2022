@@ -3,9 +3,9 @@
     <h1>Your products on shop {{$route.params.shopId}}</h1>
     <VRow>
       <VCol cols="12" lg="4">
-        <VVirtualScroll :items="products" :itemHeight="300" height="500" bench="1">
+        <VVirtualScroll :items="products" :itemHeight="320" height="500" bench="1">
           <template v-slot:default="{ item }">
-            <VCard height="300" @click="() => selectedProduct = item">
+            <VCard class="mx-2" height="300" @click="() => selectedProduct = item">
               <VCardTitle>{{item.name}}</VCardTitle>
               <VCardSubtitle>{{item.price}} - {{item.shopName}}</VCardSubtitle>
               <VCardText>{{item.shortDesc}}</VCardText>
