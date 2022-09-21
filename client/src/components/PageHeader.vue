@@ -1,5 +1,5 @@
 <template>
-  <VToolbar class="toolbar">
+  <VToolbar class="toolbar" color="primary" dark>
     <VAppBarNavIcon @click="() => $emit('openDrawer')"></VAppBarNavIcon>
     <VToolbarTitle class="logo">ShopIt!</VToolbarTitle>
     <VRow>

@@ -1,6 +1,6 @@
 <template>
   <VNavigationDrawer v-model="internalDrawer" @input="() => $emit('input', internalDrawer)" absolute temporary
-    class="nav-drawer">
+    color="primary" dark class="nav-drawer">
     <VListItem>
       <VListItemContent>
         <VListItemTitle>ShopIt!</VListItemTitle>
