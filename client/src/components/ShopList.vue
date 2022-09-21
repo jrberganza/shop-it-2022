@@ -3,7 +3,7 @@
     <template v-if="shops.length > 0">
       <VCol v-for="shop in shops" :key="shop.id" cols="4">
         <VCard @click="() => $router.push('/shop/' + shop.id)">
-          <img src="../assets/logo.png" width="100%" height="100%" /> <!-- TODO: Change to map -->
+          <img src="@/assets/logo.png" width="100%" height="100%" /> <!-- TODO: Change to map -->
           <VCardTitle>{{shop.name}}</VCardTitle>
           <VCardSubtitle>{{shop.address}} - {{shop.phoneNumber}}</VCardSubtitle>
           <VCardText>{{shop.shortDesc}}</VCardText>
