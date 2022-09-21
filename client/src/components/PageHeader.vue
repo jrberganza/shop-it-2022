@@ -1,5 +1,6 @@
 <template>
   <VToolbar class="toolbar">
+    <VAppBarNavIcon @click="() => $emit('openDrawer')"></VAppBarNavIcon>
     <VToolbarTitle class="logo">ShopIt!</VToolbarTitle>
     <VRow>
       <VSpacer></VSpacer>
@@ -29,7 +30,7 @@
 
 <script>
 import {
-  VToolbar, VToolbarTitle, VTextField, VBtn, VIcon, VRow, VCol, VSpacer,
+  VToolbar, VAppBarNavIcon, VToolbarTitle, VTextField, VBtn, VIcon, VRow, VCol, VSpacer
 } from 'vuetify/lib';
 
 export default {
@@ -55,7 +56,7 @@ export default {
     }
   },
   components: {
-    VToolbar, VToolbarTitle, VTextField, VBtn, VIcon, VRow, VCol, VSpacer,
+    VToolbar, VAppBarNavIcon, VToolbarTitle, VTextField, VBtn, VIcon, VRow, VCol, VSpacer
   },
 };
 </script>
