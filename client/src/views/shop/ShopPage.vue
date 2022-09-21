@@ -18,6 +18,7 @@
 </template>
 
 <script>
+import { VRow, VCol, VSkeletonLoader } from 'vuetify/lib';
 
 export default {
   name: 'ShopPage',
@@ -50,6 +51,6 @@ export default {
   mounted() {
     this.shop = this.getShop(this.$route.params.id);
   },
-  components: {},
+  components: { VRow, VCol, VSkeletonLoader },
 };
 </script>

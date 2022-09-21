@@ -1,5 +1,6 @@
 <template>
-  <div class="product"><template v-if="product">
+  <div class="product">
+    <template v-if="product">
       <h1>{{product.name}}</h1>
       <p>{{product.price}} - {{product.shopName}}</p>
       <p>{{product.shortDesc}}</p>
