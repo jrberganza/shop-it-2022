@@ -6,6 +6,7 @@ import ProductPage from '../views/ProductPage.vue';
 import Search from '../views/Search.vue';
 import Login from '../views/login/Login.vue';
 import Register from '../views/login/Register.vue';
+import ForgotPassword from '../views/login/ForgotPassword.vue'
 
 Vue.use(VueRouter);
 
@@ -29,6 +30,11 @@ const routes = [
     path: '/login/',
     name: 'Login',
     component: Login,
+  },
+  {
+    path: '/login/forgot/',
+    name: 'ForgotPassword',
+    component: ForgotPassword,
   },
   {
     path: '/register/',
