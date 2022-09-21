@@ -6,6 +6,7 @@ import Login from '../views/login/Login.vue';
 import ForgotPassword from '../views/login/ForgotPassword.vue';
 import Register from '../views/login/Register.vue';
 import ProductPage from '../views/product/ProductPage.vue';
+import ShopPage from '../views/shop/ShopPage.vue';
 import NotFound from '../views/NotFound.vue';
 
 Vue.use(VueRouter);
@@ -40,6 +41,11 @@ const routes = [
     path: '/product/:id',
     name: 'ProductPage',
     component: ProductPage,
+  },
+  {
+    path: '/shop/:id',
+    name: 'ShopPage',
+    component: ShopPage,
   },
   {
     path: '*',
