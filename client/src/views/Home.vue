@@ -1,71 +1,34 @@
 <template>
   <div class="home">
-    <h1>For you</h1>
-    <ProductList :products="products.forYou"></ProductList>
-    <h1>Trending</h1>
-    <ProductList :products="products.trending"></ProductList>
-    <h1>Recent</h1>
-    <ProductList :products="products.recent"></ProductList>
+    <template v-for="feed in feeds">
+      <div class="feed">
+        <h1>{{feed.name}}</h1>
+        <ProductList v-if="feed.type == 'product'" :products="feed.content"></ProductList>
+        <ShopList v-else-if="feed.type == 'shop'" :shops="feed.content"></ShopList>
+      </div>
+    </template>
   </div>
 </template>
 
 <script>
 import ProductList from '../components/ProductList.vue';
+import ShopList from '../components/ShopList.vue';
 
 export default {
   name: 'Home',
   data: () => ({
-    products: {
-      forYou: [
-        {
-          id: 1,
-          name: 'ola',
-          shopName: 'tienda2',
-          price: 12.34,
-          shortDesc: 'example product 1',
-        },
-        {
-          id: 2,
-          name: 'ola2',
-          shopName: 'tienda2',
-          price: 12.34,
-          shortDesc: 'example product 2',
-        },
-      ],
-      trending: [
-        {
-          id: 1,
-          name: 'ola',
-          shopName: 'tienda2',
-          price: 12.34,
-          shortDesc: 'example product 1',
-        },
-        {
-          id: 2,
-          name: 'ola2',
-          shopName: 'tienda2',
-          price: 12.34,
-          shortDesc: 'example product 2',
-        },
-      ],
-      recent: [
-        {
-          id: 1,
-          name: 'ola',
-          shopName: 'tienda2',
-          price: 12.34,
-          shortDesc: 'example product 1',
-        },
-        {
-          id: 2,
-          name: 'ola2',
-          shopName: 'tienda2',
-          price: 12.34,
-          shortDesc: 'example product 2',
-        },
-      ],
-    },
+    /** @type {any[]} */ feeds: [],
   }),
-  components: { ProductList },
+  methods: {
+    getFeeds() {
+      fetch('/api/feeds.php')
+        .then(res => res.json())
+        .then(json => this.feeds = json);
+    }
+  },
+  mounted() {
+    this.getFeeds();
+  },
+  components: { ProductList, ShopList },
 };
 </script>
