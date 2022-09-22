@@ -42,65 +42,18 @@ export default {
   name: 'YourShops',
   data: () => ({
     /** @type {any | null} */ selectedShop: null,
-    shops: [
-      {
-        id: 1,
-        name: 'tienda1',
-        address: 'aquí',
-        phoneNumber: '1234-5678',
-        desc: 'example shop 1',
-      },
-      {
-        id: 2,
-        name: 'tienda2',
-        address: 'allá',
-        phoneNumber: '5678-1234',
-        desc: 'example shop 2',
-      },
-      {
-        id: 2,
-        name: 'tienda2',
-        address: 'allá',
-        phoneNumber: '5678-1234',
-        desc: 'example shop 2',
-      },
-      {
-        id: 2,
-        name: 'tienda2',
-        address: 'allá',
-        phoneNumber: '5678-1234',
-        desc: 'example shop 2',
-      },
-      {
-        id: 2,
-        name: 'tienda2',
-        address: 'allá',
-        phoneNumber: '5678-1234',
-        desc: 'example shop 2',
-      },
-      {
-        id: 2,
-        name: 'tienda2',
-        address: 'allá',
-        phoneNumber: '5678-1234',
-        desc: 'example shop 2',
-      },
-      {
-        id: 2,
-        name: 'tienda2',
-        address: 'allá',
-        phoneNumber: '5678-1234',
-        desc: 'example shop 2',
-      },
-      {
-        id: 2,
-        name: 'tienda2',
-        address: 'allá',
-        phoneNumber: '5678-1234',
-        desc: 'example shop 2',
-      },
-    ]
+    shops: []
   }),
+  methods: {
+    getShops() {
+      fetch('http://localhost/api/shop/user/all.php')
+        .then(res => res.json())
+        .then(json => this.shops = json);
+    },
+  },
+  mounted() {
+    this.getShops();
+  },
   components: { VRow, VCol, VForm, VTextField, VBtn, VVirtualScroll, VCard, VCardTitle, VCardSubtitle, VCardText, VIcon },
 };
 </script>
