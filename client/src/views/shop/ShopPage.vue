@@ -27,95 +27,23 @@ export default {
   name: 'ShopPage',
   data: () => ({
     /** @type {any | null} */ shop: null,
-    comments: [
-      {
-        data: {
-          author: 'Jake Jake',
-          publishedAt: "31/12/2022",
-          content: 'Hey!',
-        },
-        children: [
-          {
-            data: {
-              author: 'Jake Jake',
-              publishedAt: "31/12/2022",
-              content: 'Hey!',
-            },
-            children: [
-              {
-                data: {
-                  author: 'Jake Jake',
-                  publishedAt: "31/12/2022",
-                  content: 'Hey!',
-                },
-              },
-              {
-                data: {
-                  author: 'Jake Jake',
-                  publishedAt: "31/12/2022",
-                  content: 'Hey!',
-                },
-              },
-            ]
-          },
-          {
-            data: {
-              author: 'Jake Jake',
-              publishedAt: "31/12/2022",
-              content: 'Hey!',
-            },
-          },
-        ]
-      },
-      {
-        data: {
-          author: 'Jake Jake',
-          publishedAt: "31/12/2022",
-          content: 'Hey!',
-        },
-        children: [
-          {
-            data: {
-              author: 'Jake Jake',
-              publishedAt: "31/12/2022",
-              content: 'Hey!',
-            },
-          },
-          {
-            data: {
-              author: 'Jake Jake',
-              publishedAt: "31/12/2022",
-              content: 'Hey!',
-            },
-          },
-        ]
-      },
-    ]
+    comments: []
   }),
   methods: {
-    getShop(id) {
-      let apiResponse = [
-        {
-          id: 1,
-          name: 'tienda1',
-          address: 'aquí',
-          phoneNumber: '1234-5678',
-          shortDesc: 'example shop 1',
-        },
-        {
-          id: 2,
-          name: 'tienda2',
-          address: 'allá',
-          phoneNumber: '5678-1234',
-          shortDesc: 'example shop 2',
-        },
-      ]; // example
-
-      return apiResponse[id];
-    }
+    selectShop(id) {
+      fetch(`/api/shop/get.php?id=${id}`)
+        .then(res => res.json())
+        .then(json => this.shop = json);
+    },
+    loadComments(id) {
+      fetch(`/api/comment/shop/all.php?id=${id}`)
+        .then(res => res.json())
+        .then(json => this.comments = json);
+    },
   },
   mounted() {
-    this.shop = this.getShop(this.$route.params.id);
+    this.selectShop(this.$route.params.id);
+    this.loadComments(this.$route.params.id);
   },
   components: { VRow, VCol, VSkeletonLoader, CommentTree },
 };

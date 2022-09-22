@@ -6,7 +6,6 @@ require '../private/db.php';
 header('Content-type: application/json');
 
 // TODO: connect to database
-// TODO: do it only for the current user
 
 $currId = $_GET['id'];
 
