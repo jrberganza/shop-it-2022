@@ -46,12 +46,12 @@ export default {
   }),
   methods: {
     getShops() {
-      fetch('http://localhost/api/shop/user/all.php')
+      fetch('/api/shop/user/all.php')
         .then(res => res.json())
         .then(json => this.shops = json);
     },
     getShop(id) {
-      fetch(`http://localhost/api/shop/get.php?id=${id}`)
+      fetch(`/api/shop/get.php?id=${id}`)
         .then(res => res.json())
         .then(json => this.selectedShop = json);
     },
