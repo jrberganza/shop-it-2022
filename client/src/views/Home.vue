@@ -1,16 +1,19 @@
 <template>
   <div class="home">
-    <template v-for="feed in feeds">
-      <div class="feed">
-        <h1>{{feed.name}}</h1>
-        <ProductList v-if="feed.type == 'product'" :products="feed.content"></ProductList>
-        <ShopList v-else-if="feed.type == 'shop'" :shops="feed.content"></ShopList>
-      </div>
-    </template>
+    <VRow>
+      <template v-for="feed in feeds">
+        <VCol cols="12" lg="6" class="results">
+          <h1>{{feed.name}}</h1>
+          <ProductList v-if="feed.type == 'product'" :products="feed.content"></ProductList>
+          <ShopList v-else-if="feed.type == 'shop'" :shops="feed.content"></ShopList>
+        </VCol>
+      </template>
+    </VRow>
   </div>
 </template>
 
 <script>
+import { VRow, VCol } from 'vuetify/lib';
 import ProductList from '../components/ProductList.vue';
 import ShopList from '../components/ShopList.vue';
 
@@ -29,6 +32,6 @@ export default {
   mounted() {
     this.getFeeds();
   },
-  components: { ProductList, ShopList },
+  components: { VRow, VCol, ProductList, ShopList },
 };
 </script>
