@@ -5,7 +5,7 @@
       <VCol cols="12" lg="4">
         <VVirtualScroll :items="products" :itemHeight="320" height="500" bench="1">
           <template v-slot:default="{ item }">
-            <VCard class="mx-2" height="300" @click="() => selectedProduct = item">
+            <VCard class="mx-2" height="300" @click="getProduct(item.id)">
               <VCardTitle>{{item.name}}</VCardTitle>
               <VCardSubtitle>{{item.price}} - {{item.shopName}}</VCardSubtitle>
               <VCardText>{{item.shortDesc}}</VCardText>
@@ -40,65 +40,23 @@ export default {
   name: 'YourShopProducts',
   data: () => ({
     /** @type {any | null} */ selectedProduct: null,
-    products: [
-      {
-        id: 1,
-        name: 'ola',
-        shopName: 'tienda2',
-        price: 12.34,
-        desc: 'example product 1',
-      },
-      {
-        id: 2,
-        name: 'ola2',
-        shopName: 'tienda2',
-        price: 12.34,
-        desc: 'example product 2',
-      },
-      {
-        id: 1,
-        name: 'ola',
-        shopName: 'tienda2',
-        price: 12.34,
-        desc: 'example product 1',
-      },
-      {
-        id: 2,
-        name: 'ola2',
-        shopName: 'tienda2',
-        price: 12.34,
-        desc: 'example product 2',
-      },
-      {
-        id: 1,
-        name: 'ola',
-        shopName: 'tienda2',
-        price: 12.34,
-        desc: 'example product 1',
-      },
-      {
-        id: 2,
-        name: 'ola2',
-        shopName: 'tienda2',
-        price: 12.34,
-        desc: 'example product 2',
-      },
-      {
-        id: 1,
-        name: 'ola',
-        shopName: 'tienda2',
-        price: 12.34,
-        desc: 'example product 1',
-      },
-      {
-        id: 2,
-        name: 'ola2',
-        shopName: 'tienda2',
-        price: 12.34,
-        desc: 'example product 2',
-      },
-    ]
+    products: []
   }),
+  methods: {
+    getProducts(shopId) {
+      fetch(`/api/product/shop/all.php?shopId=${shopId}`)
+        .then(res => res.json())
+        .then(json => this.products = json);
+    },
+    getProduct(id) {
+      fetch(`/api/product/get.php?id=${id}`)
+        .then(res => res.json())
+        .then(json => this.selectedProduct = json);
+    },
+  },
+  mounted() {
+    this.getProducts(this.$route.params.shopId);
+  },
   components: { VRow, VCol, VForm, VTextField, VBtn, VVirtualScroll, VCard, VCardTitle, VCardSubtitle, VCardText, VIcon },
 };
 </script>

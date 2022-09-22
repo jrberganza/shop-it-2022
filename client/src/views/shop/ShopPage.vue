@@ -30,7 +30,7 @@ export default {
     comments: []
   }),
   methods: {
-    selectShop(id) {
+    getShop(id) {
       fetch(`/api/shop/get.php?id=${id}`)
         .then(res => res.json())
         .then(json => this.shop = json);
@@ -42,7 +42,7 @@ export default {
     },
   },
   mounted() {
-    this.selectShop(this.$route.params.id);
+    this.getShop(this.$route.params.id);
     this.loadComments(this.$route.params.id);
   },
   components: { VRow, VCol, VSkeletonLoader, CommentTree },

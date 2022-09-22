@@ -20,95 +20,23 @@ export default {
   name: 'ProductPage',
   data: () => ({
     /** @type {any | null} */ product: null,
-    comments: [
-      {
-        data: {
-          author: 'Jake Jake',
-          publishedAt: "31/12/2022",
-          content: 'Hey!',
-        },
-        children: [
-          {
-            data: {
-              author: 'Jake Jake',
-              publishedAt: "31/12/2022",
-              content: 'Hey!',
-            },
-            children: [
-              {
-                data: {
-                  author: 'Jake Jake',
-                  publishedAt: "31/12/2022",
-                  content: 'Hey!',
-                },
-              },
-              {
-                data: {
-                  author: 'Jake Jake',
-                  publishedAt: "31/12/2022",
-                  content: 'Hey!',
-                },
-              },
-            ]
-          },
-          {
-            data: {
-              author: 'Jake Jake',
-              publishedAt: "31/12/2022",
-              content: 'Hey!',
-            },
-          },
-        ]
-      },
-      {
-        data: {
-          author: 'Jake Jake',
-          publishedAt: "31/12/2022",
-          content: 'Hey!',
-        },
-        children: [
-          {
-            data: {
-              author: 'Jake Jake',
-              publishedAt: "31/12/2022",
-              content: 'Hey!',
-            },
-          },
-          {
-            data: {
-              author: 'Jake Jake',
-              publishedAt: "31/12/2022",
-              content: 'Hey!',
-            },
-          },
-        ]
-      },
-    ]
+    comments: []
   }),
   methods: {
-    getProduct(id) {
-      let apiResponse = [
-        {
-          id: 1,
-          name: 'ola',
-          shopName: 'tienda2',
-          price: 12.34,
-          shortDesc: 'example product 1',
-        },
-        {
-          id: 2,
-          name: 'ola2',
-          shopName: 'tienda2',
-          price: 12.34,
-          shortDesc: 'example product 2',
-        },
-      ]; // example
-
-      return apiResponse[id];
-    }
+    getShop(id) {
+      fetch(`/api/product/get.php?id=${id}`)
+        .then(res => res.json())
+        .then(json => this.product = json);
+    },
+    loadComments(id) {
+      fetch(`/api/comment/product/all.php?id=${id}`)
+        .then(res => res.json())
+        .then(json => this.comments = json);
+    },
   },
   mounted() {
-    this.product = this.getProduct(this.$route.params.id);
+    this.getShop(this.$route.params.id);
+    this.loadComments(this.$route.params.id);
   },
   components: { CommentTree },
 };
