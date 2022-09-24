@@ -20,6 +20,21 @@
         </VRow>
       </VCard>
       <VDivider></VDivider>
+      <h1>Products</h1>
+      <VDataIterator class="my-2" :items="shop.products" :itemsPerPage="12">
+        <template v-slot:default="{ items }">
+          <VRow>
+            <VCol v-for="product in items" :key="product.id" cols="12" sm="6" md="4" lg="3">
+              <VCard @click="() => $router.push('/product/' + product.id)">
+                <VCardTitle>{{product.name}}</VCardTitle>
+                <VCardSubtitle>{{product.price}} - {{product.shopName}}</VCardSubtitle>
+                <VCardText>{{product.shortDesc}}</VCardText>
+              </VCard>
+            </VCol>
+          </VRow>
+        </template>
+      </VDataIterator>
+      <VDivider></VDivider>
       <template v-if="session != null && session.role != 'visitor'">
         <h1>Rate it!</h1>
         <VRating class="mb-5" hover size="40" v-model="ownRating"></VRating>
@@ -35,7 +50,7 @@
 </template>
 
 <script>
-import { VRow, VCol, VSkeletonLoader, VRating, VDivider, VImg, VCard, VCardTitle, VCardSubtitle, VCardText, VCardActions } from 'vuetify/lib';
+import { VRow, VCol, VSkeletonLoader, VRating, VDivider, VImg, VCard, VCardTitle, VCardSubtitle, VCardText, VCardActions, VDataIterator } from 'vuetify/lib';
 import CommentTree from '../../components/comments/CommentTree.vue';
 import { mapState } from 'vuex';
 
@@ -71,6 +86,6 @@ export default {
     this.getShop(this.$route.params.id);
     this.loadComments(this.$route.params.id);
   },
-  components: { VRow, VCol, VSkeletonLoader, VRating, VDivider, VCard, VCardTitle, VCardSubtitle, VCardText, VCardActions, VImg, CommentTree },
+  components: { VRow, VCol, VSkeletonLoader, VRating, VDivider, VCard, VCardTitle, VCardSubtitle, VCardText, VCardActions, VImg, VDataIterator, CommentTree },
 };
 </script>
