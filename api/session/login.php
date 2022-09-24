@@ -39,7 +39,6 @@ $resObj->role = $user["role"];
 
 setcookie("session_token", $token, [
     'expires' => time() + 86400 * 7,
-    'path' => '/app/',
     'httponly' => true,
     'samesite' => 'Strict',
 ]);
