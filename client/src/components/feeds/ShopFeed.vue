@@ -4,7 +4,7 @@
       <VCarousel hide-delimiters height="400" cycle>
         <VCarouselItem class="mx-15" v-for="shop in shops" :key="shop.id">
           <VCard elevation="0">
-            <VImg :src="LogoImg" height="200" />
+            <VImg src="/images/placeholder.png" height="200" />
             <VCardTitle>{{shop.name}}</VCardTitle>
             <VCardSubtitle>{{shop.address}} - {{shop.phoneNumber}}</VCardSubtitle>
             <VCardText>{{shop.shortDesc}}</VCardText>
@@ -23,14 +23,10 @@
 import {
   VRow, VCol, VSkeletonLoader, VCard, VCardTitle, VCardSubtitle, VCardText, VCardActions, VBtn, VImg, VCarousel, VCarouselItem
 } from 'vuetify/lib';
-import LogoImg from '../../assets/logo.png';
 
 export default {
   name: 'ShopList',
   props: ['shops'],
-  data: () => ({
-    LogoImg
-  }),
   components: {
     VRow, VCol, VSkeletonLoader, VCard, VCardTitle, VCardSubtitle, VCardText, VCardActions, VBtn, VImg, VCarousel, VCarouselItem
   },

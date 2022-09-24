@@ -4,7 +4,7 @@
       <VCard class="mb-10">
         <VRow>
           <VCol cols="12" md="4" order="1" order-md="12">
-            <VImg :src="LogoImg" height="250" />
+            <VImg src="/images/placeholder.png" height="250" />
           </VCol>
           <VCol cols="12" md="8" order="12" order-md="1">
             <VCard elevation="0">
@@ -37,15 +37,13 @@
 import { VRow, VCol, VSkeletonLoader, VRating, VDivider, VImg, VCard, VCardTitle, VCardSubtitle, VCardText, VCardActions } from 'vuetify/lib';
 import CommentTree from '../../components/comments/CommentTree.vue';
 import { mapState } from 'vuex';
-import LogoImg from '@/assets/logo.png';
 
 export default {
   name: 'ShopPage',
   data: () => ({
     /** @type {any | null} */ shop: null,
     comments: [],
-    ownRating: null,
-    LogoImg
+    ownRating: null
   }),
   computed: {
     ...mapState(['session']),

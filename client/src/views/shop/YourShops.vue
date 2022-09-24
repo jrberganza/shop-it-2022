@@ -5,7 +5,7 @@
       <VCol cols="12" lg="6" order="1" order-lg="12">
         <template v-if="selectedShop">
           <VCard>
-            <VImg :src="LogoImg" height="300" /> <!-- TODO: Change to map -->
+            <VImg src="/images/placeholder.png" height="300" />
             <VCardTitle>
               <VTextField label="Name" v-model="selectedShop.name"></VTextField>
             </VCardTitle>
@@ -48,7 +48,7 @@
         <VDataIterator :items="shops" :itemsPerPage="5">
           <template v-slot:default="{ items }">
             <VCard v-for="shop in items" :key="shop.id" class="my-2" @click="getShop(shop.id)">
-              <VImg :src="LogoImg" height="100" /> <!-- TODO: Change to map -->
+              <VImg src="/images/placeholder.png" height="100" />
               <VCardTitle>{{shop.name}}</VCardTitle>
               <VCardSubtitle>{{shop.address}} - {{shop.phoneNumber}}</VCardSubtitle>
               <VCardText>{{shop.shortDesc}}</VCardText>
@@ -62,14 +62,12 @@
 
 <script>
 import { VRow, VCol, VForm, VTextField, VTextarea, VBtn, VCheckbox, VDataIterator, VCard, VCardTitle, VCardSubtitle, VCardText, VCardActions, VIcon, VImg } from 'vuetify/lib';
-import LogoImg from '../../assets/logo.png';
 
 export default {
   name: 'YourShops',
   data: () => ({
     /** @type {any | null} */ selectedShop: null,
-    shops: [],
-    LogoImg
+    shops: []
   }),
   methods: {
     newShop() {
