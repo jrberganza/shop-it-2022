@@ -15,9 +15,10 @@
             </VCardSubtitle>
             <VCardText>
               <VTextarea label="Description" v-model="selectedShop.desc"></VTextarea>
+              <VCheckbox label="Disabled?" v-model="selectedShop.disabled"></VCheckbox>
             </VCardText>
             <VCardActions>
-              <VBtn block @click="() => selectedShop = null">
+              <VBtn @click="() => selectedShop = null">
                 <VIcon>mdi-floppy</VIcon> Save
               </VBtn>
             </VCardActions>
@@ -45,7 +46,7 @@
 </template>
 
 <script>
-import { VRow, VCol, VForm, VTextField, VTextarea, VBtn, VDataIterator, VCard, VCardTitle, VCardSubtitle, VCardText, VCardActions, VIcon, VImg } from 'vuetify/lib';
+import { VRow, VCol, VForm, VTextField, VTextarea, VBtn, VCheckbox, VDataIterator, VCard, VCardTitle, VCardSubtitle, VCardText, VCardActions, VIcon, VImg } from 'vuetify/lib';
 import LogoImg from '../../assets/logo.png';
 
 export default {
@@ -70,6 +71,6 @@ export default {
   mounted() {
     this.getShops();
   },
-  components: { VRow, VCol, VForm, VTextField, VBtn, VDataIterator, VCard, VCardTitle, VCardSubtitle, VCardText, VTextarea, VCardActions, VIcon, VImg },
+  components: { VRow, VCol, VForm, VTextField, VBtn, VCheckbox, VDataIterator, VCard, VCardTitle, VCardSubtitle, VCardText, VTextarea, VCardActions, VIcon, VImg },
 };
 </script>

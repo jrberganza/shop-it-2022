@@ -13,6 +13,7 @@
             </VCardSubtitle>
             <VCardText>
               <VTextarea label="Description" v-model="selectedProduct.desc"></VTextarea>
+              <VCheckbox label="Disabled?" v-model="selectedProduct.disabled"></VCheckbox>
             </VCardText>
             <VCardActions>
               <VBtn block @click="() => selectedProduct = null">
@@ -42,7 +43,7 @@
 </template>
 
 <script>
-import { VRow, VCol, VForm, VTextField, VTextarea, VBtn, VDataIterator, VCard, VCardTitle, VCardSubtitle, VCardText, VCardActions, VIcon } from 'vuetify/lib';
+import { VRow, VCol, VForm, VTextField, VTextarea, VBtn, VCheckbox, VDataIterator, VCard, VCardTitle, VCardSubtitle, VCardText, VCardActions, VIcon } from 'vuetify/lib';
 
 export default {
   name: 'YourShopProducts',
@@ -65,6 +66,6 @@ export default {
   mounted() {
     this.getProducts(this.$route.params.shopId);
   },
-  components: { VRow, VCol, VForm, VTextField, VTextarea, VBtn, VDataIterator, VCard, VCardTitle, VCardSubtitle, VCardText, VCardActions, VIcon },
+  components: { VRow, VCol, VForm, VTextField, VTextarea, VBtn, VCheckbox, VDataIterator, VCard, VCardTitle, VCardSubtitle, VCardText, VCardActions, VIcon },
 };
 </script>
