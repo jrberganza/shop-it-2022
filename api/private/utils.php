@@ -11,8 +11,10 @@ function resSuccess($obj)
     exit();
 }
 
-function resFail($message, $errorCode = 400)
+function resFail($message, $responseCode = 400)
 {
+    http_response_code($responseCode);
+
     $errorObj = new \stdClass();
     $errorObj->success = false;
     $errorObj->_error = $message;

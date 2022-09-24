@@ -15,5 +15,5 @@ if ($session) {
 
     resSuccess($resObj);
 } else {
-    resSuccess(new \stdClass());
+    resFail("Not logged in", 200);
 }
