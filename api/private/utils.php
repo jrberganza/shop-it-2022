@@ -2,6 +2,7 @@
 
 function resSuccess($obj)
 {
+    header('Content-type: application/json');
     $obj->success = true;
 
     $JSON = json_encode($obj);
@@ -13,6 +14,7 @@ function resSuccess($obj)
 
 function resFail($message, $responseCode = 400)
 {
+    header('Content-type: application/json');
     http_response_code($responseCode);
 
     $errorObj = new \stdClass();
@@ -87,10 +89,10 @@ function getCurrentSession($db)
     return $user;
 }
 
-set_error_handler(function () {
-    resFail("Internal error", 500);
+set_error_handler(function (int $errno, string $errstr) {
+    resFail($errstr, 500);
 });
 
-set_exception_handler(function () {
-    resFail("Internal error", 500);
+set_exception_handler(function (\Throwable $th) {
+    resFail($th->getMessage(), 500);
 });
