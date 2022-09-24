@@ -38,6 +38,7 @@ for ($currId = 0; $currId < 5; $currId++) {
     $shop->address = $currId . " Calle, Guatemala";
     $shop->phoneNumber =  ($currId % 9 + 1) . "123456" . ($currId % 9 + 1);
     $shop->shortDesc = "Shop description " . $currId;
+    $shop->photos = [1];
     array_push($shopFeed->content, $shop);
 }
 array_push($feeds, $shopFeed);

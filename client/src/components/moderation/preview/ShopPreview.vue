@@ -1,6 +1,7 @@
 <template>
   <VCard>
-    <VImg src="/images/placeholder.png" height="100" />
+    <VImg v-if="shop.photos.length > 0" :src="'/api/shop/photo/get.php?id=' + shop.photos[0]" height="100" />
+    <VImg v-else src="/images/placeholder.png" height="100" />
     <VCardTitle>{{shop.name}}</VCardTitle>
     <VCardSubtitle>{{shop.address}} - {{shop.phoneNumber}}</VCardSubtitle>
     <VCardText>{{shop.shortDesc}}</VCardText>

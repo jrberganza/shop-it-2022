@@ -5,7 +5,9 @@
       <VCol cols="12" lg="6" order="1" order-lg="12">
         <template v-if="selectedShop">
           <VCard>
-            <VImg src="/images/placeholder.png" height="300" />
+            <VImg v-if="selectedShop.photos.length > 0" :src="'/api/shop/photo/get.php?id=' + selectedShop.photos[0]"
+              height="300" />
+            <VImg v-else src="/images/placeholder.png" height="300" />
             <VCardTitle>
               <VTextField label="Name" v-model="selectedShop.name"></VTextField>
             </VCardTitle>
@@ -58,7 +60,8 @@
         <VDataIterator :items="shops" :itemsPerPage="5">
           <template v-slot:default="{ items }">
             <VCard v-for="shop in items" :key="shop.id" class="my-2" @click="getShop(shop.id)">
-              <VImg src="/images/placeholder.png" height="100" />
+              <VImg v-if="shop.photos.length > 0" :src="'/api/shop/photo/get.php?id=' + shop.photos[0]" height="100" />
+              <VImg v-else src="/images/placeholder.png" height="100" />
               <VCardTitle>{{shop.name}}</VCardTitle>
               <VCardSubtitle>{{shop.address}} - {{shop.phoneNumber}}</VCardSubtitle>
               <VCardText>{{shop.shortDesc}}</VCardText>
@@ -89,6 +92,7 @@ export default {
         phoneNumber: '',
         description: '',
         disabled: true,
+        photos: [],
       }
     },
     saveShop() {

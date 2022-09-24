@@ -17,7 +17,7 @@ $productResults->name = 'Products';
 $productResults->type = 'product';
 $productResults->content = array();
 
-for ($currId = 0; $currId < 10; $currId++) {
+for ($currId = 0; $currId < 9; $currId++) {
     $product = new \stdClass();
 
     $product->id = $currId;
@@ -35,7 +35,7 @@ $shopResults->name = 'Shops';
 $shopResults->type = 'shop';
 $shopResults->content = array();
 
-for ($currId = 0; $currId < 10; $currId++) {
+for ($currId = 0; $currId < 9; $currId++) {
     $shop = new \stdClass();
 
     $shop->id = $currId;
@@ -43,6 +43,7 @@ for ($currId = 0; $currId < 10; $currId++) {
     $shop->address = $currId . " Calle, Guatemala";
     $shop->phoneNumber =  ($currId % 9 + 1) . "123456" . ($currId % 9 + 1);
     $shop->shortDesc = "Shop description " . $currId;
+    $shop->photos = [1];
     array_push($shopResults->content, $shop);
 }
 
