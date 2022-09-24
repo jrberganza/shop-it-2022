@@ -34,8 +34,8 @@
           </VRow>
         </template>
       </VDataIterator>
-      <VDivider></VDivider>
       <template v-if="session != null && session.role != 'visitor'">
+        <VDivider></VDivider>
         <h1>Rate it!</h1>
         <VRating class="mb-5" hover size="40" v-model="ownRating"></VRating>
       </template>

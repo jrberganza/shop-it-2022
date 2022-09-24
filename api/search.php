@@ -25,6 +25,8 @@ for ($currId = 0; $currId < 9; $currId++) {
     $product->shopName = "Tienda " . random_int(1, 100);
     $product->price =  random_int(0, 9999) / 100.0;
     $product->shortDesc = "Product description " . $currId;
+    $product->rating = random_int(0, 10) / 2.0;
+    $product->photos = [];
     array_push($productResults->content, $product);
 }
 
@@ -43,7 +45,7 @@ for ($currId = 0; $currId < 9; $currId++) {
     $shop->address = $currId . " Calle, Guatemala";
     $shop->phoneNumber =  ($currId % 9 + 1) . "123456" . ($currId % 9 + 1);
     $shop->shortDesc = "Shop description " . $currId;
-    $shop->photos = [1];
+    $shop->photos = [];
     array_push($shopResults->content, $shop);
 }
 

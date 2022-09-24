@@ -13,7 +13,8 @@ $product->id = $currId;
 $product->name = "Producto " . $currId;
 $product->shopName = "Tienda " . random_int(0, 100);
 $product->price =  random_int(0, 9999) / 100.0;
-$product->shortDesc = "Product description " . $currId;
+$product->description = "Product description " . $currId;
+$product->photos = [];
 
 $resJson = json_encode($product);
 

@@ -6,8 +6,8 @@
         <template v-if="selectedShop">
           <VCard>
             <VImg v-if="selectedShop.photos.length > 0" :src="'/api/shop/photo/get.php?id=' + selectedShop.photos[0]"
-              height="300" />
-            <VImg v-else src="/images/placeholder.png" height="300" />
+              height="250" />
+            <VImg v-else src="/images/placeholder.png" height="250" />
             <VCardTitle>
               <VTextField label="Name" v-model="selectedShop.name"></VTextField>
             </VCardTitle>
