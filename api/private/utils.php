@@ -86,3 +86,11 @@ function getCurrentSession($db)
 
     return $user;
 }
+
+set_error_handler(function () {
+    resFail("Internal error", 500);
+});
+
+set_exception_handler(function () {
+    resFail("Internal error", 500);
+});

@@ -6,6 +6,32 @@ require "../../private/utils.php";
 
 header('Content-type: text/xml');
 
+set_error_handler(function () {
+    $xml = new DOMDocument("1.0");
+    $xml->formatOutput = true;
+
+    $errorEl = $xml->createElement("shop", "Internal error");
+    $xml->appendChild($errorEl);
+
+    http_response_code(500);
+
+    echo "" . $xml->saveXML() . "";
+    exit();
+});
+
+set_exception_handler(function () {
+    $xml = new DOMDocument("1.0");
+    $xml->formatOutput = true;
+
+    $errorEl = $xml->createElement("error", "Internal error");
+    $xml->appendChild($errorEl);
+
+    http_response_code(500);
+
+    echo "" . $xml->saveXML() . "";
+    exit();
+});
+
 $session = getCurrentSession($db);
 
 if (!$session) {
