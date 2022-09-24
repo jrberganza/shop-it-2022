@@ -68,17 +68,18 @@ export default {
       }
     },
     saveShop() {
+      let body = {
+        id: this.selectedShop.id,
+        name: this.selectedShop.name,
+        address: this.selectedShop.address,
+        phoneNumber: this.selectedShop.phoneNumber,
+        description: this.selectedShop.description,
+        disabled: this.selectedShop.disabled,
+      };
       if (this.selectedShop.id == null) {
         fetch('/api/shop/user/create.php', {
           method: "POST",
-          body: JSON.stringify({
-            id: this.selectedShop.id,
-            name: this.selectedShop.name,
-            address: this.selectedShop.address,
-            phoneNumber: this.selectedShop.phoneNumber,
-            description: this.selectedShop.description,
-            disabled: this.selectedShop.disabled,
-          }),
+          body: JSON.stringify(body),
         })
           .then(res => res.json())
           .then(json => {
@@ -86,7 +87,10 @@ export default {
             this.getShops();
           });
       } else {
-        fetch('/api/shop/user/edit.php')
+        fetch('/api/shop/user/edit.php', {
+          method: "POST",
+          body: JSON.stringify(body),
+        })
           .then(res => res.json())
           .then(json => this.shops = json.shops);
       }
