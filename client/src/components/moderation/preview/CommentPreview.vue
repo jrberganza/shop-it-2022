@@ -3,6 +3,11 @@
     <VCardTitle>{{comment.author}}</VCardTitle>
     <VCardSubtitle>{{comment.publishedAt}}</VCardSubtitle>
     <VCardText>{{comment.content}}</VCardText>
+    <VCardActions>
+      <VBtn @click="() => $emit('seeDetails', comment.id)">Details</VBtn>
+      <VBtn>Publish</VBtn>
+      <VBtn>Reject</VBtn>
+    </VCardActions>
   </VCard>
 </template>
 

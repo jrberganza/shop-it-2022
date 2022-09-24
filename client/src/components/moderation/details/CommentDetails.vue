@@ -1,8 +1,12 @@
 <template>
   <VCard>
-    <VCardTitle>{{product.name}}</VCardTitle>
-    <VCardSubtitle>{{product.price}} - {{product.shopName}}</VCardSubtitle>
-    <VCardText>{{product.shortDesc}}</VCardText>
+    <VCardTitle>{{comment.author}}</VCardTitle>
+    <VCardSubtitle>{{comment.publishedAt}}</VCardSubtitle>
+    <VCardText>{{comment.content}}</VCardText>
+    <VCardActions>
+      <VBtn>Publish</VBtn>
+      <VBtn>Reject</VBtn>
+    </VCardActions>
   </VCard>
 </template>
 
@@ -10,8 +14,8 @@
 import { VCard, VCardTitle, VCardSubtitle, VCardText, VCardActions, VBtn, VIcon } from 'vuetify/lib';
 
 export default {
-  name: 'ProductPreview',
-  props: ['product'],
+  name: 'CommentDetails',
+  props: ['comment'],
   data: () => ({}),
   components: { VCard, VCardTitle, VCardSubtitle, VCardText, VCardActions, VBtn, VIcon }
 }

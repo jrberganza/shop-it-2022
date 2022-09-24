@@ -1,18 +1,22 @@
 <template>
   <VCard>
-    <VImg :src="LogoImg" height="100" /> <!-- TODO: Change to map -->
+    <VImg :src="LogoImg" height="300" /> <!-- TODO: Change to map -->
     <VCardTitle>{{shop.name}}</VCardTitle>
     <VCardSubtitle>{{shop.address}} - {{shop.phoneNumber}}</VCardSubtitle>
-    <VCardText>{{shop.shortDesc}}</VCardText>
+    <VCardText>{{shop.desc}}</VCardText>
+    <VCardActions>
+      <VBtn>Publish</VBtn>
+      <VBtn>Reject</VBtn>
+    </VCardActions>
   </VCard>
 </template>
 
 <script>
 import { VCard, VCardTitle, VCardSubtitle, VCardText, VCardActions, VBtn, VIcon, VImg } from 'vuetify/lib';
-import LogoImg from '../../assets/logo.png';
+import LogoImg from '../../../assets/logo.png';
 
 export default {
-  name: 'ShopPreview',
+  name: 'ShopDetails',
   props: ['shop'],
   data: () => ({
     LogoImg
