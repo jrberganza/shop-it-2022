@@ -13,7 +13,7 @@ if (!$session) {
 }
 
 $stmt = $db->prepare("SELECT shop_id as id, name, address, phone_number as phoneNumber, substr(description, 1, 100) as shortDesc FROM shops WHERE user_id = ? ORDER BY created_at");
-$stmt->bind_param("s", $session->id);
+$stmt->bind_param("i", $session->id);
 $stmt->execute();
 $result = $stmt->get_result();
 

@@ -14,11 +14,11 @@
               <VTextField label="Phone Number" v-model="selectedShop.phoneNumber"></VTextField>
             </VCardSubtitle>
             <VCardText>
-              <VTextarea label="Description" v-model="selectedShop.desc"></VTextarea>
+              <VTextarea label="Description" v-model="selectedShop.description"></VTextarea>
               <VCheckbox label="Disabled?" v-model="selectedShop.disabled"></VCheckbox>
             </VCardText>
             <VCardActions>
-              <VBtn @click="() => selectedShop = null">
+              <VBtn block @click="saveShop">
                 <VIcon>mdi-floppy</VIcon> Save
               </VBtn>
             </VCardActions>
@@ -27,7 +27,7 @@
         <p v-else><em>No shop selected.</em></p>
       </VCol>
       <VCol cols="12" lg="6" order="12" order-lg="1">
-        <VBtn block>
+        <VBtn block @click="newShop">
           <VIcon>mdi-plus</VIcon> New shop
         </VBtn>
         <VDataIterator :items="shops" :itemsPerPage="5">
@@ -57,6 +57,40 @@ export default {
     LogoImg
   }),
   methods: {
+    newShop() {
+      this.selectedShop = {
+        id: null,
+        name: '',
+        address: '',
+        phoneNumber: '',
+        description: '',
+        disabled: true,
+      }
+    },
+    saveShop() {
+      if (this.selectedShop.id == null) {
+        fetch('/api/shop/user/create.php', {
+          method: "POST",
+          body: JSON.stringify({
+            id: this.selectedShop.id,
+            name: this.selectedShop.name,
+            address: this.selectedShop.address,
+            phoneNumber: this.selectedShop.phoneNumber,
+            description: this.selectedShop.description,
+            disabled: this.selectedShop.disabled,
+          }),
+        })
+          .then(res => res.json())
+          .then(json => {
+            this.selectedShop.id = json.id;
+            this.getShops();
+          });
+      } else {
+        fetch('/api/shop/user/edit.php')
+          .then(res => res.json())
+          .then(json => this.shops = json.shops);
+      }
+    },
     getShops() {
       fetch('/api/shop/user/all.php')
         .then(res => res.json())
