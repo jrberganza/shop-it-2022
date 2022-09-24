@@ -1,8 +1,8 @@
 <template>
   <div class="home">
     <VRow>
-      <template v-for="feed in feeds">
-        <VCol cols="12" lg="6" class="results">
+      <template v-for="(feed, i) in feeds">
+        <VCol cols="12" :lg="(feeds.length % 2 == 1 && i == feeds.length - 1) ? 12 : 6" class="results">
           <h1>{{feed.name}}</h1>
           <ProductFeed v-if="feed.type == 'product'" :products="feed.content"></ProductFeed>
           <ShopFeed v-else-if="feed.type == 'shop'" :shops="feed.content"></ShopFeed>

@@ -14,8 +14,7 @@ $productFeed = new \stdClass();
 $productFeed->name = 'Recent';
 $productFeed->type = 'product';
 $productFeed->content = array();
-
-for ($currId = 0; $currId < 10; $currId++) {
+for ($currId = 0; $currId < 5; $currId++) {
     $product = new \stdClass();
 
     $product->id = $currId;
@@ -25,15 +24,13 @@ for ($currId = 0; $currId < 10; $currId++) {
     $product->shortDesc = "Product description " . $currId;
     array_push($productFeed->content, $product);
 }
-
 array_push($feeds, $productFeed);
 
 $shopFeed = new \stdClass();
-$shopFeed->name = 'Top rated';
+$shopFeed->name = 'Top rated shops';
 $shopFeed->type = 'shop';
 $shopFeed->content = array();
-
-for ($currId = 0; $currId < 10; $currId++) {
+for ($currId = 0; $currId < 5; $currId++) {
     $shop = new \stdClass();
 
     $shop->id = $currId;
@@ -43,8 +40,23 @@ for ($currId = 0; $currId < 10; $currId++) {
     $shop->shortDesc = "Shop description " . $currId;
     array_push($shopFeed->content, $shop);
 }
-
 array_push($feeds, $shopFeed);
+
+$trendingFeed = new \stdClass();
+$trendingFeed->name = 'Trending products';
+$trendingFeed->type = 'product';
+$trendingFeed->content = array();
+for ($currId = 0; $currId < 5; $currId++) {
+    $product = new \stdClass();
+
+    $product->id = $currId;
+    $product->name = "Producto " . $currId;
+    $product->shopName = "Tienda " . random_int(1, 100);
+    $product->price =  random_int(0, 9999) / 100.0;
+    $product->shortDesc = "Product description " . $currId;
+    array_push($trendingFeed->content, $product);
+}
+array_push($feeds, $trendingFeed);
 
 $resJson = json_encode($feeds);
 
