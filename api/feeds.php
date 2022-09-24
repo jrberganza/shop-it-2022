@@ -2,6 +2,7 @@
 
 require './private/strict.php';
 require './private/db.php';
+require './private/utils.php';
 
 header('Content-type: application/json');
 
@@ -30,16 +31,36 @@ $shopFeed = new \stdClass();
 $shopFeed->name = 'Top rated shops';
 $shopFeed->type = 'shop';
 $shopFeed->content = array();
-for ($currId = 0; $currId < 5; $currId++) {
-    $shop = new \stdClass();
 
-    $shop->id = $currId;
-    $shop->name = "Tienda " . $currId;
-    $shop->address = $currId . " Calle, Guatemala";
-    $shop->phoneNumber =  ($currId % 9 + 1) . "123456" . ($currId % 9 + 1);
-    $shop->shortDesc = "Shop description " . $currId;
-    $shop->photos = [1];
-    array_push($shopFeed->content, $shop);
+$stmt = $db->prepare("SELECT
+    s.shop_id as id,
+    s.name as name,
+    s.address as address,
+    s.phone_number as phoneNumber,
+    s.description as description,
+    s.disabled as disabled,
+    cast(coalesce(r.rating, 0.0) as double) as rating
+FROM
+    shops s
+LEFT JOIN
+    (SELECT avg(rating) as rating, shop_id FROM shop_ratings GROUP BY shop_id) r USING (shop_id)
+ORDER BY rating DESC
+LIMIT 5");
+$stmt->execute();
+$result = $stmt->get_result();
+
+while ($row = $result->fetch_object()) {
+    $stmt2 = $db->prepare("SELECT shop_photo_id FROM shop_photos WHERE shop_id = ? ");
+    $stmt2->bind_param("i", $row->id);
+    $stmt2->execute();
+    $result2 = $stmt2->get_result();
+
+    $row->photos = array();
+    while ($row2 = $result2->fetch_array()) {
+        array_push($row->photos, $row2["shop_photo_id"]);
+    }
+
+    array_push($shopFeed->content, $row);
 }
 array_push($feeds, $shopFeed);
 
