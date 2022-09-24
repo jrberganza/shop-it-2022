@@ -11,7 +11,20 @@ if (!isset($_GET["id"])) {
 }
 $shopId = $_GET["id"];
 
-$stmt = $db->prepare("SELECT shop_id as id, name, address, phone_number as phoneNumber, description, disabled FROM shops WHERE shop_id = ?");
+$stmt = $db->prepare("SELECT
+    s.shop_id as id,
+    s.name as name,
+    s.address as address,
+    s.phone_number as phoneNumber,
+    s.description as description,
+    s.disabled as disabled,
+    cast(coalesce(r.rating, 0.0) as double) as rating
+FROM
+    shops s
+LEFT JOIN
+    (SELECT avg(rating) as rating, shop_id FROM shop_ratings GROUP BY shop_id) r USING (shop_id)
+WHERE
+    shop_id = ?");
 $stmt->bind_param("i", $shopId);
 $stmt->execute();
 $result = $stmt->get_result();
