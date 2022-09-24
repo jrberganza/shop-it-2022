@@ -1,7 +1,7 @@
 <template>
   <div class="not-found">
-    <p>No se encontró la página</p>
-    <VBtn @click="() => $router.go(-1)">Regresar</VBtn>
+    <p>Page not found</p>
+    <VBtn @click="() => $router.go(-1)">Go back</VBtn>
   </div>
 </template>
 

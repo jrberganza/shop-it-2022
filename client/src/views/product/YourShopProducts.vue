@@ -1,6 +1,7 @@
 <template>
   <div class="your-shops">
     <h1>Your products on shop {{$route.params.shopId}}</h1>
+    <VBtn class="my-2" @click="() => $router.go(-1)">Go back</VBtn>
     <VRow>
       <VCol cols="12" lg="6" order="1" order-lg="12">
         <template v-if="selectedProduct">
@@ -36,7 +37,7 @@
             <VCard v-for="product in items" :key="product.id" class="my-2" @click="getProduct(product.id)">
               <VImg v-if="product.photos.length > 0" :src="'/api/shop/product/get.php?id=' + product.photos[0]"
                 height="100" />
-              <VImg v-else src="/images/placeholder.png" height="250" />
+              <VImg v-else src="/images/placeholder.png" height="100" />
               <VCardTitle>{{product.name}}</VCardTitle>
               <VCardSubtitle>{{product.price}} - {{product.shopName}}</VCardSubtitle>
               <VCardText>{{product.shortDesc}}</VCardText>
