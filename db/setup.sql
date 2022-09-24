@@ -105,7 +105,7 @@ CREATE TABLE `comment_votes` (
 CREATE TABLE `sessions` (
   `session_id` int PRIMARY KEY AUTO_INCREMENT,
   `user_id` int NOT NULL,
-  `token` varchar(255) NOT NULL,
+  `token` varchar(255) UNIQUE NOT NULL,
   `created_at` datetime NOT NULL DEFAULT (now()),
   `last_access_at` datetime NOT NULL DEFAULT (now())
 );
