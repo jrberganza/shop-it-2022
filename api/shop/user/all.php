@@ -2,25 +2,26 @@
 
 require '../../private/strict.php';
 require '../../private/db.php';
+require "../../private/utils.php";
 
 header('Content-type: application/json');
 
-// TODO: connect to database
-// TODO: do it only for the current user
+$session = getCurrentSession($db);
 
-$allShops = array();
-
-for ($currId = 0; $currId < 10; $currId++) {
-    $shop = new \stdClass();
-
-    $shop->id = $currId;
-    $shop->name = "Tienda " . $currId;
-    $shop->address = $currId . " Calle, Guatemala";
-    $shop->phoneNumber =  ($currId % 9 + 1) . "123456" . ($currId % 9 + 1);
-    $shop->shortDesc = "Shop description " . $currId;
-    array_push($allShops, $shop);
+if (!$session) {
+    resFail("Not logged in");
 }
 
-$resJson = json_encode($allShops);
+$stmt = $db->prepare("SELECT shop_id as id, name, address, phone_number as phoneNumber, substr(description, 1, 100) as shortDesc FROM shops WHERE user_id = ? ORDER BY created_at");
+$stmt->bind_param("s", $session->id);
+$stmt->execute();
+$result = $stmt->get_result();
 
-echo $resJson;
+$resObj = new \stdClass();
+$resObj->shops = array();
+
+while ($row = $result->fetch_object()) {
+    array_push($resObj->shops, $row);
+}
+
+resSuccess($resObj);

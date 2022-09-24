@@ -60,7 +60,7 @@ export default {
     getShops() {
       fetch('/api/shop/user/all.php')
         .then(res => res.json())
-        .then(json => this.shops = json);
+        .then(json => this.shops = json.shops);
     },
     getShop(id) {
       fetch(`/api/shop/get.php?id=${id}`)
