@@ -26,6 +26,9 @@
         <p v-else><em>No shop selected.</em></p>
       </VCol>
       <VCol cols="12" lg="6" order="12" order-lg="1">
+        <VBtn block>
+          <VIcon>mdi-plus</VIcon> New shop
+        </VBtn>
         <VDataIterator :items="shops" :itemsPerPage="5">
           <template v-slot:default="{ items }">
             <VCard v-for="shop in items" :key="shop.id" class="ma-2" @click="getShop(shop.id)">
@@ -36,9 +39,6 @@
             </VCard>
           </template>
         </VDataIterator>
-        <VBtn block>
-          <VIcon>mdi-plus</VIcon> New shop
-        </VBtn>
       </VCol>
     </VRow>
   </div>
