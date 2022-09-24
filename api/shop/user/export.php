@@ -83,8 +83,8 @@ $shopEl->appendChild($latitudeEl);
 $longitudeEl = $xml->createElement("longitude", $shop["longitude"]);
 $shopEl->appendChild($longitudeEl);
 
-$phone_numberEl = $xml->createElement("phone_number", $shop["phone_number"]);
-$shopEl->appendChild($phone_numberEl);
+$phoneNumberEl = $xml->createElement("phonenumber", $shop["phone_number"]);
+$shopEl->appendChild($phoneNumberEl);
 
 $descriptionEl = $xml->createElement("description", $shop["description"]);
 $shopEl->appendChild($descriptionEl);
