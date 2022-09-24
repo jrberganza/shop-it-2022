@@ -33,7 +33,13 @@ export default {
     getShop(id) {
       fetch(`/api/shop/get.php?id=${id}`)
         .then(res => res.json())
-        .then(json => this.shop = json);
+        .then(json => {
+          if (json.success) {
+            this.shop = json
+          } else {
+            this.$router.replace(`/shop/${id}/notfound`);
+          }
+        });
     },
     loadComments(id) {
       fetch(`/api/comment/shop/all.php?id=${id}`)

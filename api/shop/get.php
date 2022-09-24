@@ -18,4 +18,8 @@ $result = $stmt->get_result();
 
 $resObj = $result->fetch_object();
 
-resSuccess($resObj);
+if ($resObj) {
+    resSuccess($resObj);
+} else {
+    resFail("No shop found");
+}
