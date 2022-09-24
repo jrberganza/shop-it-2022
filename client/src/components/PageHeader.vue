@@ -19,7 +19,7 @@
       <VBtn @click="() => $router.push('/login/')" class="mx-2">Login</VBtn>
       <VBtn @click="() => $router.push('/register/')" class="mx-2">Register</VBtn>
     </template>
-    <VBtn v-else @click="() => $router.push('/')" class="mx-2">Logout</VBtn>
+    <VBtn v-else @click="logout" class="mx-2">Logout</VBtn>
   </VToolbar>
 </template>
 
@@ -53,6 +53,11 @@ export default {
       if (ev.key.toLowerCase() === 'enter') {
         this.search();
       }
+    },
+    logout() {
+      fetch('/api/session/logout.php')
+        .then(res => res.json())
+        .then(json => location.reload());
     },
   },
   mounted() {

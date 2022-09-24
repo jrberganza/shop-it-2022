@@ -10,7 +10,8 @@
     <VDivider></VDivider>
 
     <VList dense>
-      <VListItem v-for="item in items" :key="item.title" link @click="$router.push(item.path)">
+      <VListItem v-for="item in items" :key="item.title" link
+        @click="item.action ? item.action() : $router.push(item.path)">
         <VListItemIcon>
           <VIcon>{{ item.icon }}</VIcon>
         </VListItemIcon>
@@ -46,6 +47,13 @@ export default {
   }),
   computed: {
     ...mapState(['session']),
+  },
+  methods: {
+    logout() {
+      fetch('/api/session/logout.php')
+        .then(res => res.json())
+        .then(json => location.reload());
+    },
   },
   watch: {
     drawer(newVal) {
@@ -85,7 +93,7 @@ export default {
           {
             title: "Logout",
             icon: "mdi-logout",
-            path: "/",
+            action: () => this.logout(),
           },
         ]
       } else if (this.session.role == 'employee') {
@@ -108,7 +116,7 @@ export default {
           {
             title: "Logout",
             icon: "mdi-logout",
-            path: "/",
+            action: () => this.logout(),
           },
         ]
       } else if (this.session.role == 'admin') {
@@ -136,7 +144,7 @@ export default {
           {
             title: "Logout",
             icon: "mdi-logout",
-            path: "/",
+            action: () => this.logout(),
           },
         ]
       }
