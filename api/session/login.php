@@ -34,7 +34,6 @@ $stmt->bind_param("is", $user["user_id"], $token);
 $stmt->execute();
 
 $resObj = new \stdClass();
-$resObj->token = $token;
 $resObj->displayName = $user["display_name"];
 $resObj->role = $user["role"];
 
