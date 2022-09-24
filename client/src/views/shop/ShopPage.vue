@@ -1,16 +1,30 @@
 <template>
   <div class="shop">
     <template v-if="shop">
-      <VRow>
-        <VCol cols="12" md="8">
-          <h1>{{shop.name}}</h1>
-          <p>{{shop.address}} - {{shop.phoneNumber}}</p>
-          <p>{{shop.shortDesc}}</p>
-        </VCol>
-        <VCol cols="12" md="4">
-          <img src="@/assets/logo.png" width="100%" height="100%" /> <!-- TODO: Change to map -->
-        </VCol>
-      </VRow>
+      <VCard class="mb-10">
+        <VRow>
+          <VCol cols="12" md="4" order="1" order-md="12">
+            <VImg :src="LogoImg" height="250" />
+          </VCol>
+          <VCol cols="12" md="8" order="12" order-md="1">
+            <VCard elevation="0">
+              <VCardTitle>{{shop.name}}</VCardTitle>
+              <VCardSubtitle>{{shop.address}} - {{shop.phoneNumber}}</VCardSubtitle>
+              <VCardText>{{shop.description}}</VCardText>
+              <VCardActions>
+                <VRating hover size="30" half-increments readonly v-model="shop.rating"></VRating>
+              </VCardActions>
+            </VCard>
+          </VCol>
+        </VRow>
+      </VCard>
+      <VDivider></VDivider>
+      <template v-if="session != null && session.role != 'visitor'">
+        <h1>Rate it!</h1>
+        <VRating class="mb-5" hover size="40" v-model="ownRating"></VRating>
+      </template>
+      <VDivider></VDivider>
+      <h1>Comments</h1>
       <CommentTree :comments="comments"></CommentTree>
     </template>
     <template v-else>
@@ -20,15 +34,22 @@
 </template>
 
 <script>
-import { VRow, VCol, VSkeletonLoader } from 'vuetify/lib';
+import { VRow, VCol, VSkeletonLoader, VRating, VDivider, VImg, VCard, VCardTitle, VCardSubtitle, VCardText, VCardActions } from 'vuetify/lib';
 import CommentTree from '../../components/comments/CommentTree.vue';
+import { mapState } from 'vuex';
+import LogoImg from '@/assets/logo.png';
 
 export default {
   name: 'ShopPage',
   data: () => ({
     /** @type {any | null} */ shop: null,
-    comments: []
+    comments: [],
+    ownRating: null,
+    LogoImg
   }),
+  computed: {
+    ...mapState(['session']),
+  },
   methods: {
     getShop(id) {
       fetch(`/api/shop/get.php?id=${id}`)
@@ -51,6 +72,6 @@ export default {
     this.getShop(this.$route.params.id);
     this.loadComments(this.$route.params.id);
   },
-  components: { VRow, VCol, VSkeletonLoader, CommentTree },
+  components: { VRow, VCol, VSkeletonLoader, VRating, VDivider, VCard, VCardTitle, VCardSubtitle, VCardText, VCardActions, VImg, CommentTree },
 };
 </script>
