@@ -31,7 +31,7 @@
         </VBtn>
         <VDataIterator :items="shops" :itemsPerPage="5">
           <template v-slot:default="{ items }">
-            <VCard v-for="shop in items" :key="shop.id" class="ma-2" @click="getShop(shop.id)">
+            <VCard v-for="shop in items" :key="shop.id" class="my-2" @click="getShop(shop.id)">
               <VImg :src="LogoImg" height="100" /> <!-- TODO: Change to map -->
               <VCardTitle>{{shop.name}}</VCardTitle>
               <VCardSubtitle>{{shop.address}} - {{shop.phoneNumber}}</VCardSubtitle>
