@@ -92,7 +92,7 @@ export default {
           body: JSON.stringify(body),
         })
           .then(res => res.json())
-          .then(json => this.shops = json.shops);
+          .then(json => this.getShops());
       }
     },
     getShops() {
