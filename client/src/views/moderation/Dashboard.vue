@@ -1,42 +1,51 @@
 <template>
   <div class="dashboard">
     <VRow>
-      <VCol cols="12">
+      <VCol cols="12" lg="6" order="1" order-lg="12">
         <ShopDetails v-if="selected.type == 'shop'" :shop="selected.data"></ShopDetails>
         <ProductDetails v-else-if="selected.type == 'product'" :product="selected.data"></ProductDetails>
         <CommentDetails v-else-if="selected.type == 'comment'" :comment="selected.data"></CommentDetails>
-        <p v-else>No item has been selected</p>
+        <p v-else><em>No item has been selected</em></p>
       </VCol>
-      <VCol cols="12" md="6" lg="4">
-        <VDataIterator :items="shops" :items-per-page="5">
-          <template v-slot:default="{ items }">
-            <ShopPreview class="my-2" v-for="shop in items" :key="shop.id" :shop="shop" @seeDetails="selectShop">
-            </ShopPreview>
-          </template>
-        </VDataIterator>
-      </VCol>
-      <VCol cols="12" md="6" lg="4">
-        <VDataIterator :items="products" :items-per-page="5">
-          <template v-slot:default="{ items }">
-            <ProductPreview class="my-2" v-for="product in items" :key="product.id" :product="product"
-              @seeDetails="selectProduct"></ProductPreview>
-          </template>
-        </VDataIterator>
-      </VCol>
-      <VCol cols="12" lg="4">
-        <VDataIterator :items="comments" :items-per-page="5">
-          <template v-slot:default="{ items }">
-            <CommentPreview class="my-2" v-for="comment in items" :key="comment.id" :comment="comment"
-              @seeDetails="selectComment"></CommentPreview>
-          </template>
-        </VDataIterator>
+      <VCol cols="12" lg="6" order="12" order-lg="1">
+        <VTabs v-model="tab">
+          <VTab v-for="tab in tabs" :key="tab">
+            {{ tab }}
+          </VTab>
+        </VTabs>
+        <VTabsItems v-model="tab">
+          <VTabItem class="ma-2">
+            <VDataIterator :items="shops" :items-per-page="5">
+              <template v-slot:default="{ items }">
+                <ShopPreview class="my-2" v-for="shop in items" :key="shop.id" :shop="shop" @seeDetails="selectShop">
+                </ShopPreview>
+              </template>
+            </VDataIterator>
+          </VTabItem>
+          <VTabItem class="ma-2">
+            <VDataIterator :items="products" :items-per-page="5">
+              <template v-slot:default="{ items }">
+                <ProductPreview class="my-2" v-for="product in items" :key="product.id" :product="product"
+                  @seeDetails="selectProduct"></ProductPreview>
+              </template>
+            </VDataIterator>
+          </VTabItem>
+          <VTabItem class="ma-2">
+            <VDataIterator :items="comments" :items-per-page="5">
+              <template v-slot:default="{ items }">
+                <CommentPreview class="my-2" v-for="comment in items" :key="comment.id" :comment="comment"
+                  @seeDetails="selectComment"></CommentPreview>
+              </template>
+            </VDataIterator>
+          </VTabItem>
+        </VTabsItems>
       </VCol>
     </VRow>
   </div>
 </template>
 
 <script>
-import { VRow, VCol, VDataIterator, VCard } from 'vuetify/lib';
+import { VCol, VRow, VTabs, VTab, VTabsItems, VTabItem, VDataIterator, VCard } from 'vuetify/lib';
 import ShopPreview from '../../components/moderation/preview/ShopPreview.vue';
 import ProductPreview from '../../components/moderation/preview/ProductPreview.vue';
 import CommentPreview from '../../components/moderation/preview/CommentPreview.vue';
@@ -51,6 +60,8 @@ export default {
       /** @type {any | null} */ type: null,
       data: {}
     },
+    tabs: ['Shops', 'Products', 'Comments'],
+    tab: null,
     /** @type {any[]} */ shops: [],
     /** @type {any[]} */ products: [],
     /** @type {any[]} */ comments: [],
@@ -101,6 +112,6 @@ export default {
     this.getPendingProducts();
     this.getPendingComments();
   },
-  components: { VRow, VCol, VDataIterator, VCard, CommentPreview, ProductPreview, ShopPreview, ShopDetails, ProductDetails, CommentDetails }
+  components: { VCol, VRow, VTabs, VTab, VTabsItems, VTabItem, VDataIterator, VCard, CommentPreview, ProductPreview, ShopPreview, ShopDetails, ProductDetails, CommentDetails }
 }
 </script>
