@@ -11,6 +11,7 @@ import YourShops from '../views/shop/YourShops.vue';
 import YourShopProducts from '../views/product/YourShopProducts.vue';
 import NotFound from '../views/NotFound.vue';
 import Categories from '../views/category/Categories.vue';
+import Dashboard from '../views/moderation/Dashboard.vue';
 
 Vue.use(VueRouter);
 
@@ -64,6 +65,11 @@ const routes = [
     path: '/categories',
     name: 'Categories',
     component: Categories,
+  },
+  {
+    path: '/moderation/dashboard',
+    name: 'Dashboard',
+    component: Dashboard,
   },
   {
     path: '*',
