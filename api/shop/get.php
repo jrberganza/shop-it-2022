@@ -2,21 +2,26 @@
 
 require '../private/strict.php';
 require '../private/db.php';
+require "../private/utils.php";
 
 header('Content-type: application/json');
 
-// TODO: connect to database
+$session = getCurrentSession($db);
 
-$currId = $_GET['id'];
+if (!isset($_GET["id"])) {
+    resFail("No shop specified");
+}
+$shopId = $_GET["id"];
 
-$shop = new \stdClass();
+if (!$session) {
+    resFail("Not logged in");
+}
 
-$shop->id = $currId;
-$shop->name = "Tienda " . $currId;
-$shop->address = $currId . " Calle, Guatemala";
-$shop->phoneNumber =  ($currId % 9 + 1) . "123456" . ($currId % 9 + 1);
-$shop->desc = "Shop description " . $currId;
+$stmt = $db->prepare("SELECT shop_id as id, name, address, phone_number as phoneNumber, description, disabled FROM shops WHERE user_id = ? AND shop_id = ?");
+$stmt->bind_param("ii", $session->id, $shopId);
+$stmt->execute();
+$result = $stmt->get_result();
 
-$resJson = json_encode($shop);
+$resObj = $result->fetch_object();
 
-echo $resJson;
+resSuccess($resObj);
