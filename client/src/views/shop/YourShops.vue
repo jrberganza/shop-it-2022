@@ -42,6 +42,16 @@
         <p v-else><em>No shop selected.</em></p>
       </VCol>
       <VCol cols="12" lg="6" order="12" order-lg="1">
+        <VRow class="my-1">
+          <VCol cols="12" sm="8">
+            <VFileInput block dense hide-details label="Import XML File" v-model="xmlFile"></VFileInput>
+          </VCol>
+          <VCol cols="12" sm="4">
+            <VBtn block :disabled="!xmlFile" @click="importShop">
+              <VIcon>mdi-import</VIcon> Import
+            </VBtn>
+          </VCol>
+        </VRow>
         <VBtn block @click="newShop">
           <VIcon>mdi-plus</VIcon> New shop
         </VBtn>
@@ -61,11 +71,12 @@
 </template>
 
 <script>
-import { VRow, VCol, VForm, VTextField, VTextarea, VBtn, VCheckbox, VDataIterator, VCard, VCardTitle, VCardSubtitle, VCardText, VCardActions, VIcon, VImg } from 'vuetify/lib';
+import { VRow, VCol, VForm, VTextField, VTextarea, VBtn, VCheckbox, VFileInput, VDataIterator, VCard, VCardTitle, VCardSubtitle, VCardText, VCardActions, VIcon, VImg } from 'vuetify/lib';
 
 export default {
   name: 'YourShops',
   data: () => ({
+    /** @type {Blob | null} */ xmlFile: null,
     /** @type {any | null} */ selectedShop: null,
     shops: []
   }),
@@ -114,6 +125,20 @@ export default {
       link.href = `/api/shop/user/export.php?id=${this.selectedShop.id}`;
       link.click();
     },
+    importShop() {
+      if (this.xmlFile) {
+        let reader = new FileReader();
+        reader.onload = () => {
+          fetch('/api/shop/user/import.php', {
+            method: "POST",
+            body: reader.result,
+          })
+            .then(res => res.json())
+            .then(json => this.getShops());
+        };
+        reader.readAsText(this.xmlFile);
+      }
+    },
     getShops() {
       fetch('/api/shop/user/all.php')
         .then(res => res.json())
@@ -128,6 +153,6 @@ export default {
   mounted() {
     this.getShops();
   },
-  components: { VRow, VCol, VForm, VTextField, VBtn, VCheckbox, VDataIterator, VCard, VCardTitle, VCardSubtitle, VCardText, VTextarea, VCardActions, VIcon, VImg },
+  components: { VRow, VCol, VForm, VTextField, VBtn, VCheckbox, VFileInput, VDataIterator, VCard, VCardTitle, VCardSubtitle, VCardText, VTextarea, VCardActions, VIcon, VImg },
 };
 </script>
