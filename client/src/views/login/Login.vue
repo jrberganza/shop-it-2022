@@ -10,7 +10,7 @@
             <div class="my-2">
               <RouterLink to="/login/forgot/">Forgot your password?</RouterLink>
             </div>
-            <VBtn block class="my-5" @click="() => $router.push('/')">Sign in</VBtn>
+            <VBtn block class="my-5" @click="() => $router.push('/')">Login</VBtn>
             <VDivider class="mt-5 mb-2"></VDivider>
             <div>Don't have an account? <RouterLink to="/register/">Register</RouterLink>
             </div>

@@ -15,8 +15,11 @@
       </VCol>
       <VSpacer></VSpacer>
     </VRow>
-    <VBtn @click="() => $router.push('/login/')" class="mx-2">Sign in</VBtn>
-    <VBtn @click="() => $router.push('/register/')" class="mx-2">Register</VBtn>
+    <template v-if="session == null || session.role == 'visitor'">
+      <VBtn @click="() => $router.push('/login/')" class="mx-2">Login</VBtn>
+      <VBtn @click="() => $router.push('/register/')" class="mx-2">Register</VBtn>
+    </template>
+    <VBtn v-else @click="() => $router.push('/')" class="mx-2">Logout</VBtn>
   </VToolbar>
 </template>
 
@@ -32,12 +35,16 @@
 import {
   VToolbar, VAppBarNavIcon, VToolbarTitle, VTextField, VBtn, VIcon, VRow, VCol, VSpacer
 } from 'vuetify/lib';
+import { mapState } from 'vuex';
 
 export default {
   name: 'PageHeader',
   data: () => ({
     searchTerm: '',
   }),
+  computed: {
+    ...mapState(['session']),
+  },
   methods: {
     search() {
       this.$router.push(`/search/?q=${encodeURIComponent(this.searchTerm)}`);

@@ -7,7 +7,9 @@ import store from './store'
 Vue.config.productionTip = false;
 
 router.beforeEach(function (to, from, next) {
-  store.dispatch('fetchSession');
+  if (store.state.session == null) {
+    store.dispatch('fetchSession');
+  }
   next();
 });
 

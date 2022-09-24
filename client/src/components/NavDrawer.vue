@@ -31,6 +31,7 @@
 
 <script>
 import { VNavigationDrawer, VList, VDivider, VListItem, VListItemAvatar, VListItemContent, VListItemTitle, VListItemIcon, VImg, VIcon } from 'vuetify/lib';
+import { mapState } from 'vuex';
 
 export default {
   name: 'NavDrawer',
@@ -41,27 +42,104 @@ export default {
   props: ['drawer'],
   data: () => ({
     internalDrawer: false,
-    items: [
-      {
-        title: "Homepage",
-        icon: "mdi-home",
-        path: "/",
-      },
-      {
-        title: "Login",
-        icon: "mdi-login",
-        path: "/login/",
-      },
-      {
-        title: "Register",
-        icon: "mdi-account",
-        path: "/register/",
-      },
-    ]
+    /** @type {any[]} */ items: []
   }),
+  computed: {
+    ...mapState(['session']),
+  },
   watch: {
     drawer(newVal) {
       this.internalDrawer = newVal;
+    },
+    session() {
+      if (this.session == null || this.session.role == 'visitor') {
+        this.items = [
+          {
+            title: "Homepage",
+            icon: "mdi-home",
+            path: "/",
+          },
+          {
+            title: "Login",
+            icon: "mdi-login",
+            path: "/login/",
+          },
+          {
+            title: "Register",
+            icon: "mdi-account",
+            path: "/register/",
+          },
+        ]
+      } else if (this.session.role == 'user') {
+        this.items = [
+          {
+            title: "Homepage",
+            icon: "mdi-home",
+            path: "/",
+          },
+          {
+            title: "Your Shops",
+            icon: "mdi-shopping",
+            path: "/your/shops/",
+          },
+          {
+            title: "Logout",
+            icon: "mdi-logout",
+            path: "/",
+          },
+        ]
+      } else if (this.session.role == 'employee') {
+        this.items = [
+          {
+            title: "Homepage",
+            icon: "mdi-home",
+            path: "/",
+          },
+          {
+            title: "Category Editor",
+            icon: "mdi-tag",
+            path: "/categories/",
+          },
+          {
+            title: "Moderation",
+            icon: "mdi-shield-sword",
+            path: "/moderation/dashboard/",
+          },
+          {
+            title: "Logout",
+            icon: "mdi-logout",
+            path: "/",
+          },
+        ]
+      } else if (this.session.role == 'admin') {
+        this.items = [
+          {
+            title: "Homepage",
+            icon: "mdi-home",
+            path: "/",
+          },
+          {
+            title: "Category Editor",
+            icon: "mdi-tag",
+            path: "/categories/",
+          },
+          {
+            title: "Moderation",
+            icon: "mdi-shield-sword",
+            path: "/moderation/dashboard/",
+          },
+          {
+            title: "Manage Users",
+            icon: "mdi-badge-account-horizontal",
+            path: "/admin/users/",
+          },
+          {
+            title: "Logout",
+            icon: "mdi-logout",
+            path: "/",
+          },
+        ]
+      }
     }
   },
   components: {

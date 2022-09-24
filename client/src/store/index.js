@@ -20,7 +20,7 @@ export default new Vuex.Store({
       if (json.success) {
         commit('updateSession', json);
       } else {
-        commit('updateSession', null);
+        commit('updateSession', { role: 'visitor' });
       }
     }
   },
