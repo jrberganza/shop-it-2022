@@ -31,6 +31,10 @@ $result = $stmt->get_result();
 
 $resObj = $result->fetch_object();
 
+if (!$resObj) {
+    resFail("No shop found");
+}
+
 $stmt = $db->prepare("SELECT shop_photo_id FROM shop_photos WHERE shop_id = ? ");
 $stmt->bind_param("i", $shopId);
 $stmt->execute();
@@ -64,8 +68,4 @@ for ($currId = 0; $currId < 24; $currId++) {
     array_push($resObj->products, $product);
 }
 
-if ($resObj) {
-    resSuccess($resObj);
-} else {
-    resFail("No shop found");
-}
+resSuccess($resObj);
