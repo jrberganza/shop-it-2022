@@ -1,16 +1,13 @@
 <template>
   <div class="feed">
     <VCard v-if="shops.length > 0">
-      <VCarousel hide-delimiters height="400" cycle>
-        <VCarouselItem class="mx-15" v-for="shop in shops" :key="shop.id">
-          <VCard elevation="0">
+      <VCarousel hide-delimiters height="350" cycle>
+        <VCarouselItem v-for="shop in shops" :key="shop.id">
+          <VCard class="px-15" elevation="0" height="100%" @click="() => $router.push('/shop/' + shop.id)">
             <VImg src="/images/placeholder.png" height="200" />
             <VCardTitle>{{shop.name}}</VCardTitle>
             <VCardSubtitle>{{shop.address}} - {{shop.phoneNumber}}</VCardSubtitle>
             <VCardText>{{shop.shortDesc}}</VCardText>
-            <VCardActions>
-              <VBtn @click="() => $router.push('/shop/' + shop.id)">Visit page</VBtn>
-            </VCardActions>
           </VCard>
         </VCarouselItem>
       </VCarousel>
