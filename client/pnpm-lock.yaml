@@ -2,6 +2,7 @@ lockfileVersion: 5.4
 
 specifiers:
   '@vue/cli-plugin-router': ~4.5.19
+  '@vue/cli-plugin-vuex': ~4.5.19
   '@vue/cli-service': ~4.5.19
   sass: ~1.32.0
   sass-loader: ^10.0.0
@@ -11,14 +12,17 @@ specifiers:
   vue-template-compiler: ^2.6.11
   vuetify: ^2.6.0
   vuetify-loader: ^1.7.0
+  vuex: ^3.4.0
 
 dependencies:
   vue: 2.7.10
   vue-router: 3.6.5_vue@2.7.10
   vuetify: 2.6.10_vue@2.7.10
+  vuex: 3.6.2_vue@2.7.10
 
 devDependencies:
   '@vue/cli-plugin-router': 4.5.19_@vue+cli-service@4.5.19
+  '@vue/cli-plugin-vuex': 4.5.19_@vue+cli-service@4.5.19
   '@vue/cli-service': 4.5.19_7hafmp4dslmnzsti2pyxo2dvm4
   sass: 1.32.13
   sass-loader: 10.3.1_sass@1.32.13
@@ -7242,6 +7246,14 @@ packages:
       vue: ^2.6.4
     dependencies:
       vue: 2.7.10
+
+  /vuex/3.6.2_vue@2.7.10:
+    resolution: {integrity: sha512-ETW44IqCgBpVomy520DT5jf8n0zoCac+sxWnn+hMe/CzaSejb/eVw2YToiXYX+Ex/AuHHia28vWTq4goAexFbw==}
+    peerDependencies:
+      vue: ^2.0.0
+    dependencies:
+      vue: 2.7.10
+    dev: false
 
   /watchpack-chokidar2/2.0.1:
     resolution: {integrity: sha512-nCFfBIPKr5Sh61s4LPpy1Wtfi0HE8isJ3d2Yb5/Ppw2P2B/3eVSEBjKfN0fmHJSK14+31KwMKmcrzs2GM4P0Ww==}
