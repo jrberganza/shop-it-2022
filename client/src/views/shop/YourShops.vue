@@ -18,9 +18,24 @@
               <VCheckbox label="Disabled?" v-model="selectedShop.disabled"></VCheckbox>
             </VCardText>
             <VCardActions>
-              <VBtn block @click="saveShop">
-                <VIcon>mdi-floppy</VIcon> Save
-              </VBtn>
+              <VRow>
+                <VCol cols="12" sm="4">
+                  <VBtn block @click="saveShop">
+                    <VIcon>mdi-floppy</VIcon> Save
+                  </VBtn>
+                </VCol>
+                <VCol cols="12" sm="4">
+                  <VBtn block :disabled="!selectedShop.id"
+                    @click="() => $router.push(`/your/shop/${selectedShop.id}/products`)">
+                    <VIcon>mdi-shopping</VIcon> Products
+                  </VBtn>
+                </VCol>
+                <VCol cols="12" sm="4">
+                  <VBtn block :disabled="!selectedShop.id" @click="exportShop">
+                    <VIcon>mdi-export</VIcon> Export
+                  </VBtn>
+                </VCol>
+              </VRow>
             </VCardActions>
           </VCard>
         </template>
@@ -94,6 +109,12 @@ export default {
           .then(res => res.json())
           .then(json => this.getShops());
       }
+    },
+    exportShop() {
+      let link = document.createElement("a");
+      link.download = "shop.xml";
+      link.href = `/api/shop/user/export.php?id=${this.selectedShop.id}`;
+      link.click();
     },
     getShops() {
       fetch('/api/shop/user/all.php')
