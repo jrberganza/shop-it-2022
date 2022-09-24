@@ -21,6 +21,16 @@ $resObj = new \stdClass();
 $resObj->shops = array();
 
 while ($row = $result->fetch_object()) {
+    $stmt2 = $db->prepare("SELECT shop_photo_id FROM shop_photos WHERE shop_id = ? ");
+    $stmt2->bind_param("i", $row->id);
+    $stmt2->execute();
+    $result2 = $stmt2->get_result();
+
+    $row->photos = array();
+    while ($row2 = $result2->fetch_array()) {
+        array_push($row->photos, $row2["shop_photo_id"]);
+    }
+
     array_push($resObj->shops, $row);
 }
 
