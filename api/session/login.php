@@ -27,7 +27,7 @@ if (!password_verify($jsonBody->password, $user["password_hash"])) {
     resFail("Incorrect e-mail or password");
 }
 
-$token = sprintf('%016x', time()) . bin2hex(random_bytes(56));
+$token = generateSessionToken();
 
 $stmt = $db->prepare("INSERT INTO sessions(user_id, token) VALUES (?, ?)");
 $stmt->bind_param("is", $user["user_id"], $token);

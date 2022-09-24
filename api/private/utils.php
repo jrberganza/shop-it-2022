@@ -24,6 +24,11 @@ function resFail($message, $errorCode = 400)
     exit();
 }
 
+function generateSessionToken()
+{
+    return sprintf('%016x', time()) . bin2hex(random_bytes(56));
+}
+
 function hasSessionToken()
 {
     return isset($_COOKIE["session_token"]);

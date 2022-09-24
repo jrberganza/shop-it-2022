@@ -46,4 +46,20 @@ $stmt = $db->prepare("INSERT INTO users(email, display_name, password_hash, role
 $stmt->bind_param("sss", $jsonBody->email, $jsonBody->displayName, $pHash);
 $stmt->execute();
 
-resSuccess(new \stdClass());
+$token = generateSessionToken();
+
+$stmt = $db->prepare("INSERT INTO sessions(user_id, token) VALUES (?, ?)");
+$stmt->bind_param("is", $stmt->insert_id, $token);
+$stmt->execute();
+
+$resObj = new \stdClass();
+$resObj->displayName = $user["display_name"];
+$resObj->role = $user["role"];
+
+setcookie("session_token", $token, [
+    'expires' => time() + 86400 * 7,
+    'httponly' => true,
+    'samesite' => 'Strict',
+]);
+
+resSuccess($resObj);
