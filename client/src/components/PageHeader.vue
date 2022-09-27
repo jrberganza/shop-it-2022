@@ -1,10 +1,12 @@
 <template>
   <VToolbar class="toolbar" color="primary" dark>
     <VAppBarNavIcon @click="() => $emit('openDrawer')"></VAppBarNavIcon>
-    <VToolbarTitle class="logo">ShopIt!</VToolbarTitle>
+    <VToolbarTitle class="logo py-2">
+      <Logo></Logo>
+    </VToolbarTitle>
     <VRow>
       <VSpacer></VSpacer>
-      <VCol cols="8">
+      <VCol cols="11" md="10" lg="8">
         <VTextField v-model="searchTerm" hide-details @keydown="searchOnEnter">
           <template v-slot:append>
             <VBtn icon small @click="search">
@@ -29,13 +31,18 @@
   top: 0;
   z-index: 10000;
 }
+
+.logo {
+  height: 100%;
+}
 </style>
 
 <script>
 import {
-  VToolbar, VAppBarNavIcon, VToolbarTitle, VTextField, VBtn, VIcon, VRow, VCol, VSpacer
+  VToolbar, VAppBarNavIcon, VToolbarTitle, VTextField, VBtn, VIcon, VRow, VCol, VSpacer, VImg, VCard
 } from 'vuetify/lib';
 import { mapState } from 'vuex';
+import Logo from './Logo.vue';
 
 export default {
   name: 'PageHeader',
@@ -68,7 +75,18 @@ export default {
     }
   },
   components: {
-    VToolbar, VAppBarNavIcon, VToolbarTitle, VTextField, VBtn, VIcon, VRow, VCol, VSpacer
+    VToolbar,
+    VAppBarNavIcon,
+    VToolbarTitle,
+    VTextField,
+    VBtn,
+    VIcon,
+    VRow,
+    VCol,
+    VSpacer,
+    VImg,
+    VCard,
+    Logo
   },
 };
 </script>

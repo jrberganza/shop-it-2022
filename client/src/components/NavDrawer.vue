@@ -3,7 +3,9 @@
     color="primary" dark class="nav-drawer">
     <VListItem>
       <VListItemContent>
-        <VListItemTitle>ShopIt!</VListItemTitle>
+        <VListItemTitle>
+          <Logo></Logo>
+        </VListItemTitle>
       </VListItemContent>
     </VListItem>
 
@@ -33,6 +35,7 @@
 <script>
 import { VNavigationDrawer, VList, VDivider, VListItem, VListItemAvatar, VListItemContent, VListItemTitle, VListItemIcon, VImg, VIcon } from 'vuetify/lib';
 import { mapState } from 'vuex';
+import Logo from './Logo.vue';
 
 export default {
   name: 'NavDrawer',
@@ -151,7 +154,17 @@ export default {
     }
   },
   components: {
-    VNavigationDrawer, VList, VDivider, VListItem, VListItemAvatar, VListItemContent, VListItemTitle, VListItemIcon, VImg, VIcon
+    VNavigationDrawer,
+    VList,
+    VDivider,
+    VListItem,
+    VListItemAvatar,
+    VListItemContent,
+    VListItemTitle,
+    VListItemIcon,
+    VImg,
+    VIcon,
+    Logo
   },
 };
 </script>
