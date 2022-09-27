@@ -11,7 +11,8 @@
           <VCol cols="12" md="8" order="12" order-md="1">
             <VCard elevation="0">
               <VCardTitle>{{product.name}}</VCardTitle>
-              <VCardSubtitle>{{product.price}} - {{product.shopName}}</VCardSubtitle>
+              <VCardSubtitle>{{product.price}} - <RouterLink to="/shop/1">{{product.shopName}}</RouterLink>
+              </VCardSubtitle>
               <VCardText>{{product.shortDesc}}</VCardText>
               <VCardActions>
                 <VRating hover size="30" half-increments readonly v-model="product.rating"></VRating>
@@ -39,6 +40,7 @@
 import { VRow, VCol, VSkeletonLoader, VRating, VDivider, VImg, VCard, VCardTitle, VCardSubtitle, VCardText, VCardActions, VDataIterator } from 'vuetify/lib';
 import CommentTree from '../../components/comments/CommentTree.vue';
 import { mapState } from 'vuex';
+import { RouterLink } from 'vue-router';
 
 export default {
   name: 'ProductPage',
@@ -66,6 +68,6 @@ export default {
     this.getShop(this.$route.params.id);
     this.loadComments(this.$route.params.id);
   },
-  components: { VRow, VCol, VSkeletonLoader, VRating, VDivider, VImg, VCard, VCardTitle, VCardSubtitle, VCardText, VCardActions, VDataIterator, CommentTree },
+  components: { VRow, VCol, VSkeletonLoader, VRating, VDivider, VImg, VCard, VCardTitle, VCardSubtitle, VCardText, VCardActions, VDataIterator, CommentTree, RouterLink },
 };
 </script>
