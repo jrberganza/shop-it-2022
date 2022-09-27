@@ -11,7 +11,8 @@ import YourShops from '../views/shop/YourShops.vue';
 import YourShopProducts from '../views/product/YourShopProducts.vue';
 import NotFound from '../views/NotFound.vue';
 import Categories from '../views/category/Categories.vue';
-import Dashboard from '../views/moderation/Dashboard.vue';
+import ModerationDashboard from '../views/moderation/ModerationDashboard.vue';
+import ReportsDashboard from '../views/reports/ReportsDashboard.vue';
 import ManageUsers from '../views/admin/ManageUsers.vue';
 
 Vue.use(VueRouter);
@@ -70,12 +71,17 @@ const routes = [
   {
     path: '/moderation/dashboard',
     name: 'Dashboard',
-    component: Dashboard,
+    component: ModerationDashboard,
   },
   {
     path: '/admin/users/',
     name: 'ManageUsers',
     component: ManageUsers,
+  },
+  {
+    path: '/reports/dashboard',
+    name: 'ReportsDashboard',
+    component: ReportsDashboard,
   },
   {
     path: '*',
