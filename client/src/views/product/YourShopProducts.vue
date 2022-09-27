@@ -10,13 +10,15 @@
               :src="'/api/shop/product/get.php?id=' + selectedProduct.photos[0]" height="250" />
             <VImg v-else src="/images/placeholder.png" height="250" />
             <VCardTitle>
-              <VTextField label="Name" v-model="selectedProduct.name"></VTextField>
+              <VTextField label="Name" v-model="selectedProduct.name" :rules="[rules.required]" maxlength="255">
+              </VTextField>
             </VCardTitle>
             <VCardSubtitle>
-              <VTextField label="Price" v-model="selectedProduct.price"></VTextField>
+              <VTextField label="Price" v-model="selectedProduct.price" :rules="[rules.required]"></VTextField>
             </VCardSubtitle>
             <VCardText>
-              <VTextarea label="Description" v-model="selectedProduct.desc"></VTextarea>
+              <VTextarea label="Description" v-model="selectedProduct.desc" :rules="[rules.required]" counter="512"
+                maxlength="512"></VTextarea>
               <VCheckbox label="Disabled?" v-model="selectedProduct.disabled"></VCheckbox>
             </VCardText>
             <VCardActions>
@@ -56,7 +58,10 @@ export default {
   name: 'YourShopProducts',
   data: () => ({
     /** @type {any | null} */ selectedProduct: null,
-    products: []
+    products: [],
+    rules: {
+      required: v => !!v || "Required",
+    },
   }),
   methods: {
     getProducts(shopId) {

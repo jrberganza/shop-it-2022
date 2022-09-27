@@ -16,9 +16,9 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="category in categories" :key="category.id">
+          <tr v-for="category in tempCategories" :key="category.id">
             <td>
-              <VTextField label="Name" v-model="category.name"></VTextField>
+              <VTextField label="Name" v-model="category.name" :rules="[rules.required]"></VTextField>
             </td>
             <td>
               <VCheckbox label="Disabled?" v-model="category.disabled"></VCheckbox>
@@ -44,6 +44,20 @@ import { VSimpleTable, VTextField, VCheckbox, VBtn, VIcon } from 'vuetify/lib';
 export default {
   name: 'CategoryEditor',
   props: ['categories'],
+  data: () => ({
+    /** @type {any[]} */ tempCategories: [],
+    rules: {
+      required: v => !!v || "Required",
+    },
+  }),
+  watch: {
+    categories(newVal) {
+      this.tempCategories = newVal;
+    }
+  },
+  mounted() {
+    this.tempCategories = this.categories;
+  },
   components: { VSimpleTable, VTextField, VCheckbox, VBtn, VIcon }
 };
 </script>

@@ -6,13 +6,16 @@
         <template v-if="selectedUser">
           <VCard>
             <VCardTitle>
-              <VTextField label="Display Name" v-model="selectedUser.displayName"></VTextField>
+              <VTextField label="Display Name" v-model="selectedUser.displayName" :rules="[rules.required]">
+              </VTextField>
             </VCardTitle>
             <VCardText>
-              <VTextField label="E-Mail" v-model="selectedUser.email"></VTextField>
+              <VTextField label="E-Mail" v-model="selectedUser.email" :rules="[rules.required, rules.email.format]">
+              </VTextField>
               <VSelect label="Role" :items="roleOptions" item-text="name" item-value="value"
                 v-model="selectedUser.role"></VSelect>
-              <VTextField label="Password" type="password" v-model="selectedUser.password"></VTextField>
+              <VTextField label="Password" type="password" v-model="selectedUser.password">
+              </VTextField>
             </VCardText>
             <VCardActions>
               <VBtn block @click="saveUser">
@@ -53,7 +56,13 @@ export default {
       { name: "User", value: "user" },
       { name: "Employee", value: "employee" },
       { name: "Admin", value: "admin" },
-    ]
+    ],
+    rules: {
+      required: v => !!v || "Required",
+      email: {
+        format: v => (/^.+?@.+?\..+?$/).test(v) || "Invalid e-mail address"
+      }
+    },
   }),
   methods: {
     newUser() {

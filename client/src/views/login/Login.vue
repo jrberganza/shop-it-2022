@@ -4,13 +4,15 @@
       <VSpacer></VSpacer>
       <VCol cols="12" sm="10" md="8" lg="6">
         <VCard class="py-5 px-10">
-          <VForm>
-            <VTextField label="Email" type="text" hide-details v-model="inputs.email"></VTextField>
-            <VTextField label="Password" type="password" hide-details v-model="inputs.password"></VTextField>
+          <VForm v-model="inputs.loginForm">
+            <VTextField label="Email" type="text" v-model="inputs.email" :rules="[rules.required, rules.email.format]">
+            </VTextField>
+            <VTextField label="Password" type="password" v-model="inputs.password" :rules="[rules.required]">
+            </VTextField>
             <div class="my-2">
               <RouterLink to="/login/forgot/">Forgot your password?</RouterLink>
             </div>
-            <VBtn block class="my-5" @click="login">Login</VBtn>
+            <VBtn block class="my-5" @click="login" :disabled="!inputs.loginForm">Login</VBtn>
             <VDivider class="mt-5 mb-2"></VDivider>
             <div>
               Don't have an account? <RouterLink to="/register/">Register</RouterLink>
@@ -31,8 +33,15 @@ export default {
   name: 'Login',
   data: () => ({
     inputs: {
+      loginForm: false,
       email: '',
       password: '',
+    },
+    rules: {
+      required: v => !!v || "Required",
+      email: {
+        format: v => (/^.+?@.+?\..+?$/).test(v) || "Invalid e-mail address"
+      },
     },
   }),
   methods: {

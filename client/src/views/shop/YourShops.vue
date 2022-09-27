@@ -9,14 +9,18 @@
               height="250" />
             <VImg v-else src="/images/placeholder.png" height="250" />
             <VCardTitle>
-              <VTextField label="Name" v-model="selectedShop.name"></VTextField>
+              <VTextField label="Name" v-model="selectedShop.name" :rules="[rules.required]" maxlength="255">
+              </VTextField>
             </VCardTitle>
             <VCardSubtitle>
-              <VTextField label="Address" v-model="selectedShop.address"></VTextField>
-              <VTextField label="Phone Number" v-model="selectedShop.phoneNumber"></VTextField>
+              <VTextField label="Address" v-model="selectedShop.address" :rules="[rules.required]" maxlength="255">
+              </VTextField>
+              <VTextField label="Phone Number" v-model="selectedShop.phoneNumber"
+                :rules="[rules.required, rules.phoneNumber.format]" maxlength="20"></VTextField>
             </VCardSubtitle>
             <VCardText>
-              <VTextarea label="Description" v-model="selectedShop.description"></VTextarea>
+              <VTextarea label="Description" v-model="selectedShop.description" :rules="[rules.required]" counter="512"
+                maxlength="512"></VTextarea>
               <VCheckbox label="Disabled?" v-model="selectedShop.disabled"></VCheckbox>
             </VCardText>
             <VCardActions>
@@ -81,7 +85,13 @@ export default {
   data: () => ({
     /** @type {Blob | null} */ xmlFile: null,
     /** @type {any | null} */ selectedShop: null,
-    shops: []
+    shops: [],
+    rules: {
+      required: v => !!v || "Required",
+      phoneNumber: {
+        format: v => (/^\+?\d+$/).test(v) || "Invalid phone number"
+      },
+    }
   }),
   methods: {
     newShop() {
