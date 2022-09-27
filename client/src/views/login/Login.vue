@@ -9,11 +9,12 @@
             </VTextField>
             <VTextField label="Password" type="password" v-model="inputs.password" :rules="[rules.required]">
             </VTextField>
+            <p v-if="error" class="error-message">{{error}}</p>
+            <VBtn block class="my-5" @click="login" :disabled="!inputs.loginForm">Login</VBtn>
+            <VDivider class="mt-5 mb-2"></VDivider>
             <div class="my-2">
               <RouterLink to="/login/forgot/">Forgot your password?</RouterLink>
             </div>
-            <VBtn block class="my-5" @click="login" :disabled="!inputs.loginForm">Login</VBtn>
-            <VDivider class="mt-5 mb-2"></VDivider>
             <div>
               Don't have an account? <RouterLink to="/register/">Register</RouterLink>
             </div>
@@ -25,6 +26,12 @@
   </div>
 </template>
 
+<style>
+.error-message {
+  color: red;
+}
+</style>
+
 <script>
 import { VRow, VCol, VSpacer, VCard, VForm, VTextField, VBtn, VDivider } from 'vuetify/lib';
 import { RouterLink } from 'vue-router';
@@ -32,6 +39,7 @@ import { RouterLink } from 'vue-router';
 export default {
   name: 'Login',
   data: () => ({
+    error: null,
     inputs: {
       loginForm: false,
       email: '',
@@ -49,13 +57,13 @@ export default {
       fetch("/api/session/login.php", { method: "POST", body: JSON.stringify({ email: this.inputs.email, password: this.inputs.password }) })
         .then(res => res.json())
         .then(json => {
-          if (!json.success) {
-            return;
+          if (json.success) {
+            this.error = null;
+            this.$store.dispatch('fetchSession');
+            this.$router.push('/');
+          } else {
+            this.error = json._error;
           }
-
-          this.$store.dispatch('fetchSession');
-
-          this.$router.push('/');
         })
     }
   },

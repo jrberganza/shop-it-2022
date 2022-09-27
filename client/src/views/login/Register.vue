@@ -19,6 +19,9 @@
                   v-model="inputs.confirmPassword"
                   :rules="[rules.required, v => v == inputs.password || 'Passwords must be the same']"></VTextField>
               </VCol>
+              <VCol cols="12">
+                <p v-if="error" class="error-message">{{error}}</p>
+              </VCol>
             </VRow>
             <VBtn block class="my-5" @click="register" :disabled="!inputs.registerForm">Register</VBtn>
           </VForm>
@@ -36,6 +39,7 @@ import { RouterLink } from 'vue-router';
 export default {
   name: 'Register',
   data: () => ({
+    error: null,
     inputs: {
       registerForm: false,
       email: '',
@@ -66,13 +70,13 @@ export default {
       })
         .then(res => res.json())
         .then(json => {
-          if (!json.success) {
-            return;
+          if (json.success) {
+            this.error = null;
+            this.$store.dispatch('fetchSession');
+            this.$router.push('/');
+          } else {
+            this.error = json._error;
           }
-
-          this.$store.dispatch('fetchSession');
-
-          this.$router.push('/');
         })
     }
   },
