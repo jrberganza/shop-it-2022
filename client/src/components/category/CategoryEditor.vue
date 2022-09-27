@@ -1,37 +1,18 @@
 <template>
-  <div class="category-editor">
-    <VSimpleTable>
-      <template v-slot:default>
-        <thead>
-          <tr>
-            <th>
-              Name
-            </th>
-            <th>
-              Disabled
-            </th>
-            <th>
-              Save
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="category in tempCategories" :key="category.id">
-            <td>
-              <VTextField label="Name" v-model="category.name" :rules="[rules.required]"></VTextField>
-            </td>
-            <td>
-              <VCheckbox label="Disabled?" v-model="category.disabled"></VCheckbox>
-            </td>
-            <td>
-              <VBtn block>
-                <VIcon>mdi-floppy</VIcon>
-              </VBtn>
-            </td>
-          </tr>
-        </tbody>
+  <div class="category-editor mx-2 mb-2">
+    <VDataTable :items="tempCategories" :itemsPerPage="5" :headers="tableHeaders">
+      <template v-slot:item.name="{ item }">
+        <VTextField label="Name" v-model="item.name" :rules="[rules.required]"></VTextField>
       </template>
-    </VSimpleTable>
+      <template v-slot:item.disabled="{ item }">
+        <VCheckbox label="Disabled?" v-model="item.disabled"></VCheckbox>
+      </template>
+      <template v-slot:item.save>
+        <VBtn block>
+          <VIcon>mdi-floppy</VIcon> Save
+        </VBtn>
+      </template>
+    </VDataTable>
     <VBtn block>
       <VIcon>mdi-plus</VIcon>
     </VBtn>
@@ -39,12 +20,17 @@
 </template>
 
 <script>
-import { VSimpleTable, VTextField, VCheckbox, VBtn, VIcon } from 'vuetify/lib';
+import { VDataTable, VTextField, VCheckbox, VBtn, VIcon } from 'vuetify/lib';
 
 export default {
   name: 'CategoryEditor',
   props: ['categories'],
   data: () => ({
+    tableHeaders: [
+      { text: 'Name', value: 'name' },
+      { text: 'Disabled', value: 'disabled' },
+      { text: 'Save', value: 'save' },
+    ],
     /** @type {any[]} */ tempCategories: [],
     rules: {
       required: v => !!v || "Required",
@@ -58,6 +44,6 @@ export default {
   mounted() {
     this.tempCategories = this.categories;
   },
-  components: { VSimpleTable, VTextField, VCheckbox, VBtn, VIcon }
+  components: { VDataTable, VTextField, VCheckbox, VBtn, VIcon }
 };
 </script>

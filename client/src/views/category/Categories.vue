@@ -1,25 +1,33 @@
 <template>
   <div class="categories">
-    <VRow>
-      <VCol cols="12" md="6">
-        <h1>Shop Categories</h1>
+    <h1>Categories</h1>
+    <VTabs v-model="tab">
+      <VTab>
+        Shop
+      </VTab>
+      <VTab>
+        Product
+      </VTab>
+    </VTabs>
+    <VTabsItems v-model="tab">
+      <VTabItem>
         <CategoryEditor :categories="shopCategories"></CategoryEditor>
-      </VCol>
-      <VCol cols="12" md="6">
-        <h1>Product Categories</h1>
+      </VTabItem>
+      <VTabItem>
         <CategoryEditor :categories="productCategories"></CategoryEditor>
-      </VCol>
-    </VRow>
+      </VTabItem>
+    </VTabsItems>
   </div>
 </template>
 
 <script>
-import { VRow, VCol } from 'vuetify/lib';
+import { VRow, VCol, VTabs, VTab, VTabsItems, VTabItem } from 'vuetify/lib';
 import CategoryEditor from '../../components/category/CategoryEditor.vue';
 
 export default {
   name: 'Categories',
   data: () => ({
+    tab: null,
     /** @type {any[]} */ shopCategories: [],
     /** @type {any[]} */ productCategories: [],
   }),
@@ -39,6 +47,6 @@ export default {
     this.getProductCategories();
     this.getShopCategories();
   },
-  components: { VRow, VCol, CategoryEditor },
+  components: { VRow, VCol, VTabs, VTab, VTabsItems, VTabItem, CategoryEditor },
 };
 </script>
