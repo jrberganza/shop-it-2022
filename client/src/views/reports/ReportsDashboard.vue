@@ -1,6 +1,7 @@
 <template>
   <div class="reports-dashboard">
     <VTabs v-model="tab">
+      <VTabsSlider color="accent"></VTabsSlider>
       <VTab v-for="{ name } in generators" :key="name">
         {{ name }}
       </VTab>
@@ -14,7 +15,7 @@
 </template>
 
 <script>
-import { VCol, VRow, VTabs, VTab, VTabsItems, VTabItem, VDataIterator, VCard } from 'vuetify/lib';
+import { VCol, VRow, VTabs, VTab, VTabsItems, VTabItem, VDataIterator, VCard, VTabsSlider } from 'vuetify/lib';
 import ReportGenerator from '../../components/reports/ReportGenerator.vue';
 
 export default {
@@ -108,6 +109,6 @@ export default {
     tab: null,
   }),
   methods: {},
-  components: { VCol, VRow, VTabs, VTab, VTabsItems, VTabItem, VDataIterator, VCard, ReportGenerator }
+  components: { VCol, VRow, VTabs, VTab, VTabsItems, VTabItem, VDataIterator, VCard, VTabsSlider, ReportGenerator }
 }
 </script>

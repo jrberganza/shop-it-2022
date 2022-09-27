@@ -2,6 +2,7 @@
   <div class="categories">
     <h1>Categories</h1>
     <VTabs v-model="tab">
+      <VTabsSlider color="accent"></VTabsSlider>
       <VTab>
         Shop
       </VTab>
@@ -21,7 +22,7 @@
 </template>
 
 <script>
-import { VRow, VCol, VTabs, VTab, VTabsItems, VTabItem } from 'vuetify/lib';
+import { VRow, VCol, VTabs, VTab, VTabsItems, VTabItem, VTabsSlider } from 'vuetify/lib';
 import CategoryEditor from '../../components/category/CategoryEditor.vue';
 
 export default {
@@ -47,6 +48,6 @@ export default {
     this.getProductCategories();
     this.getShopCategories();
   },
-  components: { VRow, VCol, VTabs, VTab, VTabsItems, VTabItem, CategoryEditor },
+  components: { VRow, VCol, VTabs, VTab, VTabsItems, VTabItem, VTabsSlider, CategoryEditor },
 };
 </script>

@@ -9,6 +9,7 @@
       </VCol>
       <VCol cols="12" lg="6" order="12" order-lg="1">
         <VTabs v-model="tab">
+          <VTabsSlider color="accent"></VTabsSlider>
           <VTab v-for="tab in tabs" :key="tab">
             {{ tab }}
           </VTab>
@@ -45,7 +46,7 @@
 </template>
 
 <script>
-import { VCol, VRow, VTabs, VTab, VTabsItems, VTabItem, VDataIterator, VCard } from 'vuetify/lib';
+import { VCol, VRow, VTabs, VTab, VTabsItems, VTabItem, VDataIterator, VCard, VTabsSlider } from 'vuetify/lib';
 import ShopPreview from '../../components/moderation/preview/ShopPreview.vue';
 import ProductPreview from '../../components/moderation/preview/ProductPreview.vue';
 import CommentPreview from '../../components/moderation/preview/CommentPreview.vue';
@@ -112,6 +113,6 @@ export default {
     this.getPendingProducts();
     this.getPendingComments();
   },
-  components: { VCol, VRow, VTabs, VTab, VTabsItems, VTabItem, VDataIterator, VCard, CommentPreview, ProductPreview, ShopPreview, ShopDetails, ProductDetails, CommentDetails }
+  components: { VCol, VRow, VTabs, VTab, VTabsItems, VTabItem, VDataIterator, VCard, VTabsSlider, CommentPreview, ProductPreview, ShopPreview, ShopDetails, ProductDetails, CommentDetails }
 }
 </script>
