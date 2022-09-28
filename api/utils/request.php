@@ -33,13 +33,21 @@ class Request
 
     public function getBody()
     {
-        return file_get_contents("php://input");
+        $body = file_get_contents("php://input");
+        if (!$body) {
+            $this->fail("Malformed request body", 400);
+        }
+        return $body;
     }
 
     public function getJsonBody(array $expected)
     {
         $body = $this->getBody();
         $json = json_decode($body);
+
+        if (!$json) {
+            $this->fail("Malformed request body", 400);
+        }
 
         foreach ($expected as $name => $what) {
             if (gettype($json->$name) != $what["type"]) {

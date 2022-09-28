@@ -1,56 +1,54 @@
 <?php
 
-require "../utils/strict.php";
-require "../utils/private/db.php";
-require "../utils/utils.php";
-
-header("Content-type: application/json");
-
+require '../utils/request.php';
 
 if ($_SERVER["REQUEST_METHOD"] != "POST") {
-    resFail("Wrong HTTP Method");
+    $req->fail("Wrong HTTP Method");
 }
 
-$body = file_get_contents("php://input");
-$jsonBody = json_decode($body);
+$req->useDb();
 
-if (!$jsonBody) {
-    resFail("Malformed request body");
-}
+$jsonBody = $req->getJsonBody([
+    "email" => [
+        "type" => "string",
+        "maxLength" => 100,
+    ],
+    "displayName" => [
+        "type" => "string",
+        "maxLength" => 100,
+    ],
+    "password" => [
+        "type" => "string",
+    ],
+]);
 
-if (strlen($jsonBody->email) <= 0 || strlen($jsonBody->email) > 100) {
-    resFail("Invalid e-mail");
-}
-
-if (strlen($jsonBody->displayName) <= 0 || strlen($jsonBody->displayName) > 100) {
-    resFail("Invalid display name");
-}
-
-if (strlen($jsonBody->password) <= 0) {
-    resFail("Invalid password");
-}
-
-$stmt = $db->prepare("SELECT user_id FROM users WHERE email = ?");
-$stmt->bind_param("s", $jsonBody->email);
+$stmt = $req->prepareQuery("SELECT user_id FROM users WHERE email = @{s:email}", [
+    "email" => $jsonBody->email,
+]);
 $stmt->execute();
 $result = $stmt->get_result();
 $row = $result->fetch_array();
 
 if ($row) {
-    resFail("A user with that e-mail address has already registered");
+    $req->fail("A user with that e-mail address has already registered");
 }
 
 $pHash = password_hash($jsonBody->password, PASSWORD_BCRYPT);
 
-$stmt = $db->prepare("INSERT INTO users(email, display_name, password_hash, role) VALUES (?, ?, ?, 'user')");
-$stmt->bind_param("sss", $jsonBody->email, $jsonBody->displayName, $pHash);
+$stmt = $req->prepareQuery("INSERT INTO users(email, display_name, password_hash, role) VALUES (@{s:email}, @{s:displayName}, @{s:passwordHash}, 'user')", [
+    "email" => $jsonBody->email,
+    "displayName" => $jsonBody->displayName,
+    "passwordHash" => $pHash,
+]);
 $stmt->execute();
-$userId = $db->insert_id;
+$userId = $stmt->insert_id;
 
 $token = generateSessionToken();
 
-$stmt = $db->prepare("INSERT INTO sessions(user_id, token) VALUES (?, ?)");
-$stmt->bind_param("is", $userId, $token);
+$stmt = $req->prepareQuery("INSERT INTO sessions(user_id, token) VALUES (@{i:userId}, @{s:token})", [
+    "userId" => $userId,
+    "token" => $token,
+]);
 $stmt->execute();
 
 $resObj = new \stdClass();
@@ -64,4 +62,4 @@ setcookie("session_token", $token, [
     'samesite' => 'Strict',
 ]);
 
-resSuccess($resObj);
+$req->success($resObj);
