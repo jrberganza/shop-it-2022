@@ -1,36 +1,33 @@
 <?php
 
-require "../../utils/strict.php";
-require "../../utils/private/db.php";
-require "../../utils/utils.php";
+require "../../utils/request.php";
 
 if ($_SERVER["REQUEST_METHOD"] != "POST") {
-    resFail("Wrong HTTP Method");
+    $req->fail("Wrong HTTP Method");
 }
 
-$session = getCurrentSession($db);
+$req->useDb();
+$req->useSession();
 
-if (!$session) {
-    resFail("Not logged in");
+if (!$req->session->isLoggedIn()) {
+    $req->fail("Not logged in");
 }
 
 if (!isset($_GET["id"])) {
-    resFail("No shop specified");
+    $req->fail("No shop specified");
 }
 $shopId = $_GET["id"];
 
-$body = file_get_contents("php://input");
+$body = $req->getBody();
 
-if (!$body) {
-    resFail("Malformed request body");
-}
-
-$stmt = $db->prepare("INSERT INTO shop_photos(shop_id, photo) VALUES (?, ?)");
-$stmt->bind_param("ib", $shopId, $body);
+$stmt = $req->prepareQuery("INSERT INTO shop_photos(shop_id, photo) VALUES (@{i:shopId}, @{b:photo})", [
+    "shopId" => $shopId,
+    "photo" => $body,
+]);
 $stmt->execute();
 $shopPhotoId = $db->insert_id;
 
 $resObj = new \stdClass();
 $resObj->id = $shopPhotoId;
 
-resSuccess($resObj);
+$req->success($resObj);

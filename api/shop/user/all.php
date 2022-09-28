@@ -1,19 +1,17 @@
 <?php
 
-require '../../utils/strict.php';
-require '../../utils/private/db.php';
-require "../../utils/utils.php";
+require "../../utils/request.php";
 
-header('Content-type: application/json');
+$req->useDb();
+$req->useSession();
 
-$session = getCurrentSession($db);
-
-if (!$session) {
-    resFail("Not logged in");
+if (!$req->session->isLoggedIn()) {
+    $req->fail("Not logged in");
 }
 
-$stmt = $db->prepare("SELECT shop_id as id, name, address, phone_number as phoneNumber, substr(description, 1, 100) as shortDesc FROM shops WHERE user_id = ? ORDER BY created_at");
-$stmt->bind_param("i", $session->id);
+$stmt = $req->prepareQuery("SELECT shop_id as id, name, address, phone_number as phoneNumber, substr(description, 1, 100) as shortDesc FROM shops WHERE user_id = @{i:userId} ORDER BY created_at", [
+    "userId" => $req->session->id
+]);
 $stmt->execute();
 $result = $stmt->get_result();
 
@@ -21,8 +19,9 @@ $resObj = new \stdClass();
 $resObj->shops = array();
 
 while ($row = $result->fetch_object()) {
-    $stmt2 = $db->prepare("SELECT shop_photo_id FROM shop_photos WHERE shop_id = ? ");
-    $stmt2->bind_param("i", $row->id);
+    $stmt2 = $req->prepareQuery("SELECT shop_photo_id FROM shop_photos WHERE shop_id = @{i:shopId}", [
+        "shopId" => $row->id,
+    ]);
     $stmt2->execute();
     $result2 = $stmt2->get_result();
 
@@ -34,4 +33,4 @@ while ($row = $result->fetch_object()) {
     array_push($resObj->shops, $row);
 }
 
-resSuccess($resObj);
+$req->success($resObj);
