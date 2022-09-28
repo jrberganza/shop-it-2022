@@ -1,17 +1,15 @@
 <?php
 
-require '../utils/strict.php';
-require '../utils/private/db.php';
-require "../utils/utils.php";
+require '../utils/request.php';
 
-header('Content-type: application/json');
+$req->useDb();
 
 if (!isset($_GET["id"])) {
-    resFail("No shop specified");
+    $req->fail("No shop specified");
 }
 $shopId = $_GET["id"];
 
-$stmt = $db->prepare("SELECT
+$stmt = $req->prepareQuery("SELECT
     s.shop_id as id,
     s.name as name,
     s.address as address,
@@ -22,20 +20,23 @@ $stmt = $db->prepare("SELECT
 FROM
     shops s
 LEFT JOIN
-    (SELECT avg(rating) as rating, shop_id FROM shop_ratings WHERE shop_id = ?) r USING (shop_id)
+    (SELECT avg(rating) as rating, shop_id FROM shop_ratings WHERE shop_id = @{i:shopId}) r USING (shop_id)
 WHERE
-    shop_id = ?");
-$stmt->bind_param("ii", $shopId, $shopId);
+    shop_id = @{i:shopId}", [
+    "shopId" => $shopId,
+]);
 $stmt->execute();
 $result = $stmt->get_result();
 
 $resObj = $result->fetch_object();
 
 if (!$resObj) {
-    resFail("No shop found");
+    $req->fail("No shop found");
 }
 
-$stmt = $db->prepare("SELECT shop_photo_id FROM shop_photos WHERE shop_id = ? ");
+$stmt = $req->prepareQuery("SELECT shop_photo_id FROM shop_photos WHERE shop_id = @{i:shopId}", [
+    "shopId" => $shopId,
+]);
 $stmt->bind_param("i", $shopId);
 $stmt->execute();
 $result = $stmt->get_result();
@@ -68,4 +69,4 @@ for ($currId = 0; $currId < 24; $currId++) {
     array_push($resObj->products, $product);
 }
 
-resSuccess($resObj);
+$req->success($resObj);
