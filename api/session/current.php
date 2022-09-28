@@ -5,7 +5,7 @@ require '../utils/request.php';
 $req->useDb();
 $req->useSession();
 
-if (!$req->session) {
+if (!$req->session->isLoggedIn()) {
     $req->fail("Not logged in", 200);
 }
 

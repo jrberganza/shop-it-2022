@@ -5,6 +5,23 @@ class Session
     public int $id;
     public string $displayName;
     public string $role;
+    public string $token;
+    public string $lastAccessAt;
+
+    public function isLoggedIn()
+    {
+        return $this->role != 'visitor';
+    }
+
+    public function canManageContent()
+    {
+        return $this->role == 'employee' || $this->role == 'admin';
+    }
+
+    public function canManageSite()
+    {
+        return $this->role == 'admin';
+    }
 }
 
 function generateSessionToken()
@@ -57,14 +74,16 @@ function getCurrentSession(DbWrapper $db)
         return $session;
     }
 
-    $lastTokenAccess = strtotime($row["last_access_at"]);
-    if (time() - $lastTokenAccess > 86400 * 7) {
+    $lastAccessAt = strtotime($row["last_access_at"]);
+    if (time() - $lastAccessAt > 86400 * 7) {
         return $session;
     }
 
     $session->id = $row["user_id"];
     $session->displayName = $row["display_name"];
     $session->role = $row["role"];
+    $session->token = $row["token"];
+    $session->lastAccessAt = $row["last_access_at"];
 
     return $session;
 }

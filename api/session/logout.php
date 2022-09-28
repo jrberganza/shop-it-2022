@@ -1,19 +1,17 @@
 <?php
 
-require "../utils/strict.php";
-require "../utils/private/db.php";
-require "../utils/utils.php";
+require '../utils/request.php';
 
-header("Content-type: application/json");
+$req->useDb();
+$req->useSession();
 
-$session = getCurrentSession($db);
-
-if (!$session) {
-    resFail("Not logged in");
+if (!$req->session->isLoggedIn()) {
+    $req->fail("Not logged in");
 }
 
-$stmt = $db->prepare("DELETE FROM sessions WHERE token = ?");
-$stmt->bind_param("s", $session->token);
+$stmt = $req->prepareQuery("DELETE FROM sessions WHERE token = @{s:token}", [
+    "token" => $req->session->token
+]);
 $stmt->execute();
 
 setcookie("session_token", "", [
@@ -23,4 +21,4 @@ setcookie("session_token", "", [
     'samesite' => 'Strict',
 ]);
 
-resSuccess(new \stdClass());
+$req->success(new \stdClass());
