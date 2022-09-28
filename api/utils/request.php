@@ -3,7 +3,10 @@
 require "strict.php";
 require "db.php";
 require "session.php";
+require "validation.php";
 
+
+// TODO: handle GET and POST payloads better
 class Request
 {
     public ?DbWrapper $db = null;
@@ -49,18 +52,8 @@ class Request
             $this->fail("Malformed request body", 400);
         }
 
-        foreach ($expected as $name => $what) {
-            if (gettype($json->$name) != $what["type"]) {
-                $this->fail("Expected " . $name . " to be a " . $what["type"], 400);
-            }
-
-            if (isset($what["maxLength"]) && strlen($json->$name) > $what["maxLength"]) {
-                $this->fail("Expected " . $name . " to be at most " . $what["maxLength"] . " characters", 400);
-            }
-
-            if (isset($what["minLength"]) && strlen($json->$name) < $what["minLength"]) {
-                $this->fail("Expected " . $name . " to be at least " . $what["minLength"] . " characters", 400);
-            }
+        if ($error = validateObj($json, $expected)) {
+            $this->fail($error, 400);
         }
 
         return $json;
