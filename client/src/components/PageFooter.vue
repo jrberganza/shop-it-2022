@@ -38,7 +38,10 @@ export default {
     logout() {
       fetch('/api/session/logout.php')
         .then(res => res.json())
-        .then(json => location.reload());
+        .then(json => {
+          this.$store.dispatch('fetchSession');
+          this.$router.push('/');
+        });
     },
   },
   watch: {
@@ -90,6 +93,11 @@ export default {
             path: "/",
           },
           {
+            title: "Your Shops",
+            icon: "mdi-shopping",
+            path: "/your/shops/",
+          },
+          {
             title: "Category Editor",
             icon: "mdi-tag",
             path: "/categories/",
@@ -113,6 +121,11 @@ export default {
             path: "/",
           },
           {
+            title: "Your Shops",
+            icon: "mdi-shopping",
+            path: "/your/shops/",
+          },
+          {
             title: "Category Editor",
             icon: "mdi-tag",
             path: "/categories/",
@@ -126,6 +139,11 @@ export default {
             title: "Manage Users",
             icon: "mdi-badge-account-horizontal",
             path: "/admin/users/",
+          },
+          {
+            title: "Reports",
+            icon: "mdi-file-document",
+            path: "/reports/dashboard/",
           },
           {
             title: "Logout",

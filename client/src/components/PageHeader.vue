@@ -64,7 +64,10 @@ export default {
     logout() {
       fetch('/api/session/logout.php')
         .then(res => res.json())
-        .then(json => location.reload());
+        .then(json => {
+          this.$store.dispatch('fetchSession');
+          this.$router.push('/');
+        });
     },
   },
   mounted() {
