@@ -4,7 +4,7 @@ $root = realpath($_SERVER['DOCUMENT_ROOT']);
 
 require "$root/api/utils/strict.php";
 require "$root/api/utils/private/db.php";
-require "$root/api/utils/utils.php";
+require "$root/api/utils/session.php";
 
 class ParsedQuery
 {
@@ -44,13 +44,61 @@ function parseSql(string $query, array $params)
 
 class Request
 {
-    private ?mysqli $db = null;
-    private string $mimeType = 'application/json';
+    public ?mysqli $db = null;
+    public string $mimeType = 'application/json';
+    public ?Session $session = null;
 
     public function useDb()
     {
         $this->db = new mysqli("localhost", "shopit", "shopit_1234", "shopit_db");
         $this->db->begin_transaction();
+    }
+
+    public function useSession()
+    {
+        if (!$this->db) {
+            throw new Error("You need to call Request::useDb()");
+        }
+
+        if (!hasSessionToken()) {
+            return false;
+        }
+
+        $token = getSessionToken();
+
+        $stmt = $this->prepareQuery("SELECT
+            u.user_id,
+            u.email,
+            u.display_name,
+            u.role,
+            s.token,
+            s.last_access_at
+        FROM
+            users u
+        JOIN
+            sessions s USING (user_id)
+        WHERE
+            s.token = @{s:token};", [
+            "token" => $token
+        ]);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $row = $result->fetch_array();
+
+        if (!$row) {
+            return;
+        }
+
+        $lastTokenAccess = strtotime($row["last_access_at"]);
+        if (time() - $lastTokenAccess > 86400 * 7) {
+            return;
+        }
+
+        $this->session = new Session();
+
+        $this->session->id = $row["user_id"];
+        $this->session->displayName = $row["display_name"];
+        $this->session->role = $row["role"];
     }
 
     public function contentType($mimeType)
@@ -87,19 +135,19 @@ class Request
 
     public function prepareQuery($query, $params): mysqli_stmt
     {
-        if ($this->db) {
-            $parsed = parseSql($query, $params);
-
-            $stmt = $this->db->prepare($parsed->query);
-            $args = array($parsed->types);
-            foreach ($parsed->params as $i => $param) {
-                $args[$i + 1] = &$parsed->params[$i];
-            }
-            call_user_func_array(array($stmt, 'bind_param'), $args);
-            return $stmt;
-        } else {
+        if (!$this->db) {
             throw new Error("You need to call Request::useDb()");
         }
+
+        $parsed = parseSql($query, $params);
+
+        $stmt = $this->db->prepare($parsed->query);
+        $args = array($parsed->types);
+        foreach ($parsed->params as $i => $param) {
+            $args[$i + 1] = &$parsed->params[$i];
+        }
+        call_user_func_array(array($stmt, 'bind_param'), $args);
+        return $stmt;
     }
 
     public function success($response, $responseCode = 200)
