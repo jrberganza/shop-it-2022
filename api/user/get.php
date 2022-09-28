@@ -1,8 +1,8 @@
 <?php
 
-require '../private/strict.php';
-require '../private/db.php';
-require "../private/utils.php";
+require '../utils/strict.php';
+require '../utils/private/db.php';
+require "../utils/utils.php";
 
 header('Content-type: application/json');
 
