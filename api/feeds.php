@@ -1,13 +1,8 @@
 <?php
 
-require './utils/strict.php';
-require './utils/private/db.php';
-require './utils/utils.php';
+require 'utils/request.php';
 
-header('Content-type: application/json');
-
-// TODO: connect to database
-// TODO: do it only for the current shop
+$req->useDb();
 
 $feeds = array();
 
@@ -34,7 +29,7 @@ $shopFeed->name = 'Top rated shops';
 $shopFeed->type = 'shop';
 $shopFeed->content = array();
 
-$stmt = $db->prepare("SELECT
+$stmt = $req->prepareQuery("SELECT
     s.shop_id as id,
     s.name as name,
     s.address as address,
@@ -47,13 +42,14 @@ FROM
 LEFT JOIN
     (SELECT avg(rating) as rating, shop_id FROM shop_ratings GROUP BY shop_id) r USING (shop_id)
 ORDER BY rating DESC
-LIMIT 5");
+LIMIT 5", []);
 $stmt->execute();
 $result = $stmt->get_result();
 
 while ($row = $result->fetch_object()) {
-    $stmt2 = $db->prepare("SELECT shop_photo_id FROM shop_photos WHERE shop_id = ? ");
-    $stmt2->bind_param("i", $row->id);
+    $stmt2 = $req->prepareQuery("SELECT shop_photo_id FROM shop_photos WHERE shop_id = @{i:shopId}", [
+        "shopId" => $row->id,
+    ]);
     $stmt2->execute();
     $result2 = $stmt2->get_result();
 

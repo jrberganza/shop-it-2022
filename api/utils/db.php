@@ -25,11 +25,13 @@ class DbWrapper
 
         $stmt = $this->db->prepare($parsed->query);
 
-        $args = array($parsed->types);
-        foreach ($parsed->params as $i => $param) {
-            $args[$i + 1] = &$parsed->params[$i];
+        if (count($parsed->params) > 0) {
+            $args = array($parsed->types);
+            foreach ($parsed->params as $i => $param) {
+                $args[$i + 1] = &$parsed->params[$i];
+            }
+            call_user_func_array(array($stmt, 'bind_param'), $args);
         }
-        call_user_func_array(array($stmt, 'bind_param'), $args);
 
         return $stmt;
     }

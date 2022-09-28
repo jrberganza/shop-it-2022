@@ -25,7 +25,7 @@ $stmt = $req->prepareQuery("INSERT INTO shop_photos(shop_id, photo) VALUES (@{i:
     "photo" => $body,
 ]);
 $stmt->execute();
-$shopPhotoId = $db->insert_id;
+$shopPhotoId = $stmt->insert_id;
 
 $resObj = new \stdClass();
 $resObj->id = $shopPhotoId;

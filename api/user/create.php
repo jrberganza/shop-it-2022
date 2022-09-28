@@ -1,62 +1,62 @@
 <?php
 
-require "../utils/strict.php";
-require "../utils/private/db.php";
-require "../utils/utils.php";
-
-header("Content-type: application/json");
+require "../utils/request.php";
 
 if ($_SERVER["REQUEST_METHOD"] != "POST") {
-    resFail("Wrong HTTP Method");
+    $req->fail("Wrong HTTP Method");
 }
 
-$session = getCurrentSession($db);
+$req->useDb();
+$req->useSession();
 
-if (!$session) {
-    resFail("Not logged in");
+if (!$req->session->canManageSite()) {
+    $req->fail("Not authorized", 403);
 }
 
-$body = file_get_contents("php://input");
-$jsonBody = json_decode($body);
-
-if (!$jsonBody) {
-    resFail("Malformed request body");
-}
-
-if (strlen($jsonBody->email) <= 0 || strlen($jsonBody->email) > 100) {
-    resFail("Invalid e-mail");
-}
-
-if (strlen($jsonBody->displayName) <= 0 || strlen($jsonBody->displayName) > 100) {
-    resFail("Invalid display name");
-}
-
-if (strlen($jsonBody->password) <= 0) {
-    resFail("Invalid password");
-}
+$jsonBody = $req->getJsonBody([
+    "email" => [
+        "type" => "string",
+        "maxLength" => 100,
+    ],
+    "displayName" => [
+        "type" => "string",
+        "maxLength" => 100,
+    ],
+    "password" => [
+        "type" => "string",
+    ],
+    "role" => [
+        "type" => "string",
+    ],
+]);
 
 if ($jsonBody->role != 'user' && $jsonBody->role != 'employee' && $jsonBody->role != 'admin') {
-    resFail("Invalid role");
+    $req->fail("Expected role to be \"user\",  \"employee\" or  \"admin\"");
 }
 
-$stmt = $db->prepare("SELECT user_id FROM users WHERE email = ?");
-$stmt->bind_param("s", $jsonBody->email);
+$stmt = $req->prepareQuery("SELECT user_id FROM users WHERE email = @{s:email}", [
+    "email" => $jsonBody->email,
+]);
 $stmt->execute();
 $result = $stmt->get_result();
 $row = $result->fetch_array();
 
 if ($row) {
-    resFail("A user with that e-mail address has already registered");
+    $req->fail("A user with that e-mail address has already registered");
 }
 
 $pHash = password_hash($jsonBody->password, PASSWORD_BCRYPT);
 
-$stmt = $db->prepare("INSERT INTO users(email, display_name, password_hash, role) VALUES (?, ?, ?, ?)");
-$stmt->bind_param("ssss", $jsonBody->email, $jsonBody->displayName, $pHash, $jsonBody->role);
+$stmt = $req->prepareQuery("INSERT INTO users(email, display_name, password_hash, role) VALUES (@{s:email}, @{s:displayName}, @{s:passwordHash}, @{s:role})", [
+    "email" => $jsonBody->email,
+    "displayName" => $jsonBody->displayName,
+    "passwordHash" => $pHash,
+    "role" => $jsonBody->role,
+]);
 $stmt->execute();
-$userId = $db->insert_id;
+$userId = $stmt->insert_id;
 
 $resObj = new \stdClass();
 $resObj->id = $userId;
 
-resSuccess($resObj);
+$req->success($resObj);

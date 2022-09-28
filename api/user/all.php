@@ -1,18 +1,15 @@
 <?php
 
-require '../utils/strict.php';
-require '../utils/private/db.php';
-require "../utils/utils.php";
+require "../utils/request.php";
 
-header('Content-type: application/json');
+$req->useDb();
+$req->useSession();
 
-$session = getCurrentSession($db);
-
-if (!$session) {
-    resFail("Not logged in");
+if (!$req->session->canManageSite()) {
+    $req->fail("Not authorized", 403);
 }
 
-$stmt = $db->prepare("SELECT user_id as id, email as email, display_name as displayName, role as role FROM users ORDER BY created_at");
+$stmt = $req->prepareQuery("SELECT user_id as id, email as email, display_name as displayName, role as role FROM users ORDER BY created_at", []);
 $stmt->execute();
 $result = $stmt->get_result();
 
@@ -23,4 +20,4 @@ while ($row = $result->fetch_object()) {
     array_push($resObj->users, $row);
 }
 
-resSuccess($resObj);
+$req->success($resObj);

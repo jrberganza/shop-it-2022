@@ -1,53 +1,54 @@
 <?php
 
-require "../../utils/strict.php";
-require "../../utils/private/db.php";
-require "../../utils/utils.php";
-
-header("Content-type: application/json");
+require "../../utils/request.php";
 
 if ($_SERVER["REQUEST_METHOD"] != "POST") {
-    resFail("Wrong HTTP Method");
+    $req->fail("Wrong HTTP Method");
 }
 
-$session = getCurrentSession($db);
+$req->useDb();
+$req->useSession();
 
-if (!$session) {
-    resFail("Not logged in");
+if (!$req->session->isLoggedIn()) {
+    $req->fail("Not logged in");
 }
 
-$body = file_get_contents("php://input");
-$jsonBody = json_decode($body);
-
-if (!$jsonBody) {
-    resFail("Malformed request body");
-}
-
-if (strlen($jsonBody->name) <= 0 || strlen($jsonBody->name) > 255) {
-    resFail("Invalid name");
-}
-
-if (strlen($jsonBody->address) <= 0 || strlen($jsonBody->address) > 255) {
-    resFail("Invalid address");
-}
+$jsonBody = $req->getJsonBody([
+    "name" => [
+        "type" => "string",
+        "maxLength" => 255,
+    ],
+    "address" => [
+        "type" => "string",
+        "maxLength" => 255,
+    ],
+    "phoneNumber" => [
+        "type" => "string",
+        "maxLength" => 20,
+    ],
+    "description" => [
+        "type" => "string",
+        "maxLength" => 512,
+    ],
+]);
 
 $jsonBody->latitude = 0;
 $jsonBody->longitude = 0;
 
-if (strlen($jsonBody->phoneNumber) <= 0 || strlen($jsonBody->phoneNumber) > 20) {
-    resFail("Invalid phone number");
-}
-
-if (strlen($jsonBody->description) <= 0 || strlen($jsonBody->description) > 512) {
-    resFail("Invalid description");
-}
-
-$stmt = $db->prepare("INSERT INTO shops(name, address, latitude, longitude, phone_number, description, disabled, user_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
-$stmt->bind_param("ssddssii", $jsonBody->name, $jsonBody->address, $jsonBody->latitude, $jsonBody->longitude, $jsonBody->phoneNumber, $jsonBody->description, $jsonBody->disabled, $session->id);
+$stmt = $req->prepareQuery("INSERT INTO shops(name, address, latitude, longitude, phone_number, description, disabled, user_id) VALUES (@{s:name}, @{s:address}, @{d:latitude}, @{d:longitude}, @{s:phoneNumber}, @{s:description}, @{i:disabled}, @{i:userId})", [
+    "name" => $jsonBody->name,
+    "address" => $jsonBody->address,
+    "latitude" => $jsonBody->latitude,
+    "longitude" => $jsonBody->longitude,
+    "phoneNumber" => $jsonBody->phoneNumber,
+    "description" => $jsonBody->description,
+    "disabled" => $jsonBody->disabled,
+    "userId" => $req->session->id,
+]);
 $stmt->execute();
-$shopId = $db->insert_id;
+$shopId = $stmt->insert_id;
 
 $resObj = new \stdClass();
 $resObj->id = $shopId;
 
-resSuccess($resObj);
+$req->success($resObj);

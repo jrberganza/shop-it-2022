@@ -1,6 +1,6 @@
 <?php
 
-function validateObj(\stdClass $toCheck, array $expected)
+function validateObj($toCheck, array $expected)
 {
     foreach ($expected as $name => $what) {
         if (isset($what["optional"]) && !$what["optional"] && !isset($toCheck->$name)) {

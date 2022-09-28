@@ -1,49 +1,22 @@
 <?php
 
-require '../../utils/strict.php';
-require '../../utils/private/db.php';
-require "../../utils/utils.php";
+require "../../utils/request.php";
 
-header('Content-type: text/xml');
+$req->contentType("text/xml");
 
-set_error_handler(function () {
-    $xml = new DOMDocument("1.0");
-    $xml->formatOutput = true;
+$req->useDb();
+$req->useSession();
 
-    $errorEl = $xml->createElement("shop", "Internal error");
-    $xml->appendChild($errorEl);
-
-    http_response_code(500);
-
-    echo "" . $xml->saveXML() . "";
-    exit();
-});
-
-set_exception_handler(function () {
-    $xml = new DOMDocument("1.0");
-    $xml->formatOutput = true;
-
-    $errorEl = $xml->createElement("error", "Internal error");
-    $xml->appendChild($errorEl);
-
-    http_response_code(500);
-
-    echo "" . $xml->saveXML() . "";
-    exit();
-});
-
-$session = getCurrentSession($db);
-
-if (!$session) {
-    resFail("Not logged in");
+if (!$req->session->isLoggedIn()) {
+    $req->fail("Not logged in");
 }
 
 if (!isset($_GET["id"])) {
-    resFail("No shop specified");
+    $req->fail("No shop specified");
 }
 $shopId = $_GET["id"];
 
-$stmt = $db->prepare("SELECT
+$stmt = $req->prepareQuery("SELECT
     name,
     address,
     latitude,
@@ -54,22 +27,23 @@ $stmt = $db->prepare("SELECT
 FROM
     shops s
 WHERE
-    shop_id = ? AND
-    user_id = ?");
-$stmt->bind_param("ii", $shopId, $session->id);
+    shop_id = @{i:shopId} AND
+    user_id = @{i:userId}", [
+    "shopId" => $shopId,
+    "userId" => $session->id,
+]);
 $stmt->execute();
 $result = $stmt->get_result();
 $shop = $result->fetch_array();
+if (!$shop) {
+    throw new Error("Unknown shop");
+}
 
 $xml = new DOMDocument("1.0");
 $xml->formatOutput = true;
 
 $shopEl = $xml->createElement("shop");
 $xml->appendChild($shopEl);
-if (!$shop) {
-    echo "" . $xml->saveXML() . "";
-    exit();
-}
 
 $nameEl = $xml->createElement("name", $shop["name"]);
 $shopEl->appendChild($nameEl);
@@ -92,7 +66,7 @@ $shopEl->appendChild($descriptionEl);
 $disabledEl = $xml->createElement("disabled", $shop["disabled"]);
 $shopEl->appendChild($disabledEl);
 
-$stmt = $db->prepare("SELECT
+$stmt = $req->prepareQuery("SELECT
     name,
     price,
     description,
@@ -100,8 +74,9 @@ $stmt = $db->prepare("SELECT
 FROM
     products p
 WHERE
-    shop_id = ?");
-$stmt->bind_param("i", $shopId);
+    shop_id = @{i:shopId}", [
+    "shopId" => $shopId
+]);
 $stmt->execute();
 $result = $stmt->get_result();
 
@@ -121,5 +96,4 @@ while ($product = $result->fetch_array()) {
     $productsEl->appendChild($disabledEl);
 }
 
-echo "" . $xml->saveXML() . "";
-exit();
+$req->success($xml->saveXML());

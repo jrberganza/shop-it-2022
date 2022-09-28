@@ -104,6 +104,13 @@ class Request
             $JSON = json_encode($resObj);
 
             echo $JSON;
+        } elseif ($this->mimeType == 'text/xml') {
+            $xml = new DOMDocument("1.0");
+
+            $errorEl = $xml->createElement("error", "Internal error");
+            $xml->appendChild($errorEl);
+
+            echo "" . $xml->saveXML() . "";
         } else {
             echo $response;
         }

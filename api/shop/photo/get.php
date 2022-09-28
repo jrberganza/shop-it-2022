@@ -1,29 +1,28 @@
 <?php
 
-require '../../utils/strict.php';
-require '../../utils/private/db.php';
-require "../../utils/utils.php";
+require "../../utils/request.php";
 
 if (!isset($_GET["id"])) {
-    resFail("No shop photo specified");
+    $req->fail("No shop photo specified");
 }
 $photoId = $_GET["id"];
 
-$stmt = $db->prepare("SELECT
+$stmt = $req->prepareQuery("SELECT
     photo
 FROM
     shop_photos
 WHERE
-    shop_photo_id = ?");
-$stmt->bind_param("i", $photoId);
+    shop_photo_id = @{i:photoId}", [
+    "photoId" => $photoId,
+]);
 $stmt->execute();
 $result = $stmt->get_result();
 
 $row = $result->fetch_array();
 
 if (!$row) {
-    resFail("No shop photo found");
+    $req->fail("No shop photo found");
 }
 
-header('Content-type: image/png');
+$req->contentType('Content-type: image/png');
 echo $row["photo"];

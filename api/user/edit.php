@@ -1,66 +1,72 @@
 <?php
 
-require "../utils/strict.php";
-require "../utils/private/db.php";
-require "../utils/utils.php";
-
-header("Content-type: application/json");
+require "../utils/request.php";
 
 if ($_SERVER["REQUEST_METHOD"] != "POST") {
-    resFail("Wrong HTTP Method");
+    $req->fail("Wrong HTTP Method");
 }
 
-$session = getCurrentSession($db);
+$req->useDb();
+$req->useSession();
 
-if (!$session) {
-    resFail("Not logged in");
+if (!$req->session->canManageSite()) {
+    $req->fail("Not authorized", 403);
 }
 
-$body = file_get_contents("php://input");
-$jsonBody = json_decode($body);
-
-if (!$jsonBody) {
-    resFail("Malformed request body");
-}
-
-if (!isset($jsonBody->id)) {
-    resFail("Invalid id");
-}
-
-if (strlen($jsonBody->email) <= 0 || strlen($jsonBody->email) > 100) {
-    resFail("Invalid e-mail");
-}
-
-if (strlen($jsonBody->displayName) <= 0 || strlen($jsonBody->displayName) > 100) {
-    resFail("Invalid display name");
-}
+$jsonBody = $req->getJsonBody([
+    "id" => [
+        "type" => "integer",
+    ],
+    "email" => [
+        "type" => "string",
+        "maxLength" => 100,
+    ],
+    "displayName" => [
+        "type" => "string",
+        "maxLength" => 100,
+    ],
+    "password" => [
+        "type" => "string",
+        "optional" => true,
+    ],
+    "role" => [
+        "type" => "string",
+    ],
+]);
 
 if ($jsonBody->role != 'user' && $jsonBody->role != 'employee' && $jsonBody->role != 'admin') {
-    resFail("Invalid role");
+    $req->fail("Expected role to be \"user\",  \"employee\" or  \"admin\"");
 }
 
-$stmt = $db->prepare("SELECT user_id FROM users WHERE email = ? AND user_id != ?");
-$stmt->bind_param("si", $jsonBody->email, $jsonBody->id);
+$stmt = $req->prepareQuery("SELECT user_id FROM users WHERE email = @{s:email} AND user_id != @{i:userId}", [
+    "email" => $jsonBody->email,
+    "userId" => $jsonBody->id,
+]);
 $stmt->execute();
 $result = $stmt->get_result();
 $row = $result->fetch_array();
 
 if ($row) {
-    resFail("A user with that e-mail address has already registered");
+    $req->fail("A user with that e-mail address has already registered");
 }
 
-$stmt = $db->prepare("UPDATE users SET email = ?, display_name = ?, role = ? WHERE user_id = ?");
-$stmt->bind_param("sssi", $jsonBody->email, $jsonBody->displayName, $jsonBody->role, $jsonBody->id);
-$stmt->execute();
-
-if (strlen($jsonBody->password) > 0) {
+$query = "UPDATE users SET email = @{s:email}, display_name = @{s:displayName}, role = @{s:role}";
+$pHash = null;
+if (isset($jsonBody->password) && strlen($jsonBody->password) > 0) {
     $pHash = password_hash($jsonBody->password, PASSWORD_BCRYPT);
-
-    $stmt = $db->prepare("UPDATE users SET password_hash = ? WHERE user_id = ?");
-    $stmt->bind_param("si", $pHash, $jsonBody->id);
-    $stmt->execute();
+    $query .= ", password_hash = @{s:passwordHash}";
 }
+$query .= " WHERE user_id = @{i:userId}";
+
+$stmt = $req->prepareQuery($query, [
+    "email" => $jsonBody->email,
+    "displayName" => $jsonBody->displayName,
+    "role" => $jsonBody->role,
+    "passwordHash" => $pHash,
+    "userId" => $jsonBody->id,
+]);
+$stmt->execute();
 
 $resObj = new \stdClass();
 
-resSuccess($resObj);
+$req->success($resObj);
