@@ -1,36 +1,44 @@
 <?php
 
-require "../utils/strict.php";
-require "../utils/private/db.php";
-require "../utils/utils.php";
-
-header("Content-type: application/json");
+require '../utils/helper.php';
 
 if ($_SERVER["REQUEST_METHOD"] != "POST") {
-    resFail("Wrong HTTP Method");
+    $req->fail("Wrong HTTP Method");
 }
 
-$body = file_get_contents("php://input");
-$jsonBody = json_decode($body);
+$req->useDb();
 
-$stmt = $db->prepare("SELECT user_id, email, display_name, password_hash, role FROM users WHERE email = ?");
-$stmt->bind_param("s", $jsonBody->email);
+$jsonBody = $req->getJsonBody([
+    "email" => [
+        "type" => "string",
+        "maxLength" => 100,
+    ],
+    "password" => [
+        "type" => "string",
+    ]
+]);
+
+$stmt = $req->prepareQuery("SELECT user_id, email, display_name, password_hash, role FROM users WHERE email = @{s:email}", [
+    "email" => $jsonBody->email
+]);
 $stmt->execute();
 $result = $stmt->get_result();
 $user = $result->fetch_array();
 
 if (!$user) {
-    resFail("Incorrect e-mail or password");
+    $req->fail("Incorrect e-mail or password");
 }
 
 if (!password_verify($jsonBody->password, $user["password_hash"])) {
-    resFail("Incorrect e-mail or password");
+    $req->fail("Incorrect e-mail or password");
 }
 
 $token = generateSessionToken();
 
-$stmt = $db->prepare("INSERT INTO sessions(user_id, token) VALUES (?, ?)");
-$stmt->bind_param("is", $user["user_id"], $token);
+$stmt = $req->prepareQuery("INSERT INTO sessions(user_id, token) VALUES (@{i:user_id}, @{s:token})", [
+    "user_id" => $user["user_id"],
+    "token" => $token
+]);
 $stmt->execute();
 
 $resObj = new \stdClass();
@@ -44,4 +52,4 @@ setcookie("session_token", $token, [
     'samesite' => 'Strict',
 ]);
 
-resSuccess($resObj);
+$req->success($resObj);
