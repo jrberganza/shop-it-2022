@@ -1,22 +1,20 @@
 <?php
 
-$root = realpath($_SERVER['DOCUMENT_ROOT']);
-
-require "$root/api/utils/strict.php";
-require "$root/api/utils/private/db.php";
-require "$root/api/utils/session.php";
-require "$root/api/utils/query.php";
+require "strict.php";
+require "db.php";
+require "session.php";
 
 class Request
 {
-    public ?mysqli $db = null;
+    public ?DbWrapper $db = null;
     public string $mimeType = 'application/json';
     public ?Session $session = null;
 
     public function useDb()
     {
-        $this->db = new mysqli("localhost", "shopit", "shopit_1234", "shopit_db");
-        $this->db->begin_transaction();
+        $this->db = new DbWrapper();
+        $this->db->connectDb();
+        $this->db->startTransaction();
     }
 
     public function useSession()
@@ -104,15 +102,7 @@ class Request
             throw new Error("You need to call Request::useDb()");
         }
 
-        $parsed = parseSql($query, $params);
-
-        $stmt = $this->db->prepare($parsed->query);
-        $args = array($parsed->types);
-        foreach ($parsed->params as $i => $param) {
-            $args[$i + 1] = &$parsed->params[$i];
-        }
-        call_user_func_array(array($stmt, 'bind_param'), $args);
-        return $stmt;
+        return $this->db->prepareQuery($query, $params);
     }
 
     public function success($response, $responseCode = 200)

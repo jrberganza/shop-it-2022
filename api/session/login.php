@@ -1,6 +1,6 @@
 <?php
 
-require '../utils/helper.php';
+require '../utils/request.php';
 
 if ($_SERVER["REQUEST_METHOD"] != "POST") {
     $req->fail("Wrong HTTP Method");
