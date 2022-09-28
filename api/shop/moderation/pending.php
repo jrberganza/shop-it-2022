@@ -1,7 +1,6 @@
 <?php
 
 require '../../utils/strict.php';
-require '../../utils/private/db.php';
 
 header('Content-type: application/json');
 
