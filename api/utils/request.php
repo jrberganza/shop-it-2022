@@ -23,45 +23,7 @@ class Request
             throw new Error("You need to call Request::useDb()");
         }
 
-        if (!hasSessionToken()) {
-            return false;
-        }
-
-        $token = getSessionToken();
-
-        $stmt = $this->prepareQuery("SELECT
-            u.user_id,
-            u.email,
-            u.display_name,
-            u.role,
-            s.token,
-            s.last_access_at
-        FROM
-            users u
-        JOIN
-            sessions s USING (user_id)
-        WHERE
-            s.token = @{s:token};", [
-            "token" => $token
-        ]);
-        $stmt->execute();
-        $result = $stmt->get_result();
-        $row = $result->fetch_array();
-
-        if (!$row) {
-            return;
-        }
-
-        $lastTokenAccess = strtotime($row["last_access_at"]);
-        if (time() - $lastTokenAccess > 86400 * 7) {
-            return;
-        }
-
-        $this->session = new Session();
-
-        $this->session->id = $row["user_id"];
-        $this->session->displayName = $row["display_name"];
-        $this->session->role = $row["role"];
+        $this->session = getCurrentSession($this->db);
     }
 
     public function contentType($mimeType)
