@@ -26,7 +26,11 @@ export default {
     getSearchResults() {
       fetch(`/api/search.php?q=${this.$route.query.q}`)
         .then(res => res.json())
-        .then(json => this.searchResults = json);
+        .then(json => {
+          if (json.success) {
+            this.searchResults = json.results;
+          }
+        });
     },
   },
   mounted() {

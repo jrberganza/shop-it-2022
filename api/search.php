@@ -1,11 +1,6 @@
 <?php
 
-require './utils/strict.php';
-
-header('Content-type: application/json');
-
-// TODO: connect to database
-// TODO: do it only for the current shop
+require 'utils/request.php';
 
 $searchQuery = $_GET["q"];
 
@@ -50,6 +45,7 @@ for ($currId = 0; $currId < 9; $currId++) {
 
 array_push($searchResults, $shopResults);
 
-$resJson = json_encode($searchResults);
+$resObj = new \stdClass();
+$resObj->results = $searchResults;
 
-echo $resJson;
+$req->success($resObj);
