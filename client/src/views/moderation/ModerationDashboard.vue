@@ -81,7 +81,11 @@ export default {
     getPendingComments() {
       fetch('/api/comment/moderation/pending.php')
         .then(res => res.json())
-        .then(json => this.comments = json);
+        .then(json => {
+          if (json.success) {
+            this.comments = json.pending;
+          }
+        });
     },
     selectShop(id) {
       fetch(`/api/shop/moderation/details.php?id=${id}`)

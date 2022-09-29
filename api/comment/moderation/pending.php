@@ -1,11 +1,6 @@
 <?php
 
-require '../../utils/strict.php';
-
-header('Content-type: application/json');
-
-// TODO: connect to database
-// TODO: do it only for the current shop
+require '../../utils/request.php';
 
 $allComments = array();
 
@@ -20,6 +15,7 @@ for ($currId = 0; $currId < 10; $currId++) {
     array_push($allComments, $comment);
 }
 
-$resJson = json_encode($allComments);
+$resObj = new \stdClass();
+$resObj->pending = $allComments;
 
-echo $resJson;
+$req->success($resObj);
