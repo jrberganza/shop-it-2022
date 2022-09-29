@@ -36,12 +36,20 @@ export default {
     getProductCategories() {
       fetch(`/api/product/category/all.php`)
         .then(res => res.json())
-        .then(json => this.shopCategories = json);
+        .then(json => {
+          if (json.success) {
+            this.shopCategories = json.categories;
+          }
+        });
     },
     getShopCategories() {
       fetch(`/api/shop/category/all.php`)
         .then(res => res.json())
-        .then(json => this.productCategories = json);
+        .then(json => {
+          if (json.success) {
+            this.productCategories = json.categories;
+          }
+        });
     },
   },
   mounted() {
