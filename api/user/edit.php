@@ -9,7 +9,7 @@ if ($_SERVER["REQUEST_METHOD"] != "POST") {
 $req->useDb();
 $req->useSession();
 
-if (!$req->session->canManageSite()) {
+if (!$req->session->hasAdminPrivileges()) {
     $req->fail("Not authorized", 403);
 }
 

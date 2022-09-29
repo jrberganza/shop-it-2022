@@ -5,7 +5,7 @@ require "../utils/request.php";
 $req->useDb();
 $req->useSession();
 
-if (!$req->session->canManageSite()) {
+if (!$req->session->hasAdminPrivileges()) {
     $req->fail("Not authorized", 403);
 }
 

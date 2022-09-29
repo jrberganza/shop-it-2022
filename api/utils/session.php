@@ -13,12 +13,12 @@ class Session
         return $this->role != 'visitor';
     }
 
-    public function canManageContent()
+    public function hasEmployeePrivileges()
     {
         return $this->role == 'employee' || $this->role == 'admin';
     }
 
-    public function canManageSite()
+    public function hasAdminPrivileges()
     {
         return $this->role == 'admin';
     }
