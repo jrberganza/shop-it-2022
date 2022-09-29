@@ -2,6 +2,11 @@
 
 require '../../utils/request.php';
 
+$req->useDb();
+$req->useSession();
+
+$req->requireEmployeePrivileges();
+
 $shop = new \stdClass();
 
 $currId = $_GET["id"];

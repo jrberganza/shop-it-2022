@@ -2,6 +2,11 @@
 
 require '../../utils/request.php';
 
+$req->useDb();
+$req->useSession();
+
+$req->requireEmployeePrivileges();
+
 $allComments = array();
 
 for ($currId = 0; $currId < 10; $currId++) {

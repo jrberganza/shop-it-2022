@@ -2,6 +2,11 @@
 
 require '../../utils/request.php';
 
+$req->useDb();
+$req->useSession();
+
+$req->requireEmployeePrivileges();
+
 $allProducts = array();
 
 for ($currId = 0; $currId < 10; $currId++) {
