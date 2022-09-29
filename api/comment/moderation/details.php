@@ -1,6 +1,6 @@
 <?php
 
-require '../../utils/strict.php';
+require '../../utils/request.php';
 
 header('Content-type: application/json');
 
@@ -13,6 +13,4 @@ $comment->author = "Usuario " . random_int(1000, 9999);
 $comment->publishedAt = "31/12/2022";
 $comment->content = "Hey! " . random_int(1000, 9999);
 
-$resJson = json_encode($comment);
-
-echo $resJson;
+$req->success($comment);
