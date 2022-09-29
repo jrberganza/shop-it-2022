@@ -1,8 +1,6 @@
 <?php
 
-require '../../utils/strict.php';
-
-header('Content-type: application/json');
+require '../../utils/request.php';
 
 $product = new \stdClass();
 
@@ -15,6 +13,4 @@ $product->price =  random_int(0, 9999) / 100.0;
 $product->description = "Product description " . $currId;
 $product->photos = [];
 
-$resJson = json_encode($product);
-
-echo $resJson;
+$req->success($product);
