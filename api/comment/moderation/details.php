@@ -2,8 +2,6 @@
 
 require '../../utils/request.php';
 
-header('Content-type: application/json');
-
 $comment = new \stdClass();
 
 $currId = $_GET["id"];
