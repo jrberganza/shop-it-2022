@@ -26,7 +26,11 @@ export default {
     getFeeds() {
       fetch('/api/feeds.php')
         .then(res => res.json())
-        .then(json => this.feeds = json);
+        .then(json => {
+          if (json.success) {
+            this.feeds = json.feeds
+          }
+        });
     }
   },
   mounted() {

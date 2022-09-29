@@ -80,6 +80,7 @@ for ($currId = 0; $currId < 5; $currId++) {
 }
 array_push($feeds, $trendingFeed);
 
-$resJson = json_encode($feeds);
+$resObj = new \stdClass();
+$resObj->feeds = $feeds;
 
-echo $resJson;
+$req->success($resObj);
