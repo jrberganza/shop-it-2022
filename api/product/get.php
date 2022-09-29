@@ -1,10 +1,6 @@
 <?php
 
-require '../utils/strict.php';
-
-header('Content-type: application/json');
-
-// TODO: connect to database
+require '../utils/request.php';
 
 $currId = $_GET['id'];
 
@@ -18,6 +14,4 @@ $product->desc = "Product description " . $currId;
 $product->rating = random_int(0, 10) / 2.0;
 $product->photos = [];
 
-$resJson = json_encode($product);
-
-echo $resJson;
+$req->success($product);
