@@ -29,6 +29,39 @@ class Request
         $this->session = getCurrentSession($this->db);
     }
 
+    public function requireLoggedIn()
+    {
+        if (!$this->session) {
+            throw new Error("You need to call Request::useSession()");
+        }
+
+        if (!$this->session->isLoggedIn()) {
+            $this->fail("Not logged in", 401);
+        }
+    }
+
+    public function requireEmployeePrivileges()
+    {
+        if (!$this->session) {
+            throw new Error("You need to call Request::useSession()");
+        }
+
+        if (!$this->session->hasEmployeePrivileges()) {
+            $this->fail("Not authorized", 403);
+        }
+    }
+
+    public function requireAdminPrivileges()
+    {
+        if (!$this->session) {
+            throw new Error("You need to call Request::useSession()");
+        }
+
+        if (!$this->session->hasAdminPrivileges()) {
+            $this->fail("Not authorized", 403);
+        }
+    }
+
     public function contentType($mimeType)
     {
         $this->mimeType = $mimeType;

@@ -5,9 +5,7 @@ require "../utils/request.php";
 $req->useDb();
 $req->useSession();
 
-if (!$req->session->hasAdminPrivileges()) {
-    $req->fail("Not authorized", 403);
-}
+$req->requireAdminPrivileges();
 
 $stmt = $req->prepareQuery("SELECT user_id as id, email as email, display_name as displayName, role as role FROM users ORDER BY created_at", []);
 $stmt->execute();

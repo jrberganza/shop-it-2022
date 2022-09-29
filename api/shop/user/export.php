@@ -7,9 +7,7 @@ $req->contentType("text/xml");
 $req->useDb();
 $req->useSession();
 
-if (!$req->session->isLoggedIn()) {
-    $req->fail("Not logged in");
-}
+$req->requireLoggedIn();
 
 if (!isset($_GET["id"])) {
     $req->fail("No shop specified");

@@ -9,9 +9,7 @@ if ($_SERVER["REQUEST_METHOD"] != "POST") {
 $req->useDb();
 $req->useSession();
 
-if (!$req->session->hasAdminPrivileges()) {
-    $req->fail("Not authorized", 403);
-}
+$req->requireAdminPrivileges();
 
 $jsonBody = $req->getJsonBody([
     "email" => [

@@ -5,9 +5,7 @@ require "../utils/request.php";
 $req->useDb();
 $req->useSession();
 
-if (!$req->session->hasAdminPrivileges()) {
-    $req->fail("Not authorized", 403);
-}
+$req->requireAdminPrivileges();
 
 if (!isset($_GET["id"])) {
     $req->fail("No user specified");

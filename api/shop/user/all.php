@@ -5,9 +5,7 @@ require "../../utils/request.php";
 $req->useDb();
 $req->useSession();
 
-if (!$req->session->isLoggedIn()) {
-    $req->fail("Not logged in");
-}
+$req->requireLoggedIn();
 
 $stmt = $req->prepareQuery("SELECT shop_id as id, name, address, phone_number as phoneNumber, substr(description, 1, 100) as shortDesc FROM shops WHERE user_id = @{i:userId} ORDER BY created_at", [
     "userId" => $req->session->id

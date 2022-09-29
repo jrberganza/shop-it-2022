@@ -6,9 +6,7 @@ require "../../utils/validation.php";
 $req->useDb();
 $req->useSession();
 
-if (!$req->session->isLoggedIn()) {
-    $req->fail("Not logged in");
-}
+$req->requireLoggedIn();
 
 $xmlBody = simplexml_load_file("php://input");
 

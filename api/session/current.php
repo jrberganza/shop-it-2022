@@ -5,9 +5,7 @@ require '../utils/request.php';
 $req->useDb();
 $req->useSession();
 
-if (!$req->session->isLoggedIn()) {
-    $req->fail("Not logged in", 200);
-}
+$req->requireLoggedIn();
 
 $resObj = new \stdClass();
 $resObj->displayName = $req->session->displayName;
