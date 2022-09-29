@@ -3,6 +3,7 @@
 require '../utils/request.php';
 
 $req->useDb();
+$req->useSession();
 
 if (!isset($_GET["id"])) {
     $req->fail("No shop specified");
@@ -22,8 +23,17 @@ FROM
 LEFT JOIN
     (SELECT avg(rating) as rating, shop_id FROM shop_ratings WHERE shop_id = @{i:shopId}) r USING (shop_id)
 WHERE
+    (
+        (
+            disabled = FALSE
+        ) OR (
+            disabled = TRUE AND
+            user_id = @{i:userId}
+        )
+    ) AND
     shop_id = @{i:shopId}", [
     "shopId" => $shopId,
+    "userId" => $req->session->id,
 ]);
 $stmt->execute();
 $result = $stmt->get_result();

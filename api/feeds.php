@@ -34,13 +34,15 @@ $stmt = $req->prepareQuery("SELECT
     s.name as name,
     s.address as address,
     s.phone_number as phoneNumber,
-    s.description as description,
+    s.description as shortDesc,
     s.disabled as disabled,
     cast(coalesce(r.rating, 0.0) as double) as rating
 FROM
     shops s
 LEFT JOIN
     (SELECT avg(rating) as rating, shop_id FROM shop_ratings GROUP BY shop_id) r USING (shop_id)
+WHERE
+    disabled = FALSE
 ORDER BY rating DESC
 LIMIT 5", []);
 $stmt->execute();

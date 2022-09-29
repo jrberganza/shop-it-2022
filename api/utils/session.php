@@ -2,11 +2,11 @@
 
 class Session
 {
-    public int $id;
-    public string $displayName;
+    public ?int $id = null;
+    public ?string $displayName = null;
     public string $role;
-    public string $token;
-    public string $lastAccessAt;
+    public ?string $token = null;
+    public ?string $lastAccessAt = null;
 
     public function isLoggedIn()
     {
