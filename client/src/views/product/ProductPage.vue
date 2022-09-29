@@ -61,7 +61,11 @@ export default {
     loadComments(id) {
       fetch(`/api/comment/product/all.php?id=${id}`)
         .then(res => res.json())
-        .then(json => this.comments = json);
+        .then(json => {
+          if (json.success) {
+            this.comments = json.comments
+          }
+        });
     },
   },
   mounted() {
