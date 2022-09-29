@@ -1,11 +1,6 @@
 <?php
 
-require '../../utils/strict.php';
-
-header('Content-type: application/json');
-
-// TODO: connect to database
-// TODO: do it only for the current shop
+require '../../utils/request.php';
 
 function generateComments($level, $first = true)
 {
@@ -33,6 +28,7 @@ function generateComments($level, $first = true)
 
 $allComments = generateComments(5);
 
-$resJson = json_encode($allComments);
+$resObj = new \stdClass();
+$resObj->comments = $allComments;
 
-echo $resJson;
+$req->success($resObj);
