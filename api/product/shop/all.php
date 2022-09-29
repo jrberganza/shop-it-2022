@@ -1,11 +1,6 @@
 <?php
 
-require '../../utils/strict.php';
-
-header('Content-type: application/json');
-
-// TODO: connect to database
-// TODO: do it only for the current shop
+require '../../utils/request.php';
 
 $allProducts = array();
 
@@ -24,6 +19,7 @@ for ($currId = 0; $currId < 10; $currId++) {
     array_push($allProducts, $product);
 }
 
-$resJson = json_encode($allProducts);
+$resObj = new \stdClass();
+$resObj->products = $allProducts;
 
-echo $resJson;
+$req->success($resObj);
