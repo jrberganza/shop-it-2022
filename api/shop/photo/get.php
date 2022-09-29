@@ -24,5 +24,5 @@ if (!$row) {
     $req->fail("No shop photo found");
 }
 
-$req->contentType('Content-type: image/png');
-echo $row["photo"];
+$req->contentType('image/png');
+$req->success($row["photo"]);
