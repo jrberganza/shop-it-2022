@@ -71,12 +71,20 @@ export default {
     getPendingShops() {
       fetch('/api/shop/moderation/pending.php')
         .then(res => res.json())
-        .then(json => this.shops = json);
+        .then(json => {
+          if (json.success) {
+            this.shops = json.pending;
+          }
+        });
     },
     getPendingProducts() {
       fetch('/api/product/moderation/pending.php')
         .then(res => res.json())
-        .then(json => this.products = json);
+        .then(json => {
+          if (json.success) {
+            this.products = json.pending;
+          }
+        });
     },
     getPendingComments() {
       fetch('/api/comment/moderation/pending.php')

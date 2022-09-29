@@ -1,11 +1,6 @@
 <?php
 
-require '../../utils/strict.php';
-
-header('Content-type: application/json');
-
-// TODO: connect to database
-// TODO: do it only for the current user
+require '../../utils/request.php';
 
 $allShops = array();
 
@@ -21,6 +16,7 @@ for ($currId = 0; $currId < 10; $currId++) {
     array_push($allShops, $shop);
 }
 
-$resJson = json_encode($allShops);
+$resObj = new \stdClass();
+$resObj->pending = $allShops;
 
-echo $resJson;
+$req->success($resObj);
