@@ -2,12 +2,12 @@
   <div class="shop">
     <template v-if="shop">
       <VCard class="mb-10">
-        <VRow>
-          <VCol cols="12" md="4" order="1" order-md="12">
+        <VRow no-gutters>
+          <VCol cols="12" md="4" order="1" order-md="3">
             <VImg v-if="shop.photos.length > 0" :src="'/api/shop/photo/get.php?id=' + shop.photos[0]" height="250" />
             <VImg v-else src="/images/placeholder.png" height="250" />
           </VCol>
-          <VCol cols="12" md="8" order="12" order-md="1">
+          <VCol cols="12" md="8" order="2" order-md="2">
             <VCard elevation="0">
               <VCardTitle>{{shop.name}}</VCardTitle>
               <VCardSubtitle>{{shop.address}} - {{shop.phoneNumber}}</VCardSubtitle>
@@ -16,6 +16,9 @@
                 <VRating hover size="30" half-increments readonly v-model="shop.rating"></VRating>
               </VCardActions>
             </VCard>
+          </VCol>
+          <VCol cols="12" order="3" order-md="1">
+            <Map :location="[-90.5314, 14.6228]"></Map>
           </VCol>
         </VRow>
       </VCard>
@@ -52,6 +55,7 @@
 <script>
 import { VRow, VCol, VSkeletonLoader, VRating, VDivider, VImg, VCard, VCardTitle, VCardSubtitle, VCardText, VCardActions, VDataIterator } from 'vuetify/lib';
 import CommentTree from '../../components/comments/CommentTree.vue';
+import Map from '../../components/map/Map.vue';
 import { mapState } from 'vuex';
 
 export default {
@@ -90,6 +94,6 @@ export default {
     this.getShop(this.$route.params.id);
     this.loadComments(this.$route.params.id);
   },
-  components: { VRow, VCol, VSkeletonLoader, VRating, VDivider, VCard, VCardTitle, VCardSubtitle, VCardText, VCardActions, VImg, VDataIterator, CommentTree },
+  components: { VRow, VCol, VSkeletonLoader, VRating, VDivider, VCard, VCardTitle, VCardSubtitle, VCardText, VCardActions, VImg, VDataIterator, CommentTree, Map },
 };
 </script>
