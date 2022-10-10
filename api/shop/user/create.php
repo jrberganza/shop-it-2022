@@ -49,6 +49,12 @@ $stmt = $req->prepareQuery("INSERT INTO shops(name, address, latitude, longitude
 $stmt->execute();
 $shopId = $stmt->insert_id;
 
+$stmt = $req->prepareQuery("UPDATE users SET shop_id = @{i:shopId} WHERE user_id = @{i:userId}", [
+    "shopId" => $shopId,
+    "userId" => $req->session->id,
+]);
+$stmt->execute();
+
 $resObj = new \stdClass();
 $resObj->id = $shopId;
 
