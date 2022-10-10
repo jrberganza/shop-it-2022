@@ -4,6 +4,7 @@ CREATE TABLE `users` (
   `display_name` varchar(100) NOT NULL,
   `password_hash` varchar(255) NOT NULL,
   `role` ENUM ('user', 'employee', 'admin') NOT NULL,
+  `shop_id` int,
   `created_at` datetime NOT NULL DEFAULT (now()),
   `updated_at` datetime NOT NULL DEFAULT (now())
 );
@@ -111,13 +112,15 @@ CREATE TABLE `sessions` (
 );
 
 CREATE TABLE `forgot_password_tokens` (
-  `token_id` int AUTO_INCREMENT,
+  `token_id` int PRIMARY KEY AUTO_INCREMENT,
   `user_id` int NOT NULL,
   `token` varchar(255) NOT NULL,
-  PRIMARY KEY (`token_id`, `user_id`)
+  `created_at` datetime NOT NULL DEFAULT (now())
 );
 
 ALTER TABLE `shops` ADD FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`);
+
+ALTER TABLE `users` ADD FOREIGN KEY (`shop_id`) REFERENCES `shops` (`shop_id`);
 
 ALTER TABLE `shop_photos` ADD FOREIGN KEY (`shop_id`) REFERENCES `shops` (`shop_id`);
 
