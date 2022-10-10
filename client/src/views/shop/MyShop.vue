@@ -10,10 +10,33 @@
           <VIcon>mdi-import</VIcon> Import
         </VBtn>
       </VCol>
+      <template v-if="myShop">
+        <VCol cols="12" sm="4">
+          <VBtn block @click="saveShop">
+            <VIcon>mdi-floppy</VIcon> Save
+          </VBtn>
+        </VCol>
+        <VCol cols="12" sm="4">
+          <VBtn block :disabled="!myShop.id" @click="() => $router.push(`/my/shop/products`)">
+            <VIcon>mdi-shopping</VIcon> Products
+          </VBtn>
+        </VCol>
+        <VCol cols="12" sm="4">
+          <VBtn block :disabled="!myShop.id" @click="exportShop">
+            <VIcon>mdi-export</VIcon> Export
+          </VBtn>
+        </VCol>
+      </template>
+      <VCol cols="12" v-else>
+        <VBtn block @click="newShop">
+          <VIcon>mdi-plus</VIcon> Create shop
+        </VBtn>
+      </VCol>
     </VRow>
-    <VCard v-if="myShop">
-      <VImg v-if="myShop.photos.length > 0" :src="'/api/shop/photo/get.php?id=' + myShop.photos[0]" height="250" />
-      <VImg v-else src="/images/placeholder.png" height="250" />
+    <VCard v-if="myShop" class="my-2">
+      <VImg
+        :src="myShop.photos.length > 0 ? '/api/shop/photo/get.php?id=' + myShop.photos[0] : '/images/placeholder.png'"
+        height="250" />
       <VCardTitle>
         <VTextField label="Name" v-model="myShop.name" :rules="[rules.required]" maxlength="255">
         </VTextField>
@@ -30,29 +53,7 @@
           maxlength="512"></VTextarea>
         <VCheckbox label="Disabled?" v-model="myShop.disabled"></VCheckbox>
       </VCardText>
-      <VCardActions>
-        <VRow>
-          <VCol cols="12" sm="4">
-            <VBtn block @click="saveShop">
-              <VIcon>mdi-floppy</VIcon> Save
-            </VBtn>
-          </VCol>
-          <VCol cols="12" sm="4">
-            <VBtn block :disabled="!myShop.id" @click="() => $router.push(`/my/shop/products`)">
-              <VIcon>mdi-shopping</VIcon> Products
-            </VBtn>
-          </VCol>
-          <VCol cols="12" sm="4">
-            <VBtn block :disabled="!myShop.id" @click="exportShop">
-              <VIcon>mdi-export</VIcon> Export
-            </VBtn>
-          </VCol>
-        </VRow>
-      </VCardActions>
     </VCard>
-    <VBtn v-else block @click="newShop">
-      <VIcon>mdi-plus</VIcon> Create shop
-    </VBtn>
   </div>
 </template>
 
