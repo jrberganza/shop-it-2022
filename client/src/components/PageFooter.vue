@@ -75,9 +75,9 @@ export default {
             path: "/",
           },
           {
-            title: "Your Shops",
+            title: "My Shop",
             icon: "mdi-shopping",
-            path: "/your/shops/",
+            path: "/my/shop/",
           },
           {
             title: "Logout",
@@ -93,9 +93,9 @@ export default {
             path: "/",
           },
           {
-            title: "Your Shops",
+            title: "My Shop",
             icon: "mdi-shopping",
-            path: "/your/shops/",
+            path: "/my/shop/",
           },
           {
             title: "Category Editor",
@@ -121,9 +121,9 @@ export default {
             path: "/",
           },
           {
-            title: "Your Shops",
+            title: "My Shop",
             icon: "mdi-shopping",
-            path: "/your/shops/",
+            path: "/my/shop/",
           },
           {
             title: "Category Editor",

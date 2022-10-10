@@ -9,11 +9,6 @@ $req->useSession();
 
 $req->requireLoggedIn();
 
-if (!isset($_GET["id"])) {
-    $req->fail("No shop specified");
-}
-$shopId = $_GET["id"];
-
 $stmt = $req->prepareQuery("SELECT
     name,
     address,
@@ -25,9 +20,7 @@ $stmt = $req->prepareQuery("SELECT
 FROM
     shops s
 WHERE
-    shop_id = @{i:shopId} AND
     user_id = @{i:userId}", [
-    "shopId" => $shopId,
     "userId" => $session->id,
 ]);
 $stmt->execute();

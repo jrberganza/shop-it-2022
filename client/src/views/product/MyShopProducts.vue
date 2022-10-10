@@ -1,6 +1,6 @@
 <template>
-  <div class="your-shops">
-    <h1>Your products on shop {{$route.params.shopId}}</h1>
+  <div class="my-shop-products">
+    <h1>My products</h1>
     <VBtn class="my-2" @click="() => $router.go(-1)">Go back</VBtn>
     <VRow>
       <VCol cols="12" lg="6" order="1" order-lg="12">
@@ -55,7 +55,7 @@
 import { VRow, VCol, VForm, VTextField, VTextarea, VBtn, VCheckbox, VDataIterator, VCard, VCardTitle, VCardSubtitle, VCardText, VCardActions, VImg, VIcon } from 'vuetify/lib';
 
 export default {
-  name: 'YourShopProducts',
+  name: 'MyShopProducts',
   data: () => ({
     /** @type {any | null} */ selectedProduct: null,
     products: [],
@@ -65,12 +65,12 @@ export default {
   }),
   methods: {
     getProducts(shopId) {
-      fetch(`/api/product/shop/all.php?shopId=${shopId}`)
+      fetch(`/api/product/user/all.php`)
         .then(res => res.json())
-        .then(json => this.products = json);
+        .then(json => this.products = json.products);
     },
     getProduct(id) {
-      fetch(`/api/product/get.php?id=${id}`)
+      fetch(`/api/product/user/get.php?id=${id}`)
         .then(res => res.json())
         .then(json => this.selectedProduct = json);
     },

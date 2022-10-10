@@ -49,7 +49,6 @@ if (!$resObj) {
 $stmt = $req->prepareQuery("SELECT shop_photo_id FROM shop_photos WHERE shop_id = @{i:shopId}", [
     "shopId" => $shopId,
 ]);
-$stmt->bind_param("i", $shopId);
 $stmt->execute();
 $result = $stmt->get_result();
 

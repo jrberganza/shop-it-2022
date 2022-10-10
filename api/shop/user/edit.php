@@ -12,9 +12,6 @@ $req->useSession();
 $req->requireLoggedIn();
 
 $jsonBody = $req->getJsonBody([
-    "id" => [
-        "type" => "integer",
-    ],
     "name" => [
         "type" => "string",
         "maxLength" => 255,
@@ -39,8 +36,18 @@ $jsonBody = $req->getJsonBody([
     ],
 ]);
 
-$stmt = $req->prepareQuery("UPDATE shops SET name = @{s:name}, address = @{s:address}, latitude = @{d:latitude}, longitude = @{d:longitude}, phone_number = @{s:phoneNumber}, description = @{s:description}, disabled = @{i:disabled} WHERE shop_id = @{i:shopId} AND user_id = @{i:userId}", [
-    "shopId" => $jsonBody->id,
+$stmt = $req->prepareQuery("UPDATE
+    shops
+SET
+    name = @{s:name},
+    address = @{s:address},
+    latitude = @{d:latitude},
+    longitude = @{d:longitude},
+    phone_number = @{s:phoneNumber},
+    description = @{s:description},
+    disabled = @{i:disabled}
+WHERE
+    user_id = @{i:userId}", [
     "name" => $jsonBody->name,
     "address" => $jsonBody->address,
     "latitude" => $jsonBody->latitude,

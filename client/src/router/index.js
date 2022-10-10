@@ -7,8 +7,8 @@ import ForgotPassword from '../views/login/ForgotPassword.vue';
 import Register from '../views/login/Register.vue';
 import ProductPage from '../views/product/ProductPage.vue';
 import ShopPage from '../views/shop/ShopPage.vue';
-import YourShops from '../views/shop/YourShops.vue';
-import YourShopProducts from '../views/product/YourShopProducts.vue';
+import MyShop from '../views/shop/MyShop.vue';
+import MyShopProducts from '../views/product/MyShopProducts.vue';
 import NotFound from '../views/NotFound.vue';
 import Categories from '../views/category/Categories.vue';
 import ModerationDashboard from '../views/moderation/ModerationDashboard.vue';
@@ -54,14 +54,14 @@ const routes = [
     component: ShopPage,
   },
   {
-    path: '/your/shops/',
-    name: 'YourShops',
-    component: YourShops,
+    path: '/my/shop/',
+    name: 'MyShop',
+    component: MyShop,
   },
   {
-    path: '/your/shop/:shopId/products',
-    name: 'YourShopProducts',
-    component: YourShopProducts,
+    path: '/my/shop/products',
+    name: 'MyShopProducts',
+    component: MyShopProducts,
   },
   {
     path: '/categories',
