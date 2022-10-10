@@ -23,6 +23,12 @@ $jsonBody = $req->getJsonBody([
         "type" => "string",
         "maxLength" => 255,
     ],
+    "latitude" => [
+        "type" => "double",
+    ],
+    "longitude" => [
+        "type" => "double",
+    ],
     "phoneNumber" => [
         "type" => "string",
         "maxLength" => 20,
@@ -32,9 +38,6 @@ $jsonBody = $req->getJsonBody([
         "maxLength" => 512,
     ],
 ]);
-
-$jsonBody->latitude = 0;
-$jsonBody->longitude = 0;
 
 $stmt = $req->prepareQuery("UPDATE shops SET name = @{s:name}, address = @{s:address}, latitude = @{d:latitude}, longitude = @{d:longitude}, phone_number = @{s:phoneNumber}, description = @{s:description}, disabled = @{i:disabled} WHERE shop_id = @{i:shopId} AND user_id = @{i:userId}", [
     "shopId" => $jsonBody->id,

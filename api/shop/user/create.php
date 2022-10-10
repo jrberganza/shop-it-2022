@@ -20,6 +20,12 @@ $jsonBody = $req->getJsonBody([
         "type" => "string",
         "maxLength" => 255,
     ],
+    "latitude" => [
+        "type" => "double",
+    ],
+    "longitude" => [
+        "type" => "double",
+    ],
     "phoneNumber" => [
         "type" => "string",
         "maxLength" => 20,
@@ -29,9 +35,6 @@ $jsonBody = $req->getJsonBody([
         "maxLength" => 512,
     ],
 ]);
-
-$jsonBody->latitude = 0;
-$jsonBody->longitude = 0;
 
 $stmt = $req->prepareQuery("INSERT INTO shops(name, address, latitude, longitude, phone_number, description, disabled, user_id) VALUES (@{s:name}, @{s:address}, @{d:latitude}, @{d:longitude}, @{s:phoneNumber}, @{s:description}, @{i:disabled}, @{i:userId})", [
     "name" => $jsonBody->name,

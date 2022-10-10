@@ -15,6 +15,7 @@
             <VCardSubtitle>
               <VTextField label="Address" v-model="selectedShop.address" :rules="[rules.required]" maxlength="255">
               </VTextField>
+              <Map v-model="selectedShop.location" input></Map>
               <VTextField label="Phone Number" v-model="selectedShop.phoneNumber"
                 :rules="[rules.required, rules.phoneNumber.format]" maxlength="20"></VTextField>
             </VCardSubtitle>
@@ -79,6 +80,7 @@
 
 <script>
 import { VRow, VCol, VForm, VTextField, VTextarea, VBtn, VCheckbox, VFileInput, VDataIterator, VCard, VCardTitle, VCardSubtitle, VCardText, VCardActions, VIcon, VImg } from 'vuetify/lib';
+import Map from '../../components/map/Map.vue';
 
 export default {
   name: 'YourShops',
@@ -100,6 +102,7 @@ export default {
         name: '',
         address: '',
         phoneNumber: '',
+        location: null,
         description: '',
         disabled: true,
         photos: [],
@@ -110,6 +113,8 @@ export default {
         id: this.selectedShop.id,
         name: this.selectedShop.name,
         address: this.selectedShop.address,
+        latitude: this.selectedShop.location[0],
+        longitude: this.selectedShop.location[1],
         phoneNumber: this.selectedShop.phoneNumber,
         description: this.selectedShop.description,
         disabled: this.selectedShop.disabled,
@@ -161,12 +166,15 @@ export default {
     getShop(id) {
       fetch(`/api/shop/get.php?id=${id}`)
         .then(res => res.json())
-        .then(json => this.selectedShop = json);
+        .then(json => {
+          this.selectedShop = json;
+          this.selectedShop.location = [json.latitude, json.longitude];
+        });
     },
   },
   mounted() {
     this.getShops();
   },
-  components: { VRow, VCol, VForm, VTextField, VBtn, VCheckbox, VFileInput, VDataIterator, VCard, VCardTitle, VCardSubtitle, VCardText, VTextarea, VCardActions, VIcon, VImg },
+  components: { VRow, VCol, VForm, VTextField, VBtn, VCheckbox, VFileInput, VDataIterator, VCard, VCardTitle, VCardSubtitle, VCardText, VTextarea, VCardActions, VIcon, VImg, Map },
 };
 </script>

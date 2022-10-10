@@ -14,6 +14,8 @@ $stmt = $req->prepareQuery("SELECT
     s.shop_id as id,
     s.name as name,
     s.address as address,
+    s.latitude as latitude,
+    s.longitude as longitude,
     s.phone_number as phoneNumber,
     s.description as description,
     s.disabled as disabled,

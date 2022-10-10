@@ -18,7 +18,7 @@
             </VCard>
           </VCol>
           <VCol cols="12" order="3" order-md="1">
-            <Map :location="[-90.5314, 14.6228]"></Map>
+            <Map :location="[shop.latitude, shop.longitude]"></Map>
           </VCol>
         </VRow>
       </VCard>
