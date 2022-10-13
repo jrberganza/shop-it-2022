@@ -5,6 +5,8 @@ require '../../utils/request.php';
 $req->useDb();
 $req->useSession();
 
+$req->requireLoggedIn();
+
 $allProducts = array();
 
 $stmt = $req->prepareQuery("SELECT
