@@ -25,14 +25,7 @@ FROM
 LEFT JOIN
     (SELECT avg(rating) as rating, shop_id FROM shop_ratings WHERE shop_id = @{i:shopId}) r USING (shop_id)
 WHERE
-    (
-        (
-            disabled = FALSE
-        ) OR (
-            disabled = TRUE AND
-            user_id = @{i:userId}
-        )
-    ) AND
+    disabled = FALSE AND
     shop_id = @{i:shopId}", [
     "shopId" => $shopId,
     "userId" => $req->session->id,
