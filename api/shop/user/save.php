@@ -2,22 +2,16 @@
 
 require "../../utils/request.php";
 
+if ($_SERVER["REQUEST_METHOD"] != "POST") {
+    $req->fail("Wrong HTTP Method");
+}
+
 $req->useDb();
 $req->useSession();
 
 $req->requireLoggedIn();
 
-$xmlBody = simplexml_load_file("php://input");
-
-if (!$xmlBody) {
-    $req->fail("Malformed request body");
-}
-
-validateObj($xmlBody, [
-    "name" => [
-        "type" => "string",
-        "maxLength" => 255,
-    ],
+$jsonBody = $req->getJsonBody([
     "name" => [
         "type" => "string",
         "maxLength" => 255,
@@ -32,7 +26,7 @@ validateObj($xmlBody, [
     "longitude" => [
         "type" => "double",
     ],
-    "phonenumber" => [
+    "phoneNumber" => [
         "type" => "string",
         "maxLength" => 20,
     ],
@@ -55,13 +49,13 @@ if ($req->session->shopId) {
         disabled = @{i:disabled}
     WHERE
         shop_id = @{i:shopId}", [
-        "name" => $xmlBody->name,
-        "address" => $xmlBody->address,
-        "latitude" => $xmlBody->latitude,
-        "longitude" => $xmlBody->longitude,
-        "phoneNumber" => $xmlBody->phonenumber,
-        "description" => $xmlBody->description,
-        "disabled" => $xmlBody->disabled,
+        "name" => $jsonBody->name,
+        "address" => $jsonBody->address,
+        "latitude" => $jsonBody->latitude,
+        "longitude" => $jsonBody->longitude,
+        "phoneNumber" => $jsonBody->phoneNumber,
+        "description" => $jsonBody->description,
+        "disabled" => $jsonBody->disabled,
         "shopId" => $req->session->shopId,
     ]);
     $stmt->execute();
@@ -91,14 +85,14 @@ if ($req->session->shopId) {
         @{i:disabled},
         @{i:userId}
     )", [
-        "name" => $xmlBody->name,
-        "address" => $xmlBody->address,
-        "latitude" => $xmlBody->latitude,
-        "longitude" => $xmlBody->longitude,
-        "phoneNumber" => $xmlBody->phonenumber,
-        "description" => $xmlBody->description,
-        "disabled" => $xmlBody->disabled,
-        "userId" => $xmlBody->session->id,
+        "name" => $jsonBody->name,
+        "address" => $jsonBody->address,
+        "latitude" => $jsonBody->latitude,
+        "longitude" => $jsonBody->longitude,
+        "phoneNumber" => $jsonBody->phoneNumber,
+        "description" => $jsonBody->description,
+        "disabled" => $jsonBody->disabled,
+        "userId" => $req->session->id,
     ]);
     $stmt->execute();
     $shopId = $stmt->insert_id;

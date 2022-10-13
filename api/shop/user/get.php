@@ -17,9 +17,8 @@ $stmt = $req->prepareQuery("SELECT
 FROM
     shops s
 WHERE
-    user_id = @{i:userId}", [
-    // "shopId" => $shopId,
-    "userId" => $req->session->id,
+    shop_id = @{i:shopId}", [
+    "shopId" => $req->session->shopId,
 ]);
 $stmt->execute();
 $result = $stmt->get_result();

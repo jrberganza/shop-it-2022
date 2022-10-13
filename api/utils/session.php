@@ -7,6 +7,7 @@ class Session
     public string $role;
     public ?string $token = null;
     public ?string $lastAccessAt = null;
+    public ?int $shopId = null;
 
     public function isLoggedIn()
     {
@@ -56,14 +57,17 @@ function getCurrentSession(DbWrapper $db)
         u.email,
         u.display_name,
         u.role,
-        s.token,
-        s.last_access_at
+        ss.token,
+        ss.last_access_at,
+        s.shop_id
     FROM
         users u
     JOIN
-        sessions s USING (user_id)
+        sessions ss USING (user_id)
+    LEFT JOIN
+        shops s USING (shop_id)
     WHERE
-        s.token = @{s:token};", [
+        ss.token = @{s:token};", [
         "token" => $token
     ]);
     $stmt->execute();
@@ -84,6 +88,7 @@ function getCurrentSession(DbWrapper $db)
     $session->role = $row["role"];
     $session->token = $row["token"];
     $session->lastAccessAt = $row["last_access_at"];
+    $session->shopId = $row["shop_id"];
 
     return $session;
 }

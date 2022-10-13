@@ -76,6 +76,7 @@ export default {
   methods: {
     newShop() {
       this.myShop = {
+        id: null,
         name: '',
         address: '',
         phoneNumber: '',
@@ -95,24 +96,15 @@ export default {
         description: this.myShop.description,
         disabled: this.myShop.disabled,
       };
-      if (this.myShop == null) {
-        fetch('/api/shop/user/create.php', {
-          method: "POST",
-          body: JSON.stringify(body),
-        })
-          .then(res => res.json())
-          .then(json => {
-            this.myShop.id = json.id;
-            this.getShop();
-          });
-      } else {
-        fetch('/api/shop/user/edit.php', {
-          method: "POST",
-          body: JSON.stringify(body),
-        })
-          .then(res => res.json())
-          .then(json => this.getShop());
-      }
+      fetch('/api/shop/user/save.php', {
+        method: "POST",
+        body: JSON.stringify(body),
+      })
+        .then(res => res.json())
+        .then(json => {
+          this.myShop.id = json.id;
+          this.getShop();
+        });
     },
     exportShop() {
       let link = document.createElement("a");

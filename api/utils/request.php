@@ -140,7 +140,7 @@ class Request
         } elseif ($this->mimeType == 'text/xml') {
             $xml = new DOMDocument("1.0");
 
-            $errorEl = $xml->createElement("error", "Internal error");
+            $errorEl = $xml->createElement("error", $response);
             $xml->appendChild($errorEl);
 
             echo "" . $xml->saveXML() . "";
