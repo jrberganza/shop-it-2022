@@ -10,12 +10,16 @@ $req->requireLoggedIn();
 $allProducts = array();
 
 $stmt = $req->prepareQuery("SELECT
-    product_id as id,
-    name as name,
-    price as price,
-    substr(description, 1, 100) as shortDesc,
-    disabled as disabled
-FROM products
+    p.product_id as id,
+    p.name as name,
+    p.price as price,
+    substr(p.description, 1, 100) as shortDesc,
+    p.disabled as disabled,
+    s.name as shopName
+FROM
+    products p
+JOIN
+    shops s USING (shop_id)
 WHERE shop_id = @{i:shopId}", [
     "shopId" => $req->session->shopId
 ]);
