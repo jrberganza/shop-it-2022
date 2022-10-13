@@ -34,6 +34,8 @@ if (!$resObj) {
     $req->fail("No product found");
 }
 
+$resObj->disabled = $resObj->disabled != 0;
+
 $stmt = $req->prepareQuery("SELECT product_photo_id FROM product_photos WHERE product_id = @{i:productId}", [
     "productId" => $productId,
 ]);

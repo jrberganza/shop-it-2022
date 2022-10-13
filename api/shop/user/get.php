@@ -29,6 +29,8 @@ if (!$resObj) {
     $req->fail("No shop found");
 }
 
+$resObj->disabled = $resObj->disabled != 0;
+
 $stmt = $req->prepareQuery("SELECT shop_photo_id FROM shop_photos WHERE shop_id = @{i:shopId}", [
     "shopId" => $resObj->id,
 ]);
