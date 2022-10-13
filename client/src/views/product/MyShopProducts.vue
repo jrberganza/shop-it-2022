@@ -88,8 +88,10 @@ export default {
       })
         .then(res => res.json())
         .then(json => {
-          this.selectedProduct.id = json.id;
-          this.getProducts();
+          if (json.success) {
+            this.selectedProduct.id = json.id;
+            this.getProducts();
+          }
         });
     },
     getProducts() {

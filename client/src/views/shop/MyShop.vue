@@ -104,8 +104,10 @@ export default {
       })
         .then(res => res.json())
         .then(json => {
-          this.myShop.id = json.id;
-          this.getShop();
+          if (json.success) {
+            this.myShop.id = json.id;
+            this.getShop();
+          }
         });
     },
     exportShop() {
