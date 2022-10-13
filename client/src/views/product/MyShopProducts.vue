@@ -6,9 +6,9 @@
       <VCol cols="12" lg="6" order="1" order-lg="12">
         <template v-if="selectedProduct">
           <VCard>
-            <VImg v-if="selectedProduct.photos.length > 0"
-              :src="'/api/shop/product/get.php?id=' + selectedProduct.photos[0]" height="250" />
-            <VImg v-else src="/images/placeholder.png" height="250" />
+            <VImg
+              :src="selectedProduct.photos.length > 0 ? '/api/product/photo/get.php?id=' + selectedProduct.photos[0] : '/images/placeholder.png'"
+              height="250" />
             <VCardTitle>
               <VTextField label="Name" v-model="selectedProduct.name" :rules="[rules.required]" maxlength="255">
               </VTextField>
@@ -22,7 +22,7 @@
               <VCheckbox label="Disabled?" v-model="selectedProduct.disabled"></VCheckbox>
             </VCardText>
             <VCardActions>
-              <VBtn block @click="() => selectedProduct = null">
+              <VBtn block @click="saveProduct">
                 <VIcon>mdi-floppy</VIcon> Save
               </VBtn>
             </VCardActions>
@@ -31,7 +31,7 @@
         <p v-else><em>No product selected.</em></p>
       </VCol>
       <VCol cols="12" lg="6" order="12" order-lg="1">
-        <VBtn block>
+        <VBtn block @click="newProduct">
           <VIcon>mdi-plus</VIcon> New product
         </VBtn>
         <VDataIterator :items="products" :itemsPerPage="5">
@@ -64,7 +64,35 @@ export default {
     },
   }),
   methods: {
-    getProducts(shopId) {
+    newProduct() {
+      this.selectedProduct = {
+        id: null,
+        name: '',
+        price: 0.0,
+        description: '',
+        disabled: true,
+        photos: [],
+      }
+    },
+    saveProduct() {
+      let body = {
+        id: this.selectedProduct.id,
+        name: this.selectedProduct.name,
+        price: parseFloat(this.selectedProduct.price),
+        description: this.selectedProduct.description,
+        disabled: this.selectedProduct.disabled,
+      };
+      fetch('/api/product/user/save.php', {
+        method: "POST",
+        body: JSON.stringify(body),
+      })
+        .then(res => res.json())
+        .then(json => {
+          this.selectedProduct.id = json.id;
+          this.getProducts();
+        });
+    },
+    getProducts() {
       fetch(`/api/product/user/all.php`)
         .then(res => res.json())
         .then(json => this.products = json.products);
@@ -76,7 +104,7 @@ export default {
     },
   },
   mounted() {
-    this.getProducts(this.$route.params.shopId);
+    this.getProducts();
   },
   components: { VRow, VCol, VForm, VTextField, VTextarea, VBtn, VCheckbox, VDataIterator, VCard, VCardTitle, VCardSubtitle, VCardText, VCardActions, VImg, VIcon },
 };
