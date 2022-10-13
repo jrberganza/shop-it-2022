@@ -34,6 +34,9 @@ $jsonBody = $req->getJsonBody([
         "type" => "string",
         "maxLength" => 512,
     ],
+    "disabled" => [
+        "type" => "boolean",
+    ],
 ]);
 
 if ($req->session->shopId) {
