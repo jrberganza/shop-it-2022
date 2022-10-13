@@ -2,15 +2,47 @@
 
 require '../../utils/request.php';
 
-$currId = $_GET['id'];
+$req->useDb();
+$req->useSession();
 
-$product = new \stdClass();
+if (!isset($_GET["id"])) {
+    $req->fail("No product specified");
+}
+$productId = $_GET['id'];
 
-$product->id = $currId;
-$product->name = "Producto " . $currId;
-$product->shopName = "Tu Tienda";
-$product->price =  random_int(0, 9999) / 100.0;
-$product->desc = "Product description " . $currId;
-$product->photos = [];
+$stmt = $req->prepareQuery("SELECT
+    product_id as id,
+    name as name,
+    price as price,
+    description as description,
+    disabled as disabled
+FROM products
+WHERE
+    product_id = @{i:productId} AND
+    shop_id = @{i:shopId}", [
+    "productId" => $productId,
+    "shopId" => $req->session->shopId,
+]);
+$stmt->execute();
+$result = $stmt->get_result();
+
+$resObj = $result->fetch_object();
+
+if (!$resObj) {
+    $req->fail("No product found");
+}
+
+$stmt = $req->prepareQuery("SELECT product_photo_id FROM product_photos WHERE product_id = @{i:productId}", [
+    "productId" => $productId,
+]);
+$stmt->execute();
+$result = $stmt->get_result();
+
+$resObj->photos = array();
+while ($row = $result->fetch_array()) {
+    array_push($resObj->photos, $row["product_photo_id"]);
+}
+
+$req->success($resObj);
 
 $req->success($product);

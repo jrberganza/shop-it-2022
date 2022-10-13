@@ -1,7 +1,7 @@
 <template>
   <div class="my-shop-products">
     <h1>My products</h1>
-    <VBtn class="my-2" @click="() => $router.go(-1)">Go back</VBtn>
+    <VBtn class="my-2" @click="() => $router.push('/my/shop')">Go back</VBtn>
     <VRow>
       <VCol cols="12" lg="6" order="1" order-lg="12">
         <template v-if="selectedProduct">
@@ -17,8 +17,8 @@
               <VTextField label="Price" v-model="selectedProduct.price" :rules="[rules.required]"></VTextField>
             </VCardSubtitle>
             <VCardText>
-              <VTextarea label="Description" v-model="selectedProduct.desc" :rules="[rules.required]" counter="512"
-                maxlength="512"></VTextarea>
+              <VTextarea label="Description" v-model="selectedProduct.description" :rules="[rules.required]"
+                counter="512" maxlength="512"></VTextarea>
               <VCheckbox label="Disabled?" v-model="selectedProduct.disabled"></VCheckbox>
             </VCardText>
             <VCardActions>

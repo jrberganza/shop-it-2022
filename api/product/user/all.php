@@ -2,19 +2,37 @@
 
 require '../../utils/request.php';
 
+$req->useDb();
+$req->useSession();
+
 $allProducts = array();
 
-for ($currId = 0; $currId < 10; $currId++) {
-    $product = new \stdClass();
+$stmt = $req->prepareQuery("SELECT
+    product_id as id,
+    name as name,
+    price as price,
+    substr(description, 1, 100) as shortDesc,
+    disabled as disabled
+FROM products
+WHERE shop_id = @{i:shopId}", [
+    "shopId" => $req->session->shopId
+]);
+$stmt->execute();
+$result = $stmt->get_result();
 
-    $product->id = $currId;
-    $product->name = "Producto " . $currId;
-    $product->shopName = "Tu Tienda";
-    $product->price =  random_int(0, 9999) / 100.0;
-    $product->shortDesc = "Product description " . $currId;
-    $product->rating = random_int(0, 10) / 2.0;
-    $product->photos = [];
-    array_push($allProducts, $product);
+while ($row = $result->fetch_object()) {
+    $stmt2 = $req->prepareQuery("SELECT product_photo_id FROM product_photos WHERE product_id = @{i:productId}", [
+        "productId" => $row->id,
+    ]);
+    $stmt2->execute();
+    $result2 = $stmt2->get_result();
+
+    $row->photos = array();
+    while ($row2 = $result2->fetch_array()) {
+        array_push($row->photos, $row2["product_photo_id"]);
+    }
+
+    array_push($allProducts, $row);
 }
 
 $resObj = new \stdClass();
