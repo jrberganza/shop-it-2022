@@ -10,6 +10,29 @@
           <VIcon>mdi-import</VIcon> Import
         </VBtn>
       </VCol>
+    </VRow>
+    <VCard v-if="myShop" class="my-2">
+      <VImg
+        :src="myShop.photos.length > 0 ? '/api/shop/photo/get.php?id=' + myShop.photos[0] : '/images/placeholder.png'"
+        height="250" />
+      <VCardTitle>
+        <VTextField label="Name" v-model="myShop.name" :rules="[rules.required]" maxlength="255">
+        </VTextField>
+      </VCardTitle>
+      <VCardSubtitle>
+        <VTextField label="Address" v-model="myShop.address" :rules="[rules.required]" maxlength="255">
+        </VTextField>
+        <Map v-model="myShop.location" input></Map>
+        <VTextField label="Phone Number" v-model="myShop.phoneNumber"
+          :rules="[rules.required, rules.phoneNumber.format]" maxlength="20"></VTextField>
+      </VCardSubtitle>
+      <VCardText>
+        <VTextarea label="Description" v-model="myShop.description" :rules="[rules.required]" counter="512"
+          maxlength="512"></VTextarea>
+        <VCheckbox label="Disabled?" v-model="myShop.disabled"></VCheckbox>
+      </VCardText>
+    </VCard>
+    <VRow class="my-1">
       <template v-if="myShop">
         <VCol cols="12" sm="4">
           <VBtn block @click="saveShop">
@@ -33,27 +56,6 @@
         </VBtn>
       </VCol>
     </VRow>
-    <VCard v-if="myShop" class="my-2">
-      <VImg
-        :src="myShop.photos.length > 0 ? '/api/shop/photo/get.php?id=' + myShop.photos[0] : '/images/placeholder.png'"
-        height="250" />
-      <VCardTitle>
-        <VTextField label="Name" v-model="myShop.name" :rules="[rules.required]" maxlength="255">
-        </VTextField>
-      </VCardTitle>
-      <VCardSubtitle>
-        <VTextField label="Address" v-model="myShop.address" :rules="[rules.required]" maxlength="255">
-        </VTextField>
-        <Map v-model="myShop.location" input></Map>
-        <VTextField label="Phone Number" v-model="myShop.phoneNumber"
-          :rules="[rules.required, rules.phoneNumber.format]" maxlength="20"></VTextField>
-      </VCardSubtitle>
-      <VCardText>
-        <VTextarea label="Description" v-model="myShop.description" :rules="[rules.required]" counter="512"
-          maxlength="512"></VTextarea>
-        <VCheckbox label="Disabled?" v-model="myShop.disabled"></VCheckbox>
-      </VCardText>
-    </VCard>
   </div>
 </template>
 
