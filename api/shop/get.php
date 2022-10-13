@@ -50,27 +50,25 @@ while ($row = $result->fetch_array()) {
     array_push($resObj->photos, $row["shop_photo_id"]);
 }
 
-// $stmt = $db->prepare("SELECT name, price, substr(description, 1, 100) as shortDesc FROM products WHERE shop_id = ? ORDER BY rand() LIMIT 5");
-// $stmt->bind_param("i", $shopId);
-// $stmt->execute();
-// $result = $stmt->get_result();
+$stmt = $req->prepareQuery("SELECT
+    product_id as id,
+    name as name,
+    price as price,
+    substr(description, 1, 100) as shortDesc
+FROM
+    products
+WHERE
+    disabled = FALSE AND
+    shop_id = @{i:shopId}
+ORDER BY rand() LIMIT 5", [
+    "shopId" => $shopId
+]);
+$stmt->execute();
+$result = $stmt->get_result();
 
-// $resObj->products = array();
-// while ($row = $result->fetch_object()) {
-//     array_push($resObj->products, $row);
-// }
-
-// No product registering yet, autogenerate them
 $resObj->products = array();
-for ($currId = 0; $currId < 24; $currId++) {
-    $product = new \stdClass();
-
-    $product->id = $currId;
-    $product->name = "Producto " . $currId;
-    $product->shopName = "Tienda " . $shopId;
-    $product->price =  random_int(0, 9999) / 100.0;
-    $product->shortDesc = "Product description " . $currId;
-    array_push($resObj->products, $product);
+while ($row = $result->fetch_object()) {
+    array_push($resObj->products, $row);
 }
 
 $req->success($resObj);

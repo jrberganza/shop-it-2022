@@ -16,7 +16,9 @@ $stmt = $req->prepareQuery("SELECT
     p.price as price,
     p.description as description,
     p.disabled as disabled,
-    cast(coalesce(r.rating, 0.0) as double) as rating
+    cast(coalesce(r.rating, 0.0) as double) as rating,
+    s.shop_id as shopId,
+    s.name as shopName
 FROM
     products p
 JOIN
