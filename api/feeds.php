@@ -49,7 +49,7 @@ $stmt->execute();
 $result = $stmt->get_result();
 
 while ($row = $result->fetch_object()) {
-    $stmt2 = $req->prepareQuery("SELECT shop_photo_id FROM shop_photos WHERE shop_id = @{i:shopId}", [
+    $stmt2 = $req->prepareQuery("SELECT photo_id FROM shop_photo JOIN photos USING (photo_id) WHERE shop_id = @{i:shopId}", [
         "shopId" => $row->id,
     ]);
     $stmt2->execute();

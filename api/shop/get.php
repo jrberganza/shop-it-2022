@@ -39,8 +39,8 @@ if (!$resObj) {
     $req->fail("No shop found");
 }
 
-$stmt = $req->prepareQuery("SELECT shop_photo_id FROM shop_photos WHERE shop_id = @{i:shopId}", [
-    "shopId" => $shopId,
+$stmt = $req->prepareQuery("SELECT photo_id FROM shop_photo JOIN photos USING (photo_id) WHERE shop_id = @{i:shopId}", [
+    "shopId" => $row->id,
 ]);
 $stmt->execute();
 $result = $stmt->get_result();

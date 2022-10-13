@@ -23,12 +23,6 @@ CREATE TABLE `shops` (
   `updated_at` datetime NOT NULL DEFAULT (now())
 );
 
-CREATE TABLE `shop_photos` (
-  `shop_photo_id` int PRIMARY KEY AUTO_INCREMENT,
-  `shop_id` int NOT NULL,
-  `photo` blob NOT NULL
-);
-
 CREATE TABLE `products` (
   `product_id` int PRIMARY KEY AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
@@ -40,38 +34,42 @@ CREATE TABLE `products` (
   `updated_at` datetime NOT NULL DEFAULT (now())
 );
 
-CREATE TABLE `product_photos` (
-  `product_photo_id` int PRIMARY KEY AUTO_INCREMENT,
-  `product_id` int NOT NULL,
+CREATE TABLE `photos` (
+  `photo_id` int PRIMARY KEY AUTO_INCREMENT,
   `photo` blob NOT NULL
 );
 
-CREATE TABLE `shop_categories` (
-  `shop_cat_id` int PRIMARY KEY AUTO_INCREMENT,
-  `name` varchar(50) NOT NULL,
-  `disabled` bool NOT NULL DEFAULT TRUE,
-  `created_at` datetime NOT NULL DEFAULT (now()),
-  `updated_at` datetime NOT NULL DEFAULT (now())
-);
-
-CREATE TABLE `shop_cat_relation` (
-  `shop_cat_id` int NOT NULL,
+CREATE TABLE `shop_photo` (
+  `photo_id` int NOT NULL,
   `shop_id` int NOT NULL,
-  PRIMARY KEY (`shop_cat_id`, `shop_id`)
+  PRIMARY KEY (`photo_id`, `shop_id`)
 );
 
-CREATE TABLE `product_categories` (
-  `product_cat_id` int PRIMARY KEY AUTO_INCREMENT,
+CREATE TABLE `product_photo` (
+  `photo_id` int NOT NULL,
+  `product_id` int NOT NULL,
+  PRIMARY KEY (`photo_id`, `product_id`)
+);
+
+CREATE TABLE `categories` (
+  `category_id` int PRIMARY KEY AUTO_INCREMENT,
+  `type` ENUM ('shop', 'product') NOT NULL,
   `name` varchar(50) NOT NULL,
   `disabled` bool NOT NULL DEFAULT TRUE,
   `created_at` datetime NOT NULL DEFAULT (now()),
   `updated_at` datetime NOT NULL DEFAULT (now())
 );
 
-CREATE TABLE `prod_cat_relation` (
-  `product_cat_id` int NOT NULL,
+CREATE TABLE `shop_category` (
+  `category_id` int NOT NULL,
+  `shop_id` int NOT NULL,
+  PRIMARY KEY (`category_id`, `shop_id`)
+);
+
+CREATE TABLE `product_category` (
+  `category_id` int NOT NULL,
   `product_id` int NOT NULL,
-  PRIMARY KEY (`product_cat_id`, `product_id`)
+  PRIMARY KEY (`category_id`, `product_id`)
 );
 
 CREATE TABLE `comments` (
@@ -122,19 +120,23 @@ ALTER TABLE `shops` ADD FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`);
 
 ALTER TABLE `users` ADD FOREIGN KEY (`shop_id`) REFERENCES `shops` (`shop_id`);
 
-ALTER TABLE `shop_photos` ADD FOREIGN KEY (`shop_id`) REFERENCES `shops` (`shop_id`);
-
 ALTER TABLE `products` ADD FOREIGN KEY (`shop_id`) REFERENCES `shops` (`shop_id`);
 
-ALTER TABLE `product_photos` ADD FOREIGN KEY (`product_id`) REFERENCES `products` (`product_id`);
+ALTER TABLE `shop_photo` ADD FOREIGN KEY (`photo_id`) REFERENCES `photos` (`photo_id`);
 
-ALTER TABLE `shop_cat_relation` ADD FOREIGN KEY (`shop_cat_id`) REFERENCES `shop_categories` (`shop_cat_id`);
+ALTER TABLE `shop_photo` ADD FOREIGN KEY (`shop_id`) REFERENCES `shops` (`shop_id`);
 
-ALTER TABLE `shop_cat_relation` ADD FOREIGN KEY (`shop_id`) REFERENCES `shops` (`shop_id`);
+ALTER TABLE `product_photo` ADD FOREIGN KEY (`photo_id`) REFERENCES `photos` (`photo_id`);
 
-ALTER TABLE `prod_cat_relation` ADD FOREIGN KEY (`product_cat_id`) REFERENCES `product_categories` (`product_cat_id`);
+ALTER TABLE `product_photo` ADD FOREIGN KEY (`product_id`) REFERENCES `products` (`product_id`);
 
-ALTER TABLE `prod_cat_relation` ADD FOREIGN KEY (`product_id`) REFERENCES `products` (`product_id`);
+ALTER TABLE `shop_category` ADD FOREIGN KEY (`category_id`) REFERENCES `categories` (`category_id`);
+
+ALTER TABLE `shop_category` ADD FOREIGN KEY (`shop_id`) REFERENCES `shops` (`shop_id`);
+
+ALTER TABLE `product_category` ADD FOREIGN KEY (`category_id`) REFERENCES `categories` (`category_id`);
+
+ALTER TABLE `product_category` ADD FOREIGN KEY (`product_id`) REFERENCES `products` (`product_id`);
 
 ALTER TABLE `comments` ADD FOREIGN KEY (`author_id`) REFERENCES `users` (`user_id`);
 
