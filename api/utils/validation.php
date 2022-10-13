@@ -4,12 +4,16 @@ function validateObj($toCheck, array $expected)
 {
     foreach ($expected as $name => $what) {
         if ((!isset($what["optional"]) || (isset($what["optional"]) && !$what["optional"])) && !isset($toCheck->$name)) {
-            return "Expected " . $what["type"] . " " . $name;
+            return "Expected " . $name . " to be a " . $what["type"];
         }
 
         if (isset($toCheck->$name)) {
             if (gettype($toCheck->$name) != $what["type"]) {
-                return "Expected " . $name . " to be a " . $what["type"];
+                if ($what["type"] == "double" && gettype($toCheck->$name) == "integer") {
+                    // ignore
+                } else {
+                    return "Expected " . $name . " to be a " . $what["type"];
+                }
             }
 
             if (isset($what["maxLength"]) && strlen($toCheck->$name) > $what["maxLength"]) {
