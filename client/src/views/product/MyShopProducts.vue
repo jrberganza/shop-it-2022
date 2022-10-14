@@ -4,22 +4,22 @@
     <VBtn class="my-2" @click="() => $router.push('/my/shop')">Go back</VBtn>
     <VRow>
       <VCol cols="12" lg="6" order="1" order-lg="12">
-        <template v-if="selectedProduct">
+        <template v-if="myProduct">
           <VCard>
             <VImg
-              :src="selectedProduct.photos.length > 0 ? '/api/product/photo/get.php?id=' + selectedProduct.photos[0] : '/images/placeholder.png'"
+              :src="myProduct.photos.length > 0 ? '/api/photo/get.php?id=' + myProduct.photos[0] : '/images/placeholder.png'"
               height="250" />
             <VCardTitle>
-              <VTextField label="Name" v-model="selectedProduct.name" :rules="[rules.required]" maxlength="255">
+              <VTextField label="Name" v-model="myProduct.name" :rules="[rules.required]" maxlength="255">
               </VTextField>
             </VCardTitle>
             <VCardSubtitle>
-              <VTextField label="Price" v-model="selectedProduct.price" :rules="[rules.required]"></VTextField>
+              <VTextField label="Price" v-model="myProduct.price" :rules="[rules.required]"></VTextField>
             </VCardSubtitle>
             <VCardText>
-              <VTextarea label="Description" v-model="selectedProduct.description" :rules="[rules.required]"
-                counter="512" maxlength="512"></VTextarea>
-              <VCheckbox label="Disabled?" v-model="selectedProduct.disabled"></VCheckbox>
+              <VTextarea label="Description" v-model="myProduct.description" :rules="[rules.required]" counter="512"
+                maxlength="512"></VTextarea>
+              <VCheckbox label="Disabled?" v-model="myProduct.disabled"></VCheckbox>
             </VCardText>
             <VCardActions>
               <VBtn block @click="saveProduct">
@@ -37,8 +37,7 @@
         <VDataIterator :items="products" :itemsPerPage="5">
           <template v-slot:default="{ items }">
             <VCard v-for="product in items" :key="product.id" class="my-2" @click="getProduct(product.id)">
-              <VImg v-if="product.photos.length > 0" :src="'/api/shop/product/get.php?id=' + product.photos[0]"
-                height="100" />
+              <VImg v-if="product.photos.length > 0" :src="'/api/photo/get.php?id=' + product.photos[0]" height="100" />
               <VImg v-else src="/images/placeholder.png" height="100" />
               <VCardTitle>{{product.name}}</VCardTitle>
               <VCardSubtitle>{{product.price}} - {{product.shopName}}</VCardSubtitle>
@@ -57,7 +56,7 @@ import { VRow, VCol, VForm, VTextField, VTextarea, VBtn, VCheckbox, VDataIterato
 export default {
   name: 'MyShopProducts',
   data: () => ({
-    /** @type {any | null} */ selectedProduct: null,
+    /** @type {any | null} */ myProduct: null,
     products: [],
     rules: {
       required: v => !!v || "Required",
@@ -65,7 +64,7 @@ export default {
   }),
   methods: {
     newProduct() {
-      this.selectedProduct = {
+      this.myProduct = {
         id: null,
         name: '',
         price: 0.0,
@@ -76,11 +75,11 @@ export default {
     },
     saveProduct() {
       let body = {
-        id: this.selectedProduct.id,
-        name: this.selectedProduct.name,
-        price: parseFloat(this.selectedProduct.price),
-        description: this.selectedProduct.description,
-        disabled: this.selectedProduct.disabled,
+        id: this.myProduct.id,
+        name: this.myProduct.name,
+        price: parseFloat(this.myProduct.price),
+        description: this.myProduct.description,
+        disabled: this.myProduct.disabled,
       };
       fetch('/api/product/user/save.php', {
         method: "POST",
@@ -89,7 +88,7 @@ export default {
         .then(res => res.json())
         .then(json => {
           if (json.success) {
-            this.selectedProduct.id = json.id;
+            this.myProduct.id = json.id;
             this.getProducts();
           }
         });
@@ -102,7 +101,7 @@ export default {
     getProduct(id) {
       fetch(`/api/product/user/get.php?id=${id}`)
         .then(res => res.json())
-        .then(json => this.selectedProduct = json);
+        .then(json => this.myProduct = json);
     },
   },
   mounted() {

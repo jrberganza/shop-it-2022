@@ -4,7 +4,7 @@
       <VCard class="mb-10">
         <VRow no-gutters>
           <VCol cols="12" md="4" order="1" order-md="3">
-            <VImg v-if="shop.photos.length > 0" :src="'/api/shop/photo/get.php?id=' + shop.photos[0]" height="250" />
+            <VImg v-if="shop.photos.length > 0" :src="'/api/photo/get.php?id=' + shop.photos[0]" height="250" />
             <VImg v-else src="/images/placeholder.png" height="250" />
           </VCol>
           <VCol cols="12" md="8" order="2" order-md="2">

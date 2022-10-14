@@ -12,8 +12,7 @@
       </VCol>
     </VRow>
     <VCard v-if="myShop" class="my-2">
-      <VImg
-        :src="myShop.photos.length > 0 ? '/api/shop/photo/get.php?id=' + myShop.photos[0] : '/images/placeholder.png'"
+      <VImg :src="myShop.photos.length > 0 ? '/api/photo/get.php?id=' + myShop.photos[0] : '/images/placeholder.png'"
         height="250" />
       <VCardTitle>
         <VTextField label="Name" v-model="myShop.name" :rules="[rules.required]" maxlength="255">
