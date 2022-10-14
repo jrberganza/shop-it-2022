@@ -74,6 +74,8 @@ CREATE TABLE `product_category` (
 
 CREATE TABLE `comments` (
   `comment_id` int PRIMARY KEY AUTO_INCREMENT,
+  `shop_id` int,
+  `product_id` int,
   `author_id` int NOT NULL,
   `content` varchar(512) NOT NULL,
   `parent_comment_id` int DEFAULT NULL,
@@ -137,6 +139,10 @@ ALTER TABLE `shop_category` ADD FOREIGN KEY (`shop_id`) REFERENCES `shops` (`sho
 ALTER TABLE `product_category` ADD FOREIGN KEY (`category_id`) REFERENCES `categories` (`category_id`);
 
 ALTER TABLE `product_category` ADD FOREIGN KEY (`product_id`) REFERENCES `products` (`product_id`);
+
+ALTER TABLE `comments` ADD FOREIGN KEY (`shop_id`) REFERENCES `shops` (`shop_id`);
+
+ALTER TABLE `comments` ADD FOREIGN KEY (`product_id`) REFERENCES `products` (`product_id`);
 
 ALTER TABLE `comments` ADD FOREIGN KEY (`author_id`) REFERENCES `users` (`user_id`);
 

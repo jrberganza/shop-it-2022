@@ -110,12 +110,16 @@ Ref: product_category.product_id > products.product_id
 
 Table comments {
     comment_id int [pk, increment]
+    shop_id int [null]
+    product_id int [null]
     author_id int [not null]
     content varchar(512) [not null]
     parent_comment_id int [null, default: NULL]
     created_at datetime [not null]
 }
 
+Ref: comments.shop_id > shops.shop_id
+Ref: comments.product_id > products.product_id
 Ref: comments.author_id > users.user_id
 Ref: comments.parent_comment_id > comments.comment_id
 
