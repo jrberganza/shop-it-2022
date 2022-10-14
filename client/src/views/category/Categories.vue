@@ -34,7 +34,7 @@ export default {
   }),
   methods: {
     getProductCategories() {
-      fetch(`/api/product/category/all.php`)
+      fetch(`/api/category/admin/allProduct.php`)
         .then(res => res.json())
         .then(json => {
           if (json.success) {
@@ -43,7 +43,7 @@ export default {
         });
     },
     getShopCategories() {
-      fetch(`/api/shop/category/all.php`)
+      fetch(`/api/category/admin/allShop.php`)
         .then(res => res.json())
         .then(json => {
           if (json.success) {
