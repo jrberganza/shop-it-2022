@@ -40,7 +40,7 @@ if (!$resObj) {
     $req->fail("No product found");
 }
 
-$stmt = $req->prepareQuery("SELECT product_photo_id FROM product_photos WHERE product_id = @{i:productId}", [
+$stmt = $req->prepareQuery("SELECT p.photo_id FROM product_photo pp JOIN photos p USING (photo_id) WHERE pp.product_id = @{i:productId}", [
     "productId" => $productId,
 ]);
 $stmt->execute();
