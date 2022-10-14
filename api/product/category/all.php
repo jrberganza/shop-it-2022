@@ -2,15 +2,25 @@
 
 require '../../utils/request.php';
 
+$req->useDb();
+$req->useSession();
+
+$stmt = $req->prepareQuery("SELECT
+    category_id as id,
+    name as name
+FROM
+    categories
+WHERE
+    disabled = FALSE AND
+    type = 'product'
+", []);
+$stmt->execute();
+$result = $stmt->get_result();
+
 $allCategories = array();
 
-for ($currId = 0; $currId < 10; $currId++) {
-    $category = new \stdClass();
-
-    $category->id = $currId;
-    $category->name = bin2hex(random_bytes(8));
-    $category->disabled = random_int(0, 1) == 1;
-    array_push($allCategories, $category);
+while ($row = $result->fetch_object()) {
+    array_push($allCategories, $row);
 }
 
 $resObj = new \stdClass();

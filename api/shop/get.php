@@ -40,7 +40,7 @@ if (!$resObj) {
 }
 
 $stmt = $req->prepareQuery("SELECT p.photo_id FROM shop_photo sp JOIN photos p USING (photo_id) WHERE sp.shop_id = @{i:shopId}", [
-    "shopId" => $row->id,
+    "shopId" => $shopId,
 ]);
 $stmt->execute();
 $result = $stmt->get_result();

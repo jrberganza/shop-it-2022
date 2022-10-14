@@ -32,7 +32,7 @@ if (!$resObj) {
 $resObj->disabled = $resObj->disabled != 0;
 
 $stmt = $req->prepareQuery("SELECT p.photo_id FROM shop_photo sp JOIN photos p USING (photo_id) WHERE sp.shop_id = @{i:shopId}", [
-    "shopId" => $row->id,
+    "shopId" => $req->session->shopId,
 ]);
 $stmt->execute();
 $result = $stmt->get_result();
