@@ -31,6 +31,10 @@ function validateObj($toCheck, array $expected)
             if (isset($what["min"]) && $toCheck->$name < $what["min"]) {
                 return "Expected " . $name . " to be at least " . $what["min"];
             }
+
+            if (isset($what["in"]) && !in_array($toCheck->$name, $what["in"])) {
+                return "Expected " . $name . " to be one of: " . join(", ", $what["in"]);
+            }
         }
     }
 

@@ -5,6 +5,8 @@ require '../../utils/request.php';
 $req->useDb();
 $req->useSession();
 
+$req->requireAdminPrivileges();
+
 $stmt = $req->prepareQuery("SELECT
     category_id as id,
     name as name,
@@ -21,6 +23,7 @@ $result = $stmt->get_result();
 $allCategories = array();
 
 while ($row = $result->fetch_object()) {
+    $row->disabled = $row->disabled != 0;
     array_push($allCategories, $row);
 }
 
