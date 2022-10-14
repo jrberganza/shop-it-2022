@@ -47,7 +47,7 @@ $result = $stmt->get_result();
 
 $resObj->photos = array();
 while ($row = $result->fetch_array()) {
-    array_push($resObj->photos, $row["shop_photo_id"]);
+    array_push($resObj->photos, $row["photo_id"]);
 }
 
 $stmt = $req->prepareQuery("SELECT

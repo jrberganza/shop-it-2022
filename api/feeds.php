@@ -10,17 +10,42 @@ $productFeed = new \stdClass();
 $productFeed->name = 'Recent';
 $productFeed->type = 'product';
 $productFeed->content = array();
-for ($currId = 0; $currId < 5; $currId++) {
-    $product = new \stdClass();
 
-    $product->id = $currId;
-    $product->name = "Producto " . $currId;
-    $product->shopName = "Tienda " . random_int(1, 100);
-    $product->price =  random_int(0, 9999) / 100.0;
-    $product->shortDesc = "Product description " . $currId;
-    $product->rating = random_int(0, 10) / 2.0;
-    $product->photos = [];
-    array_push($productFeed->content, $product);
+$stmt = $req->prepareQuery("SELECT
+    p.product_id as id,
+    p.name as name,
+    p.price as price,
+    p.description as description,
+    p.disabled as disabled,
+    cast(coalesce(r.rating, 0.0) as double) as rating,
+    s.shop_id as shopId,
+    s.name as shopName
+FROM
+    products p
+JOIN
+    shops s USING (shop_id)
+LEFT JOIN
+    (SELECT avg(rating) as rating, product_id FROM product_ratings GROUP BY product_id) r USING (product_id)
+WHERE
+    p.disabled = FALSE
+ORDER BY rating DESC
+LIMIT 5", []);
+$stmt->execute();
+$result = $stmt->get_result();
+
+while ($row = $result->fetch_object()) {
+    $stmt2 = $req->prepareQuery("SELECT p.photo_id FROM product_photo pp JOIN photos p USING (photo_id) WHERE pp.product_id = @{i:productId}", [
+        "productId" => $row->id,
+    ]);
+    $stmt2->execute();
+    $result2 = $stmt2->get_result();
+
+    $row->photos = array();
+    while ($row2 = $result2->fetch_array()) {
+        array_push($row->photos, $row2["photo_id"]);
+    }
+
+    array_push($productFeed->content, $row);
 }
 array_push($feeds, $productFeed);
 
@@ -42,7 +67,7 @@ FROM
 LEFT JOIN
     (SELECT avg(rating) as rating, shop_id FROM shop_ratings GROUP BY shop_id) r USING (shop_id)
 WHERE
-    disabled = FALSE
+    s.disabled = FALSE
 ORDER BY rating DESC
 LIMIT 5", []);
 $stmt->execute();
@@ -57,7 +82,7 @@ while ($row = $result->fetch_object()) {
 
     $row->photos = array();
     while ($row2 = $result2->fetch_array()) {
-        array_push($row->photos, $row2["shop_photo_id"]);
+        array_push($row->photos, $row2["photo_id"]);
     }
 
     array_push($shopFeed->content, $row);
@@ -68,17 +93,42 @@ $trendingFeed = new \stdClass();
 $trendingFeed->name = 'Trending products';
 $trendingFeed->type = 'product';
 $trendingFeed->content = array();
-for ($currId = 0; $currId < 5; $currId++) {
-    $product = new \stdClass();
 
-    $product->id = $currId;
-    $product->name = "Producto " . $currId;
-    $product->shopName = "Tienda " . random_int(1, 100);
-    $product->price =  random_int(0, 9999) / 100.0;
-    $product->shortDesc = "Product description " . $currId;
-    $product->rating = random_int(0, 10) / 2.0;
-    $product->photos = [];
-    array_push($trendingFeed->content, $product);
+$stmt = $req->prepareQuery("SELECT
+    p.product_id as id,
+    p.name as name,
+    p.price as price,
+    p.description as description,
+    p.disabled as disabled,
+    cast(coalesce(r.rating, 0.0) as double) as rating,
+    s.shop_id as shopId,
+    s.name as shopName
+FROM
+    products p
+JOIN
+    shops s USING (shop_id)
+LEFT JOIN
+    (SELECT avg(rating) as rating, product_id FROM product_ratings GROUP BY product_id) r USING (product_id)
+WHERE
+    p.disabled = FALSE
+ORDER BY rating DESC
+LIMIT 5", []);
+$stmt->execute();
+$result = $stmt->get_result();
+
+while ($row = $result->fetch_object()) {
+    $stmt2 = $req->prepareQuery("SELECT p.photo_id FROM product_photo pp JOIN photos p USING (photo_id) WHERE pp.product_id = @{i:productId}", [
+        "productId" => $row->id,
+    ]);
+    $stmt2->execute();
+    $result2 = $stmt2->get_result();
+
+    $row->photos = array();
+    while ($row2 = $result2->fetch_array()) {
+        array_push($row->photos, $row2["photo_id"]);
+    }
+
+    array_push($trendingFeed->content, $row);
 }
 array_push($feeds, $trendingFeed);
 

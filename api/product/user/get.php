@@ -44,7 +44,7 @@ $result = $stmt->get_result();
 
 $resObj->photos = array();
 while ($row = $result->fetch_array()) {
-    array_push($resObj->photos, $row["product_photo_id"]);
+    array_push($resObj->photos, $row["photo_id"]);
 }
 
 $req->success($resObj);

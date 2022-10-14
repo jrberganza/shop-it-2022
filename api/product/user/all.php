@@ -35,7 +35,7 @@ while ($row = $result->fetch_object()) {
 
     $row->photos = array();
     while ($row2 = $result2->fetch_array()) {
-        array_push($row->photos, $row2["product_photo_id"]);
+        array_push($row->photos, $row2["photo_id"]);
     }
 
     array_push($allProducts, $row);
