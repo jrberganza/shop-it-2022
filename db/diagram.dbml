@@ -195,10 +195,11 @@ Table homepage_blocks {
   block_id int [pk, increment]
   type homepage_block_type [not null]
   position int [not null]
-  homepage_block_size homepage_block_size [not null, default: 'full']
+  size homepage_block_size [not null, default: 'full']
 }
 
 enum feed_block_type {
+  auto_top_rated
   auto_trending
   auto_recent
   manual

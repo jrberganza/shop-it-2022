@@ -122,13 +122,13 @@ CREATE TABLE `homepage_blocks` (
   `block_id` int PRIMARY KEY AUTO_INCREMENT,
   `type` ENUM ('feed', 'banner') NOT NULL,
   `position` int NOT NULL,
-  `homepage_block_size` ENUM ('full', 'half', 'third', 'fourth', 'twelfth') NOT NULL DEFAULT "full"
+  `size` ENUM ('full', 'half', 'third', 'fourth', 'twelfth') NOT NULL DEFAULT "full"
 );
 
 CREATE TABLE `feed_blocks` (
   `feed_block_id` int PRIMARY KEY AUTO_INCREMENT,
   `block_id` int NOT NULL,
-  `type` ENUM ('auto_trending', 'auto_recent', 'manual') NOT NULL,
+  `type` ENUM ('auto_top_rated', 'auto_trending', 'auto_recent', 'manual') NOT NULL,
   `item_type` ENUM ('shop', 'product') NOT NULL,
   `max_size` int NOT NULL
 );
