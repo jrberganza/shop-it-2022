@@ -146,6 +146,11 @@ export default {
             path: "/reports/dashboard/",
           },
           {
+            title: "Homepage Editor",
+            icon: "mdi-home",
+            path: "/home/edit/",
+          },
+          {
             title: "Logout",
             icon: "mdi-logout",
             action: () => this.logout(),
