@@ -135,6 +135,7 @@ CREATE TABLE `feed_blocks` (
 );
 
 CREATE TABLE `feed_block_items` (
+  `feed_block_item_id` int PRIMARY KEY AUTO_INCREMENT,
   `feed_block_id` int NOT NULL,
   `shop_id` int,
   `product_id` int
@@ -194,15 +195,15 @@ ALTER TABLE `sessions` ADD FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`
 
 ALTER TABLE `forgot_password_tokens` ADD FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`);
 
-ALTER TABLE `feed_blocks` ADD FOREIGN KEY (`block_id`) REFERENCES `homepage_blocks` (`block_id`);
+ALTER TABLE `feed_blocks` ADD FOREIGN KEY (`block_id`) REFERENCES `homepage_blocks` (`block_id`) ON DELETE CASCADE;
 
-ALTER TABLE `feed_block_items` ADD FOREIGN KEY (`feed_block_id`) REFERENCES `feed_blocks` (`feed_block_id`);
+ALTER TABLE `feed_block_items` ADD FOREIGN KEY (`feed_block_id`) REFERENCES `feed_blocks` (`feed_block_id`) ON DELETE CASCADE;
 
 ALTER TABLE `feed_block_items` ADD FOREIGN KEY (`shop_id`) REFERENCES `shops` (`shop_id`);
 
 ALTER TABLE `feed_block_items` ADD FOREIGN KEY (`product_id`) REFERENCES `products` (`product_id`);
 
-ALTER TABLE `banner_blocks` ADD FOREIGN KEY (`block_id`) REFERENCES `homepage_blocks` (`block_id`);
+ALTER TABLE `banner_blocks` ADD FOREIGN KEY (`block_id`) REFERENCES `homepage_blocks` (`block_id`) ON DELETE CASCADE;
 
 ALTER TABLE `banner_blocks` ADD FOREIGN KEY (`photo_id`) REFERENCES `photos` (`photo_id`);
 

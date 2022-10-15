@@ -219,15 +219,16 @@ Table feed_blocks {
   max_size int [not null]
 }
 
-Ref: feed_blocks.block_id > homepage_blocks.block_id
+Ref: feed_blocks.block_id > homepage_blocks.block_id [delete: cascade]
 
 Table feed_block_items {
+  feed_block_item_id int [pk, increment]
   feed_block_id int [not null]
   shop_id int [null]
   product_id int [null]
 }
 
-Ref: feed_block_items.feed_block_id > feed_blocks.feed_block_id
+Ref: feed_block_items.feed_block_id > feed_blocks.feed_block_id [delete: cascade]
 Ref: feed_block_items.shop_id > shops.shop_id
 Ref: feed_block_items.product_id > products.product_id
 
@@ -239,5 +240,5 @@ Table banner_blocks {
   photo_id int [null]
 }
 
-Ref: banner_blocks.block_id > homepage_blocks.block_id
+Ref: banner_blocks.block_id > homepage_blocks.block_id [delete: cascade]
 Ref: banner_blocks.photo_id > photos.photo_id
