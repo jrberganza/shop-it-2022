@@ -1,0 +1,44 @@
+<?php
+
+require '../utils/request.php';
+
+if ($_SERVER["REQUEST_METHOD"] != "POST") {
+    $req->fail("Wrong HTTP Method");
+}
+
+$req->useDb();
+$req->useSession();
+
+$req->requireLoggedIn();
+
+$jsonBody = $req->getJsonBody([
+    "id" => [
+        "type" => "integer",
+    ],
+    "value" => [
+        "type" => "integer",
+        "min" => -1,
+        "max" => 1,
+    ],
+]);
+
+$stmt = $req->prepareQuery("INSERT INTO comment_votes(
+    comment_id,
+    user_id,
+    value
+) VALUES (
+    @{i:commentId},
+    @{i:userId},
+    @{i:value}
+) ON DUPLICATE KEY UPDATE
+    value = @{i:value}", [
+    "commentId" => $jsonBody->id,
+    "userId" => $req->session->id,
+    "value" => $jsonBody->value,
+]);
+$stmt->execute();
+$commentId = $stmt->insert_id;
+
+$resObj = new \stdClass();
+
+$req->success($resObj);
