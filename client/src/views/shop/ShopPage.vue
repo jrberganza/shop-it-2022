@@ -44,7 +44,7 @@
       </template>
       <VDivider></VDivider>
       <h1>Comments</h1>
-      <CommentTree :comments="comments"></CommentTree>
+      <CommentTree :comments="comments" itemType="shop" :itemId="parseInt(this.$route.params.id, 10)"></CommentTree>
     </template>
     <template v-else>
       <VSkeletonLoader type="card"></VSkeletonLoader>

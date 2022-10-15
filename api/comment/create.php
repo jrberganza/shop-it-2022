@@ -49,7 +49,7 @@ $query .= "
 $stmt = $req->prepareQuery($query, [
     "itemId" => $jsonBody->itemId,
     "authorId" => $req->session->id,
-    "content" => $jsonBody->itemId,
+    "content" => $jsonBody->content,
     "parentCommentId" => isset($jsonBody->parentCommentId) ? $jsonBody->parentCommentId : null,
 ]);
 $stmt->execute();
