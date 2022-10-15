@@ -50,12 +50,12 @@ export default {
     searchTerm: '',
   }),
   computed: {
-    ...mapState(['session', 'searchQuery']),
+    ...mapState(['session', 'searchRequest']),
   },
   methods: {
     search() {
-      this.$router.push(`/search/?q=${encodeURIComponent(this.searchTerm)}`);
-      this.updateSearchQuery(this.searchTerm);
+      this.updateSearchRequest({ ...this.searchRequest, query: this.searchTerm });
+      this.$router.push(`/search/?q=${encodeURIComponent(this.searchRequest.query)}&shopCategories=${this.searchRequest.shopCategories.map(d => encodeURIComponent(d)).join(",")}&productCategories=${this.searchRequest.productCategories.map(d => encodeURIComponent(d)).join(",")}`);
     },
     searchOnEnter(ev) {
       if (ev.key.toLowerCase() === 'enter') {
@@ -70,13 +70,17 @@ export default {
           this.$router.push('/');
         });
     },
-    ...mapMutations(['updateSearchQuery'])
+    ...mapMutations(['updateSearchRequest'])
   },
   mounted() {
     if (this.$route.name == "Search") {
       if (typeof this.$route.query.q == "string") {
-        this.searchTerm = this.$route.query.q;
-        this.updateSearchQuery(this.searchTerm);
+        this.searchRequest.query = this.$route.query.q;
+        this.searchRequest.shopCategories = this.$route.query.shopCategories ? this.$route.query.shopCategories.split(",").map(d => parseInt(d, 10)) : [];
+        this.searchRequest.productCategories = this.$route.query.productCategories ? this.$route.query.productCategories.split(",").map(d => parseInt(d, 10)) : [];
+        this.updateSearchRequest(this.searchRequest);
+
+        this.searchTerm = this.searchRequest.query;
       }
     }
   },

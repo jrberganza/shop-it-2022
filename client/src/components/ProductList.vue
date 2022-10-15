@@ -1,7 +1,7 @@
 <template>
   <VRow>
     <template v-if="products.length > 0">
-      <VCol v-for="product in products" :key="product.id" cols="12" md="6" lg="4">
+      <VCol v-for="product in products" :key="product.id" cols="12" md="6">
         <VCard @click="() => $router.push('/product/' + product.id)">
           <VImg v-if="product.photos.length > 0" :src="'/api/photo/get.php?id=' + product.photos[0]" height="100" />
           <VImg v-else src="/images/placeholder.png" height="100" />

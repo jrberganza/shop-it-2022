@@ -6,14 +6,18 @@ Vue.use(Vuex);
 export default new Vuex.Store({
   state: {
     session: null,
-    searchQuery: '',
+    searchRequest: {
+      query: '',
+      shopCategories: [],
+      productCategories: [],
+    },
   },
   mutations: {
     updateSession(state, session) {
       state.session = session;
     },
-    updateSearchQuery(state, searchQuery) {
-      state.searchQuery = searchQuery;
+    updateSearchRequest(state, searchRequest) {
+      state.searchRequest = searchRequest;
     },
   },
   actions: {

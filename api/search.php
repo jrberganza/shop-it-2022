@@ -4,16 +4,15 @@ require 'utils/request.php';
 
 $req->useDb();
 
-$searchQuery = $_GET["q"];
+$searchQuery = isset($_GET["q"]) ? $_GET["q"] : null;
+$productCategories = isset($_GET["productCategories"]) ? (strlen($_GET["productCategories"]) == 0 ? [] : explode(",", $_GET["productCategories"])) : [];
+$shopCategories = isset($_GET["shopCategories"]) ? (strlen($_GET["shopCategories"]) == 0 ? [] : explode(",", $_GET["shopCategories"])) : [];
 
-$searchResults = array();
+$searchResults = new \stdClass;
 
-$productResults = new \stdClass();
-$productResults->name = 'Products';
-$productResults->type = 'product';
-$productResults->content = array();
+$searchResults->products = array();
 
-$stmt = $req->prepareQuery("SELECT
+$query = "SELECT
     p.product_id as id,
     p.name as name,
     p.price as price,
@@ -29,13 +28,39 @@ JOIN
 LEFT JOIN
     (SELECT avg(rating) as rating, product_id FROM product_ratings GROUP BY product_id) r USING (product_id)
 WHERE
-    p.disabled = FALSE AND (
-    p.name LIKE CONCAT('%', @{s:searchQuery}, '%') OR
-    p.description LIKE CONCAT('%', @{s:searchQuery}, '%') OR
-    s.name LIKE CONCAT('%', @{s:searchQuery}, '%')
-)", [
-    "searchQuery" => $searchQuery
-]);
+    p.disabled = FALSE";
+
+$conditions = array();
+$params = array();
+
+if ($_GET["q"] != null) {
+    array_push($conditions, "(
+        p.name LIKE CONCAT('%', @{s:searchQuery}, '%') OR
+        p.description LIKE CONCAT('%', @{s:searchQuery}, '%') OR
+        s.name LIKE CONCAT('%', @{s:searchQuery}, '%')
+    )");
+    $params["searchQuery"] = $searchQuery;
+}
+
+$categoryConditions = array();
+
+foreach ($productCategories as $i => $category) {
+    array_push($categoryConditions, "SELECT product_id FROM product_category WHERE category_id = @{s:category" . $i . "}");
+    $params["category" . $i] = $category;
+}
+
+if (count($conditions) > 0) {
+    $query .= " AND ";
+    $query .= join(" AND ", $conditions);
+}
+
+if (count($categoryConditions) > 0) {
+    $query .= " AND p.product_id IN (";
+    $query .= join(" INTERSECT ", $categoryConditions);
+    $query .= ")";
+}
+
+$stmt = $req->prepareQuery($query, $params);
 $stmt->execute();
 $result = $stmt->get_result();
 
@@ -51,17 +76,12 @@ while ($row = $result->fetch_object()) {
         array_push($row->photos, $row2["photo_id"]);
     }
 
-    array_push($productResults->content, $row);
+    array_push($searchResults->products, $row);
 }
 
-array_push($searchResults, $productResults);
+$searchResults->shops = array();
 
-$shopResults = new \stdClass();
-$shopResults->name = 'Shops';
-$shopResults->type = 'shop';
-$shopResults->content = array();
-
-$stmt = $req->prepareQuery("SELECT
+$query = "SELECT
     s.shop_id as id,
     s.name as name,
     s.address as address,
@@ -74,12 +94,38 @@ FROM
 LEFT JOIN
     (SELECT avg(rating) as rating, shop_id FROM shop_ratings GROUP BY shop_id) r USING (shop_id)
 WHERE
-    s.disabled = FALSE AND (
-    s.name LIKE CONCAT('%', @{s:searchQuery}, '%') OR
-    s.description LIKE CONCAT('%', @{s:searchQuery}, '%')
-)", [
-    "searchQuery" => $searchQuery
-]);
+    s.disabled = FALSE";
+
+$conditions = array();
+$params = array();
+
+if ($_GET["q"] != null) {
+    array_push($conditions, "(
+        s.name LIKE CONCAT('%', @{s:searchQuery}, '%') OR
+        s.description LIKE CONCAT('%', @{s:searchQuery}, '%')
+    )");
+    $params["searchQuery"] = $searchQuery;
+}
+
+$categoryConditions = array();
+
+foreach ($shopCategories as $i => $category) {
+    array_push($categoryConditions, "SELECT shop_id FROM shop_category WHERE category_id = @{s:category" . $i . "}");
+    $params["category" . $i] = $category;
+}
+
+if (count($conditions) > 0) {
+    $query .= " AND ";
+    $query .= join(" AND ", $conditions);
+}
+
+if (count($categoryConditions) > 0) {
+    $query .= " AND s.shop_id IN (";
+    $query .= join(" INTERSECT ", $categoryConditions);
+    $query .= ")";
+}
+
+$stmt = $req->prepareQuery($query, $params);
 $stmt->execute();
 $result = $stmt->get_result();
 
@@ -95,11 +141,7 @@ while ($row = $result->fetch_object()) {
         array_push($row->photos, $row2["photo_id"]);
     }
 
-    array_push($shopResults->content, $row);
+    array_push($searchResults->shops, $row);
 }
-array_push($searchResults, $shopResults);
 
-$resObj = new \stdClass();
-$resObj->results = $searchResults;
-
-$req->success($resObj);
+$req->success($searchResults);
