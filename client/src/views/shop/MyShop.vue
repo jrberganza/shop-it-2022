@@ -28,11 +28,8 @@
       <VCardText>
         <VTextarea label="Description" v-model="myShop.description" :rules="[rules.required]" counter="512"
           maxlength="512"></VTextarea>
-        <VChipGroup multiple column active-class="primary" v-model="myShop.categories">
-          <VChip v-for="category in shopCategories" :key="category.id">
-            {{category.name}}
-          </VChip>
-        </VChipGroup>
+        <VSelect v-model="myShop.categories" :items="shopCategories" itemText="name" itemValue="id" label="Categories"
+          multiple chips></VSelect>
         <VCheckbox label="Disabled?" v-model="myShop.disabled"></VCheckbox>
       </VCardText>
     </VCard>

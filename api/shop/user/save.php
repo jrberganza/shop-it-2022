@@ -62,12 +62,6 @@ if ($req->session->shopId) {
         "shopId" => $req->session->shopId,
     ]);
     $stmt->execute();
-    $shopId = $stmt->insert_id;
-
-    $resObj = new \stdClass();
-    $resObj->id = $shopId;
-
-    $req->success($resObj);
 } else {
     $stmt = $req->prepareQuery("INSERT INTO shops(
         name,
@@ -106,8 +100,29 @@ if ($req->session->shopId) {
     ]);
     $stmt->execute();
 
-    $resObj = new \stdClass();
-    $resObj->id = $shopId;
-
-    $req->success($resObj);
+    $req->session->shopId = $shopId;
 }
+
+$stmt = $req->prepareQuery("DELETE FROM shop_category WHERE shop_id = @{i:shopId}", [
+    "shopId" => $req->session->shopId,
+]);
+$stmt->execute();
+
+foreach ($jsonBody->categories as $categoryId) {
+    $stmt = $req->prepareQuery("INSERT INTO shop_category(
+        category_id,
+        shop_id
+    ) VALUES (
+        @{i:categoryId},
+        @{i:shopId}
+    )", [
+        "categoryId" => $categoryId,
+        "shopId" => $req->session->shopId,
+    ]);
+    $stmt->execute();
+}
+
+$resObj = new \stdClass();
+$resObj->id = $req->session->shopId;
+
+$req->success($resObj);
