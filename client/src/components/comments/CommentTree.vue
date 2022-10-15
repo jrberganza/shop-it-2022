@@ -5,10 +5,16 @@
       <VBtn @click="publishComment">Publish</VBtn>
     </div>
     <div class="comment" v-for="comment in comments">
-      <Comment :comment="comment.data" @reply="childrenReplyOpen = true"></Comment>
-      <CommentTree :comments="comment.children" :itemType="itemType" :itemId="itemId" :parentCommentId="comment.data.id"
-        :replyOpen="childrenReplyOpen" @reply="childrenReplyOpen = false" class="pl-10 my-4 inner-tree">
-      </CommentTree>
+      <VCard v-if="comment.data.disapproved">
+        <VCardText>A comment has been hidden because it has been disapproved by the community</VCardText>
+      </VCard>
+      <template v-else>
+        <Comment :comment="comment.data" @reply="childrenReplyOpen = true"></Comment>
+        <CommentTree :comments="comment.children" :itemType="itemType" :itemId="itemId"
+          :parentCommentId="comment.data.id" :replyOpen="childrenReplyOpen" @reply="childrenReplyOpen = false"
+          class="pl-10 my-4 inner-tree">
+        </CommentTree>
+      </template>
     </div>
   </div>
 </template>
