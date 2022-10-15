@@ -10,9 +10,10 @@
           </template>
           <template v-else-if="block.blockType == 'banner'">
             <VCard>
-              <VImg v-if="block.bannerPhotoId" :src="'/api/photo/get.php?id=' + block.bannerPhotoId" height="250" />
+              <VImg v-if="block.bannerPhotoId" :src="'/api/photo/get.php?id=' + block.bannerPhotoId" height="350">
+              </VImg>
               <VCardTitle v-if="block.bannerTitle">{{block.bannerTitle}}</VCardTitle>
-              <VCardTitle v-if="block.bannerText">{{block.bannerText}}</VCardTitle>
+              <VCardText v-if="block.bannerText">{{block.bannerText}}</VCardText>
             </VCard>
           </template>
         </VCol>

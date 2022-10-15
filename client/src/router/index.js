@@ -14,6 +14,7 @@ import Categories from '../views/category/Categories.vue';
 import ModerationDashboard from '../views/moderation/ModerationDashboard.vue';
 import ReportsDashboard from '../views/reports/ReportsDashboard.vue';
 import ManageUsers from '../views/admin/ManageUsers.vue';
+import EditHome from '../views/EditHome.vue';
 
 Vue.use(VueRouter);
 
@@ -82,6 +83,11 @@ const routes = [
     path: '/reports/dashboard',
     name: 'ReportsDashboard',
     component: ReportsDashboard,
+  },
+  {
+    path: '/home/edit',
+    name: 'EditHome',
+    component: EditHome,
   },
   {
     path: '*',
