@@ -24,7 +24,7 @@ $stmt = $req->prepareQuery("INSERT INTO photos(photo) VALUES (@{b:photo})", [
 $stmt->execute();
 $photoId = $stmt->insert_id;
 
-$stmt = $req->prepareQuery("INSERT INTO shop_photo(shop_id, photo_id) VALUES (@{i:shopId}, @{b:photoId})", [
+$stmt = $req->prepareQuery("INSERT INTO shop_photo(shop_id, photo_id) VALUES (@{i:shopId}, @{s:photoId})", [
     "shopId" => $shopId,
     "photoId" => $photoId,
 ]);

@@ -1,6 +1,6 @@
 <?php
 
-require "../../utils/request.php";
+require "../utils/request.php";
 
 $req->useDb();
 

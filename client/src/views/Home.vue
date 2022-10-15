@@ -1,11 +1,20 @@
 <template>
   <div class="home">
     <VRow>
-      <template v-for="(feed, i) in feeds">
-        <VCol cols="12" :lg="(feeds.length % 2 == 1 && i == feeds.length - 1) ? 12 : 6" class="results">
-          <h1>{{feed.name}}</h1>
-          <ProductFeed v-if="feed.type == 'product'" :products="feed.content"></ProductFeed>
-          <ShopFeed v-else-if="feed.type == 'shop'" :shops="feed.content"></ShopFeed>
+      <template v-for="block in blocks">
+        <VCol cols="12" :lg="{ full: 12, half: 6, third: 4, fourth: 3, twelfth: 1 }[block.size]" class="results">
+          <template v-if="block.blockType == 'feed'">
+            <h1>{{block.feedTitle}}</h1>
+            <ProductFeed v-if="block.feedItemType == 'product'" :products="block.feedContent || []"></ProductFeed>
+            <ShopFeed v-else-if="block.feedItemType == 'shop'" :shops="block.feedContent || []"></ShopFeed>
+          </template>
+          <template v-else-if="block.blockType == 'banner'">
+            <VCard>
+              <VImg v-if="block.bannerPhotoId" :src="'/api/photo/get.php?id=' + block.bannerPhotoId" height="250" />
+              <VCardTitle v-if="block.bannerTitle">{{block.bannerTitle}}</VCardTitle>
+              <VCardTitle v-if="block.bannerText">{{block.bannerText}}</VCardTitle>
+            </VCard>
+          </template>
         </VCol>
       </template>
     </VRow>
@@ -20,15 +29,15 @@ import ShopFeed from '../components/feeds/ShopFeed.vue';
 export default {
   name: 'Home',
   data: () => ({
-    /** @type {any[]} */ feeds: [],
+    /** @type {any[]} */ blocks: [],
   }),
   methods: {
     getFeeds() {
-      fetch('/api/feeds.php')
+      fetch('/api/homepage/get.php')
         .then(res => res.json())
         .then(json => {
           if (json.success) {
-            this.feeds = json.feeds
+            this.blocks = json.blocks
           }
         });
     }
