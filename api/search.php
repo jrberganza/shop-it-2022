@@ -31,7 +31,8 @@ LEFT JOIN
 WHERE
     p.disabled = FALSE AND (
     p.name LIKE CONCAT('%', @{s:searchQuery}, '%') OR
-    p.description LIKE CONCAT('%', @{s:searchQuery}, '%')
+    p.description LIKE CONCAT('%', @{s:searchQuery}, '%') OR
+    s.name LIKE CONCAT('%', @{s:searchQuery}, '%')
 )", [
     "searchQuery" => $searchQuery
 ]);
