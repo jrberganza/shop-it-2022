@@ -17,7 +17,7 @@
         </VTextField>
       </VCardTitle>
       <VCardSubtitle>
-        <PhotoInput v-model="myShop.photos" />
+        <PhotoInput v-model="myShop.photos" multiple />
         <VTextField label="Address" v-model="myShop.address" :rules="[rules.required]" maxlength="255">
         </VTextField>
         <Map v-model="myShop.location" input></Map>

@@ -11,7 +11,7 @@
               </VTextField>
             </VCardTitle>
             <VCardSubtitle>
-              <PhotoInput v-model="myProduct.photos" />
+              <PhotoInput v-model="myProduct.photos" multiple />
               <VTextField label="Price" v-model="myProduct.price" :rules="[rules.required]"></VTextField>
             </VCardSubtitle>
             <VCardText>

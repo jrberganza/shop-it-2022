@@ -19,17 +19,25 @@ import { VRow, VCol, VBtn, VImg, VFileInput, VIcon } from 'vuetify/lib';
 
 export default {
   name: 'PhotoInput',
-  props: ['value'],
+  props: ['value', 'multiple'],
   data: () => ({
     imageInput: null,
     imageIds: [],
   }),
   watch: {
     value(newVal) {
-      this.imageIds = newVal;
+      if (!Array.isArray(newVal)) {
+        this.imageIds = [newVal];
+      } else {
+        this.imageIds = newVal;
+      }
     },
     imageIds(newVal) {
-      this.$emit("input", newVal);
+      if (this.multiple) {
+        this.$emit("input", newVal);
+      } else {
+        this.$emit("input", newVal[0]);
+      }
     },
   },
   methods: {
@@ -46,6 +54,13 @@ export default {
             }
           });
       }
+    }
+  },
+  mounted() {
+    if (!Array.isArray(this.value)) {
+      this.imageIds = [this.value];
+    } else {
+      this.imageIds = this.value;
     }
   },
   components: { VRow, VCol, VBtn, VImg, VFileInput, VIcon }

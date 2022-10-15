@@ -27,8 +27,7 @@
               <VTextField v-model="block.feedMaxSize" label="Max. feed items"></VTextField>
             </template>
             <template v-else-if="block.blockType == 'banner'">
-              <VImg v-if="block.bannerPhotoId" :src="'/api/photo/get.php?id=' + block.bannerPhotoId" height="350">
-              </VImg>
+              <PhotoInput v-model="block.bannerPhotoId" />
               <VTextField v-model="block.bannerTitle" label="Banner title"></VTextField>
               <VTextField v-model="block.bannerText" label="Banner text"></VTextField>
             </template>
@@ -42,6 +41,7 @@
 
 <script>
 import { VRow, VCol } from 'vuetify/lib';
+import PhotoInput from '../components/photo/PhotoInput.vue';
 
 export default {
   name: 'Home',
@@ -121,6 +121,6 @@ export default {
   mounted() {
     this.getHomepage();
   },
-  components: { VRow, VCol },
+  components: { VRow, VCol, PhotoInput },
 };
 </script>
