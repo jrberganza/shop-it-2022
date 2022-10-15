@@ -2,31 +2,46 @@
 
 require '../../utils/request.php';
 
-function generateComments($level, $first = true)
+$req->useDb();
+
+if (!isset($_GET["id"])) {
+    $req->fail("No product specified");
+}
+$productId = $_GET['id'];
+
+function getComments(Request $req, int $productId, ?int $parent = null)
 {
-    if ($level == 0) return array();
+    $stmt = $req->prepareQuery("SELECT
+        c.comment_id as id,
+        u.display_name as author,
+        c.created_at as publishedAt,
+        c.content as content
+    FROM
+        comments c
+    JOIN
+        users u ON c.author_id = u.user_id
+    WHERE
+        c.product_id = @{i:productId} AND
+        (c.parent_comment_id = @{i:parentCommentId} OR (@{i:parentCommentId} IS NULL AND c.parent_comment_id IS NULL))", [
+        "productId" => $productId,
+        "parentCommentId" => $parent,
+    ]);
+    $stmt->execute();
+    $result = $stmt->get_result();
 
-    $arr = array();
+    $comments = array();
 
-    for ($currId = 0; $currId < random_int($first ? 1 : 0, 4); $currId++) {
+    while ($row = $result->fetch_object()) {
         $comment = new \stdClass();
-
-        $comment->data = new \stdClass();
-        $comment->data->id = random_int(0, 1000) * $currId;
-        $comment->data->author = "Usuario " . random_int(1000, 9999);
-        $comment->data->publishedAt = "31/12/2022";
-        $comment->data->content = "Hey! " . random_int(1000, 9999);
-
-        $comment->children = generateComments($level - 1, false);
-
-        array_push($arr, $comment);
+        $comment->data = $row;
+        $comment->children = getComments($req, $productId, $row->id);
+        array_push($comments, $comment);
     }
 
-    return $arr;
+    return $comments;
 }
 
-
-$allComments = generateComments(5);
+$allComments = getComments($req, $productId);
 
 $resObj = new \stdClass();
 $resObj->comments = $allComments;
