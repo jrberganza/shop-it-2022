@@ -31,7 +31,7 @@
               <VCard @click="() => $router.push('/product/' + product.id)">
                 <VCardTitle>{{product.name}}</VCardTitle>
                 <VCardSubtitle>{{product.price}} - {{product.shopName}}</VCardSubtitle>
-                <VCardText>{{product.shortDesc}}</VCardText>
+                <VCardText>{{product.description}}</VCardText>
               </VCard>
             </VCol>
           </VRow>

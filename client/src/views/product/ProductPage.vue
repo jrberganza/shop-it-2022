@@ -13,7 +13,7 @@
               <VCardSubtitle>{{product.price}} - <RouterLink :to="'/shop/' + product.shopId">{{product.shopName}}
                 </RouterLink>
               </VCardSubtitle>
-              <VCardText>{{product.shortDesc}}</VCardText>
+              <VCardText>{{product.description}}</VCardText>
               <VCardActions>
                 <VRating hover size="30" half-increments readonly v-model="product.rating"></VRating>
               </VCardActions>

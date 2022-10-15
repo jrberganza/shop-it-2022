@@ -13,7 +13,7 @@ $stmt = $req->prepareQuery("SELECT
     p.product_id as id,
     p.name as name,
     p.price as price,
-    substr(p.description, 1, 100) as shortDesc,
+    substr(p.description, 1, 100) as description,
     p.disabled as disabled,
     s.name as shopName
 FROM

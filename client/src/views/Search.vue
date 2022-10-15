@@ -14,6 +14,7 @@
 
 <script>
 import { VRow, VCol } from 'vuetify/lib';
+import { mapState } from 'vuex';
 import ProductList from '../components/ProductList.vue';
 import ShopList from '../components/ShopList.vue';
 
@@ -22,9 +23,12 @@ export default {
   data: () => ({
     /** @type {any[]} */ searchResults: [],
   }),
+  computed: {
+    ...mapState(['searchQuery']),
+  },
   methods: {
     getSearchResults() {
-      fetch(`/api/search.php?q=${this.$route.query.q}`)
+      fetch(`/api/search.php?q=${this.searchQuery}`)
         .then(res => res.json())
         .then(json => {
           if (json.success) {
@@ -32,6 +36,11 @@ export default {
           }
         });
     },
+  },
+  watch: {
+    searchQuery(newVal) {
+      this.getSearchResults();
+    }
   },
   mounted() {
     this.getSearchResults();

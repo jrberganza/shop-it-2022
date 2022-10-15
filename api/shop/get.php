@@ -54,7 +54,7 @@ $stmt = $req->prepareQuery("SELECT
     product_id as id,
     name as name,
     price as price,
-    substr(description, 1, 100) as shortDesc
+    substr(description, 1, 100) as description
 FROM
     products
 WHERE

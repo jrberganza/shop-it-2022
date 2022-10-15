@@ -59,7 +59,7 @@ $stmt = $req->prepareQuery("SELECT
     s.name as name,
     s.address as address,
     s.phone_number as phoneNumber,
-    s.description as shortDesc,
+    s.description as description,
     s.disabled as disabled,
     cast(coalesce(r.rating, 0.0) as double) as rating
 FROM

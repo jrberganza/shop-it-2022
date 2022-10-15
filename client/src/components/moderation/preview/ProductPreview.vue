@@ -4,7 +4,7 @@
     <VImg v-else src="/images/placeholder.png" height="100" />
     <VCardTitle>{{product.name}}</VCardTitle>
     <VCardSubtitle>{{product.price}} - {{product.shopName}}</VCardSubtitle>
-    <VCardText>{{product.shortDesc}}</VCardText>
+    <VCardText>{{product.description}}</VCardText>
     <VCardActions>
       <VBtn @click="() => $emit('seeDetails', product.id)">Details</VBtn>
       <VBtn>Publish</VBtn>

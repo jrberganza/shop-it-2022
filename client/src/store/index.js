@@ -5,12 +5,16 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
-    session: null
+    session: null,
+    searchQuery: '',
   },
   mutations: {
     updateSession(state, session) {
       state.session = session;
-    }
+    },
+    updateSearchQuery(state, searchQuery) {
+      state.searchQuery = searchQuery;
+    },
   },
   actions: {
     async fetchSession({ commit }) {

@@ -7,7 +7,7 @@
           <VImg v-else src="/images/placeholder.png" height="100" />
           <VCardTitle>{{shop.name}}</VCardTitle>
           <VCardSubtitle>{{shop.address}} - {{shop.phoneNumber}}</VCardSubtitle>
-          <VCardText>{{shop.shortDesc}}</VCardText>
+          <VCardText>{{shop.description}}</VCardText>
         </VCard>
       </VCol>
     </template>

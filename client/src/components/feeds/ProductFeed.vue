@@ -8,7 +8,7 @@
             <VImg v-else src="/images/placeholder.png" height="200" />
             <VCardTitle>{{product.name}}</VCardTitle>
             <VCardSubtitle>{{product.price}} - {{product.shopName}}</VCardSubtitle>
-            <VCardText>{{product.shortDesc}}</VCardText>
+            <VCardText>{{product.description}}</VCardText>
           </VCard>
         </VCarouselItem>
       </VCarousel>

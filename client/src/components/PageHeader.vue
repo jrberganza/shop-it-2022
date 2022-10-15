@@ -41,7 +41,7 @@
 import {
   VToolbar, VAppBarNavIcon, VToolbarTitle, VTextField, VBtn, VIcon, VRow, VCol, VSpacer, VImg, VCard
 } from 'vuetify/lib';
-import { mapState } from 'vuex';
+import { mapMutations, mapState } from 'vuex';
 import Logo from './Logo.vue';
 
 export default {
@@ -50,11 +50,12 @@ export default {
     searchTerm: '',
   }),
   computed: {
-    ...mapState(['session']),
+    ...mapState(['session', 'searchQuery']),
   },
   methods: {
     search() {
       this.$router.push(`/search/?q=${encodeURIComponent(this.searchTerm)}`);
+      this.updateSearchQuery(this.searchTerm);
     },
     searchOnEnter(ev) {
       if (ev.key.toLowerCase() === 'enter') {
@@ -69,11 +70,13 @@ export default {
           this.$router.push('/');
         });
     },
+    ...mapMutations(['updateSearchQuery'])
   },
   mounted() {
     if (this.$route.name == "Search") {
       if (typeof this.$route.query.q == "string") {
         this.searchTerm = this.$route.query.q;
+        this.updateSearchQuery(this.searchTerm);
       }
     }
   },
