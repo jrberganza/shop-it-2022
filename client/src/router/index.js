@@ -58,36 +58,43 @@ const routes = [
     path: '/my/shop/',
     name: 'MyShop',
     component: MyShop,
+    meta: { privileges: "user" },
   },
   {
     path: '/my/shop/products',
     name: 'MyShopProducts',
     component: MyShopProducts,
+    meta: { privileges: "user" },
   },
   {
     path: '/categories',
     name: 'Categories',
     component: Categories,
+    meta: { privileges: "employee" },
   },
   {
     path: '/moderation/dashboard',
     name: 'Dashboard',
     component: ModerationDashboard,
+    meta: { privileges: "employee" },
   },
   {
     path: '/admin/users/',
     name: 'ManageUsers',
     component: ManageUsers,
+    meta: { privileges: "admin" },
   },
   {
     path: '/reports/dashboard',
     name: 'ReportsDashboard',
     component: ReportsDashboard,
+    meta: { privileges: "admin" },
   },
   {
     path: '/home/edit',
     name: 'EditHome',
     component: EditHome,
+    meta: { privileges: "admin" },
   },
   {
     path: '*',

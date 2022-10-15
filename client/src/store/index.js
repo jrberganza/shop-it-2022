@@ -21,14 +21,16 @@ export default new Vuex.Store({
     },
   },
   actions: {
-    async fetchSession({ commit }) {
+    async fetchSession({ commit }, redirectCallback) {
       const res = await fetch("/api/session/current.php");
       const json = await res.json();
 
       if (json.success) {
         commit('updateSession', json);
+        redirectCallback(json);
       } else {
         commit('updateSession', { role: 'visitor' });
+        redirectCallback({ role: 'visitor' });
       }
     }
   },
