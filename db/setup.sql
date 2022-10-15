@@ -79,7 +79,7 @@ CREATE TABLE `comments` (
   `author_id` int NOT NULL,
   `content` varchar(512) NOT NULL,
   `parent_comment_id` int DEFAULT NULL,
-  `created_at` datetime NOT NULL
+  `created_at` datetime NOT NULL DEFAULT (now())
 );
 
 CREATE TABLE `shop_ratings` (
