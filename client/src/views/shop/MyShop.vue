@@ -12,13 +12,12 @@
       </VCol>
     </VRow>
     <VCard v-if="myShop" class="my-2">
-      <VImg :src="myShop.photos.length > 0 ? '/api/photo/get.php?id=' + myShop.photos[0] : '/images/placeholder.png'"
-        height="250" />
       <VCardTitle>
         <VTextField label="Name" v-model="myShop.name" :rules="[rules.required]" maxlength="255">
         </VTextField>
       </VCardTitle>
       <VCardSubtitle>
+        <PhotoInput v-model="myShop.photos" />
         <VTextField label="Address" v-model="myShop.address" :rules="[rules.required]" maxlength="255">
         </VTextField>
         <Map v-model="myShop.location" input></Map>
@@ -63,6 +62,7 @@
 <script>
 import { VRow, VCol, VForm, VTextField, VTextarea, VBtn, VCheckbox, VFileInput, VDataIterator, VCard, VCardTitle, VCardSubtitle, VCardText, VCardActions, VIcon, VImg } from 'vuetify/lib';
 import Map from '../../components/map/Map.vue';
+import PhotoInput from '../../components/photo/PhotoInput.vue';
 
 export default {
   name: 'MyShop',
@@ -101,6 +101,7 @@ export default {
         description: this.myShop.description,
         categories: this.myShop.categories,
         disabled: this.myShop.disabled,
+        photos: this.myShop.photos,
       };
       fetch('/api/shop/user/save.php', {
         method: "POST",
@@ -156,6 +157,6 @@ export default {
     this.getShop();
     this.getShopCategories();
   },
-  components: { VRow, VCol, VForm, VTextField, VBtn, VCheckbox, VFileInput, VDataIterator, VCard, VCardTitle, VCardSubtitle, VCardText, VTextarea, VCardActions, VIcon, VImg, Map },
+  components: { VRow, VCol, VForm, VTextField, VBtn, VCheckbox, VFileInput, VDataIterator, VCard, VCardTitle, VCardSubtitle, VCardText, VTextarea, VCardActions, VIcon, VImg, Map, PhotoInput },
 };
 </script>

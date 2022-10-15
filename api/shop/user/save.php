@@ -122,6 +122,20 @@ foreach ($jsonBody->categories as $categoryId) {
     $stmt->execute();
 }
 
+foreach ($jsonBody->photos as $photoId) {
+    $stmt = $req->prepareQuery("INSERT INTO shop_photo(
+        photo_id,
+        shop_id
+    ) VALUES (
+        @{i:photoId},
+        @{i:shopId}
+    )", [
+        "photoId" => $photoId,
+        "shopId" => $req->session->shopId,
+    ]);
+    $stmt->execute();
+}
+
 $resObj = new \stdClass();
 $resObj->id = $req->session->shopId;
 

@@ -6,14 +6,12 @@
       <VCol cols="12" lg="6" order="1" order-lg="12">
         <template v-if="myProduct">
           <VCard>
-            <VImg
-              :src="myProduct.photos.length > 0 ? '/api/photo/get.php?id=' + myProduct.photos[0] : '/images/placeholder.png'"
-              height="250" />
             <VCardTitle>
               <VTextField label="Name" v-model="myProduct.name" :rules="[rules.required]" maxlength="255">
               </VTextField>
             </VCardTitle>
             <VCardSubtitle>
+              <PhotoInput v-model="myProduct.photos" />
               <VTextField label="Price" v-model="myProduct.price" :rules="[rules.required]"></VTextField>
             </VCardSubtitle>
             <VCardText>
@@ -54,6 +52,7 @@
 
 <script>
 import { VRow, VCol, VForm, VTextField, VTextarea, VBtn, VCheckbox, VDataIterator, VCard, VCardTitle, VCardSubtitle, VCardText, VCardActions, VImg, VIcon } from 'vuetify/lib';
+import PhotoInput from '../../components/photo/PhotoInput.vue';
 
 export default {
   name: 'MyShopProducts',
@@ -85,6 +84,7 @@ export default {
         description: this.myProduct.description,
         categories: this.myProduct.categories,
         disabled: this.myProduct.disabled,
+        photos: this.myProduct.photos,
       };
       fetch('/api/product/user/save.php', {
         method: "POST",
@@ -122,6 +122,6 @@ export default {
     this.getProducts();
     this.getProductCategories();
   },
-  components: { VRow, VCol, VForm, VTextField, VTextarea, VBtn, VCheckbox, VDataIterator, VCard, VCardTitle, VCardSubtitle, VCardText, VCardActions, VImg, VIcon },
+  components: { VRow, VCol, VForm, VTextField, VTextarea, VBtn, VCheckbox, VDataIterator, VCard, VCardTitle, VCardSubtitle, VCardText, VCardActions, VImg, VIcon, PhotoInput },
 };
 </script>
