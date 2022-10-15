@@ -5,11 +5,8 @@
         <h1>Products</h1>
       </VCol>
       <VCol cols="12" sm="4" lg="6" order-lg="3">
-        <VChipGroup multiple column active-class="primary" v-model="selectedProductCategories">
-          <VChip v-for="category in productCategories" :key="category.id">
-            {{category.name}}
-          </VChip>
-        </VChipGroup>
+        <VSelect v-model="selectedProductCategories" :items="productCategories" itemText="name" itemValue="id"
+          label="Categories" multiple chips></VSelect>
       </VCol>
       <VCol cols="12" sm="8" lg="6" order-lg="5">
         <ProductList :products="searchResults.products"></ProductList>
@@ -18,11 +15,8 @@
         <h1>Shops</h1>
       </VCol>
       <VCol cols="12" sm="4" lg="6" order-lg="4">
-        <VChipGroup multiple column active-class="primary" v-model="selectedShopCategories">
-          <VChip v-for="category in shopCategories" :key="category.id">
-            {{category.name}}
-          </VChip>
-        </VChipGroup>
+        <VSelect v-model="selectedShopCategories" :items="shopCategories" itemText="name" itemValue="id"
+          label="Categories" multiple chips></VSelect>
       </VCol>
       <VCol cols="12" sm="8" lg="6" order-lg="6">
         <ShopList :shops="searchResults.shops"></ShopList>
