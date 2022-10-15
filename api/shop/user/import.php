@@ -65,12 +65,6 @@ if ($req->session->shopId) {
         "shopId" => $req->session->shopId,
     ]);
     $stmt->execute();
-    $shopId = $stmt->insert_id;
-
-    $resObj = new \stdClass();
-    $resObj->id = $shopId;
-
-    $req->success($resObj);
 } else {
     $stmt = $req->prepareQuery("INSERT INTO shops(
         name,
@@ -109,8 +103,67 @@ if ($req->session->shopId) {
     ]);
     $stmt->execute();
 
-    $resObj = new \stdClass();
-    $resObj->id = $shopId;
-
-    $req->success($resObj);
+    $req->session->shopId = $shopId;
 }
+
+if (isset($xmlBody->product)) {
+    foreach ($xmlBody->product as $product) {
+        $stmt = $req->prepareQuery("SELECT
+            product_id
+        FROM
+            products
+        WHERE
+            product_id = @{i:productId} AND
+            shop_id = @{i:shopId}", [
+            "productId" => $product->id,
+            "shopId" => $req->session->shopId,
+        ]);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $row = $result->fetch_object();
+
+        if ($row) {
+            $stmt = $req->prepareQuery("UPDATE products SET
+                name = @{s:name},
+                price = @{s:price},
+                description = @{s:description},
+                disabled = @{i:disabled}
+            WHERE
+                product_id = @{i:productId}", [
+                "name" => $product->name,
+                "price" => $product->price,
+                "description" => $product->description,
+                "disabled" => $product->disabled,
+                "productId" => $product->id,
+            ]);
+            $stmt->execute();
+        } else {
+            $stmt = $req->prepareQuery("INSERT INTO products(
+                name,
+                price,
+                description,
+                disabled,
+                shop_id
+            ) VALUES (
+                @{s:name},
+                @{s:price},
+                @{s:description},
+                @{i:disabled},
+                @{i:shopId}
+            )", [
+                "productId" => $product->id,
+                "name" => $product->name,
+                "price" => $product->price,
+                "description" => $product->description,
+                "disabled" => $product->disabled,
+                "shopId" => $req->session->shopId,
+            ]);
+            $stmt->execute();
+        }
+    }
+}
+
+$resObj = new \stdClass();
+$resObj->id = $req->session->shopId;
+
+$req->success($resObj);

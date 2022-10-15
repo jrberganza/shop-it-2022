@@ -58,6 +58,7 @@ $disabledEl = $xml->createElement("disabled", $shop["disabled"]);
 $shopEl->appendChild($disabledEl);
 
 $stmt = $req->prepareQuery("SELECT
+    product_id,
     name,
     price,
     description,
@@ -71,20 +72,24 @@ WHERE
 $stmt->execute();
 $result = $stmt->get_result();
 
-$productsEl = $xml->createElement("products");
-$shopEl->appendChild($productsEl);
 while ($product = $result->fetch_array()) {
+    $productEl = $xml->createElement("product");
+    $shopEl->appendChild($productEl);
+
+    $idEl = $xml->createElement("id", $product["product_id"]);
+    $productEl->appendChild($idEl);
+
     $nameEl = $xml->createElement("name", $product["name"]);
-    $productsEl->appendChild($nameEl);
+    $productEl->appendChild($nameEl);
 
     $priceEl = $xml->createElement("price", $product["price"]);
-    $productsEl->appendChild($priceEl);
+    $productEl->appendChild($priceEl);
 
     $descriptionEl = $xml->createElement("description", $product["description"]);
-    $productsEl->appendChild($descriptionEl);
+    $productEl->appendChild($descriptionEl);
 
     $disabledEl = $xml->createElement("disabled", $product["disabled"]);
-    $productsEl->appendChild($disabledEl);
+    $productEl->appendChild($disabledEl);
 }
 
 $req->success($xml->saveXML());
