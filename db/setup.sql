@@ -128,6 +128,7 @@ CREATE TABLE `homepage_blocks` (
 CREATE TABLE `feed_blocks` (
   `feed_block_id` int PRIMARY KEY AUTO_INCREMENT,
   `block_id` int NOT NULL,
+  `title` varchar(255) NOT NULL,
   `type` ENUM ('auto_top_rated', 'auto_trending', 'auto_recent', 'manual') NOT NULL,
   `item_type` ENUM ('shop', 'product') NOT NULL,
   `max_size` int NOT NULL

@@ -213,6 +213,7 @@ enum feed_block_item_type {
 Table feed_blocks {
   feed_block_id int [pk, increment]
   block_id int [not null]
+  title varchar(255) [not null]
   type feed_block_type [not null]
   item_type feed_block_item_type [not null]
   max_size int [not null]
