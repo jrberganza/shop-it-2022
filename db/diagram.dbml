@@ -177,3 +177,65 @@ Table forgot_password_tokens {
 }
 
 Ref: forgot_password_tokens.user_id > users.user_id
+
+enum homepage_block_type {
+  feed
+  banner
+}
+
+enum homepage_block_size {
+  full
+  half
+  third
+  fourth
+  twelfth
+}
+
+Table homepage_blocks {
+  block_id int [pk, increment]
+  type homepage_block_type [not null]
+  position int [not null]
+  homepage_block_size homepage_block_size [not null, default: 'full']
+}
+
+enum feed_block_type {
+  auto_trending
+  auto_recent
+  manual
+}
+
+enum feed_block_item_type {
+  shop
+  product
+}
+
+Table feed_blocks {
+  feed_block_id int [pk, increment]
+  block_id int [not null]
+  type feed_block_type [not null]
+  item_type feed_block_item_type [not null]
+  max_size int [not null]
+}
+
+Ref: feed_blocks.block_id > homepage_blocks.block_id
+
+Table feed_block_items {
+  feed_block_id int [not null]
+  shop_id int [null]
+  product_id int [null]
+}
+
+Ref: feed_block_items.feed_block_id > feed_blocks.feed_block_id
+Ref: feed_block_items.shop_id > shops.shop_id
+Ref: feed_block_items.product_id > products.product_id
+
+Table banner_blocks {
+  banner_block_id int [pk, increment]
+  block_id int [not null]
+  title varchar(255) [null]
+  text varchar(512) [null]
+  photo_id int [null]
+}
+
+Ref: banner_blocks.block_id > homepage_blocks.block_id
+Ref: banner_blocks.photo_id > photos.photo_id

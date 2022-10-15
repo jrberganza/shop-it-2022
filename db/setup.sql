@@ -118,6 +118,35 @@ CREATE TABLE `forgot_password_tokens` (
   `created_at` datetime NOT NULL DEFAULT (now())
 );
 
+CREATE TABLE `homepage_blocks` (
+  `block_id` int PRIMARY KEY AUTO_INCREMENT,
+  `type` ENUM ('feed', 'banner') NOT NULL,
+  `position` int NOT NULL,
+  `homepage_block_size` ENUM ('full', 'half', 'third', 'fourth', 'twelfth') NOT NULL DEFAULT "full"
+);
+
+CREATE TABLE `feed_blocks` (
+  `feed_block_id` int PRIMARY KEY AUTO_INCREMENT,
+  `block_id` int NOT NULL,
+  `type` ENUM ('auto_trending', 'auto_recent', 'manual') NOT NULL,
+  `item_type` ENUM ('shop', 'product') NOT NULL,
+  `max_size` int NOT NULL
+);
+
+CREATE TABLE `feed_block_items` (
+  `feed_block_id` int NOT NULL,
+  `shop_id` int,
+  `product_id` int
+);
+
+CREATE TABLE `banner_blocks` (
+  `banner_block_id` int PRIMARY KEY AUTO_INCREMENT,
+  `block_id` int NOT NULL,
+  `title` varchar(255),
+  `text` varchar(512),
+  `photo_id` int
+);
+
 ALTER TABLE `shops` ADD FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`);
 
 ALTER TABLE `users` ADD FOREIGN KEY (`shop_id`) REFERENCES `shops` (`shop_id`);
@@ -163,4 +192,16 @@ ALTER TABLE `comment_votes` ADD FOREIGN KEY (`user_id`) REFERENCES `users` (`use
 ALTER TABLE `sessions` ADD FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`);
 
 ALTER TABLE `forgot_password_tokens` ADD FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`);
+
+ALTER TABLE `feed_blocks` ADD FOREIGN KEY (`block_id`) REFERENCES `homepage_blocks` (`block_id`);
+
+ALTER TABLE `feed_block_items` ADD FOREIGN KEY (`feed_block_id`) REFERENCES `feed_blocks` (`feed_block_id`);
+
+ALTER TABLE `feed_block_items` ADD FOREIGN KEY (`shop_id`) REFERENCES `shops` (`shop_id`);
+
+ALTER TABLE `feed_block_items` ADD FOREIGN KEY (`product_id`) REFERENCES `products` (`product_id`);
+
+ALTER TABLE `banner_blocks` ADD FOREIGN KEY (`block_id`) REFERENCES `homepage_blocks` (`block_id`);
+
+ALTER TABLE `banner_blocks` ADD FOREIGN KEY (`photo_id`) REFERENCES `photos` (`photo_id`);
 
