@@ -19,6 +19,11 @@
             <VCardText>
               <VTextarea label="Description" v-model="myProduct.description" :rules="[rules.required]" counter="512"
                 maxlength="512"></VTextarea>
+              <VChipGroup multiple column active-class="primary" v-model="myProduct.categories">
+                <VChip v-for="category in productCategories" :key="category.id">
+                  {{category.name}}
+                </VChip>
+              </VChipGroup>
               <VCheckbox label="Disabled?" v-model="myProduct.disabled"></VCheckbox>
             </VCardText>
             <VCardActions>
@@ -57,6 +62,7 @@ export default {
   name: 'MyShopProducts',
   data: () => ({
     /** @type {any | null} */ myProduct: null,
+    productCategories: [],
     products: [],
     rules: {
       required: v => !!v || "Required",
@@ -69,6 +75,7 @@ export default {
         name: '',
         price: 0.0,
         description: '',
+        categories: [],
         disabled: true,
         photos: [],
       }
@@ -79,6 +86,7 @@ export default {
         name: this.myProduct.name,
         price: parseFloat(this.myProduct.price),
         description: this.myProduct.description,
+        categories: this.myProduct.categories,
         disabled: this.myProduct.disabled,
       };
       fetch('/api/product/user/save.php', {
@@ -103,9 +111,19 @@ export default {
         .then(res => res.json())
         .then(json => this.myProduct = json);
     },
+    getProductCategories() {
+      fetch(`/api/category/product/all.php`)
+        .then(res => res.json())
+        .then(json => {
+          if (json.success) {
+            this.productCategories = json.categories;
+          }
+        });
+    },
   },
   mounted() {
     this.getProducts();
+    this.getProductCategories();
   },
   components: { VRow, VCol, VForm, VTextField, VTextarea, VBtn, VCheckbox, VDataIterator, VCard, VCardTitle, VCardSubtitle, VCardText, VCardActions, VImg, VIcon },
 };

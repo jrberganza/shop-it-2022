@@ -28,6 +28,11 @@
       <VCardText>
         <VTextarea label="Description" v-model="myShop.description" :rules="[rules.required]" counter="512"
           maxlength="512"></VTextarea>
+        <VChipGroup multiple column active-class="primary" v-model="myShop.categories">
+          <VChip v-for="category in shopCategories" :key="category.id">
+            {{category.name}}
+          </VChip>
+        </VChipGroup>
         <VCheckbox label="Disabled?" v-model="myShop.disabled"></VCheckbox>
       </VCardText>
     </VCard>
@@ -67,6 +72,7 @@ export default {
   data: () => ({
     /** @type {Blob | null} */ xmlFile: null,
     /** @type {any | null} */ myShop: null,
+    shopCategories: [],
     rules: {
       required: v => !!v || "Required",
       phoneNumber: {
@@ -83,6 +89,7 @@ export default {
         phoneNumber: '',
         location: null,
         description: '',
+        categories: [],
         disabled: true,
         photos: [],
       }
@@ -95,6 +102,7 @@ export default {
         longitude: this.myShop.location[1],
         phoneNumber: this.myShop.phoneNumber,
         description: this.myShop.description,
+        categories: this.myShop.categories,
         disabled: this.myShop.disabled,
       };
       fetch('/api/shop/user/save.php', {
@@ -137,9 +145,19 @@ export default {
           this.myShop.location = [json.latitude, json.longitude];
         });
     },
+    getShopCategories() {
+      fetch(`/api/category/shop/all.php`)
+        .then(res => res.json())
+        .then(json => {
+          if (json.success) {
+            this.shopCategories = json.categories;
+          }
+        });
+    },
   },
   mounted() {
     this.getShop();
+    this.getShopCategories();
   },
   components: { VRow, VCol, VForm, VTextField, VBtn, VCheckbox, VFileInput, VDataIterator, VCard, VCardTitle, VCardSubtitle, VCardText, VTextarea, VCardActions, VIcon, VImg, Map },
 };
