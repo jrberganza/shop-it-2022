@@ -10,8 +10,13 @@
           <VCol cols="12" md="8" order="12" order-md="1">
             <VCard elevation="0">
               <VCardTitle>{{product.name}}</VCardTitle>
-              <VCardSubtitle>{{product.price}} - <RouterLink :to="'/shop/' + product.shopId">{{product.shopName}}
-                </RouterLink>
+              <VCardSubtitle>
+                {{product.price}} - <RouterLink :to="'/shop/' + product.shopId">{{product.shopName}}</RouterLink>
+                <VChipGroup column>
+                  <VChip v-for="category in product.categories" :key="category.id">
+                    {{category.name}}
+                  </VChip>
+                </VChipGroup>
               </VCardSubtitle>
               <VCardText>{{product.description}}</VCardText>
               <VCardActions>

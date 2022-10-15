@@ -59,5 +59,3 @@ while ($row = $result->fetch_array()) {
 }
 
 $req->success($resObj);
-
-$req->success($product);

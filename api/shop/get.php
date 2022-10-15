@@ -71,4 +71,15 @@ while ($row = $result->fetch_object()) {
     array_push($resObj->products, $row);
 }
 
+$stmt = $req->prepareQuery("SELECT c.category_id as id, c.name as name FROM shop_category sc JOIN categories c USING (category_id) WHERE sc.shop_id = @{i:shopId}", [
+    "shopId" => $shopId,
+]);
+$stmt->execute();
+$result = $stmt->get_result();
+
+$resObj->categories = array();
+while ($row = $result->fetch_array()) {
+    array_push($resObj->categories, $row);
+}
+
 $req->success($resObj);

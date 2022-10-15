@@ -51,6 +51,15 @@ while ($row = $result->fetch_array()) {
     array_push($resObj->photos, $row["photo_id"]);
 }
 
-$req->success($resObj);
+$stmt = $req->prepareQuery("SELECT c.category_id as id, c.name as name FROM product_category pc JOIN categories c USING (category_id) WHERE pc.product_id = @{i:productId}", [
+    "productId" => $productId,
+]);
+$stmt->execute();
+$result = $stmt->get_result();
 
-$req->success($product);
+$resObj->categories = array();
+while ($row = $result->fetch_array()) {
+    array_push($resObj->categories, $row);
+}
+
+$req->success($resObj);

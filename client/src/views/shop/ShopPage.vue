@@ -10,7 +10,14 @@
           <VCol cols="12" md="8" order="2" order-md="2">
             <VCard elevation="0">
               <VCardTitle>{{shop.name}}</VCardTitle>
-              <VCardSubtitle>{{shop.address}} - {{shop.phoneNumber}}</VCardSubtitle>
+              <VCardSubtitle>
+                {{shop.address}} - {{shop.phoneNumber}}
+                <VChipGroup column>
+                  <VChip v-for="category in shop.categories" :key="category.id">
+                    {{category.name}}
+                  </VChip>
+                </VChipGroup>
+              </VCardSubtitle>
               <VCardText>{{shop.description}}</VCardText>
               <VCardActions>
                 <VRating hover size="30" half-increments readonly v-model="shop.rating"></VRating>
