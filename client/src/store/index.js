@@ -27,10 +27,10 @@ export default new Vuex.Store({
 
       if (json.success) {
         commit('updateSession', json);
-        redirectCallback(json);
+        if (redirectCallback) redirectCallback(json);
       } else {
         commit('updateSession', { role: 'visitor' });
-        redirectCallback({ role: 'visitor' });
+        if (redirectCallback) redirectCallback({ role: 'visitor' });
       }
     }
   },
