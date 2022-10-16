@@ -105,7 +105,7 @@ foreach ($jsonBody->photos as $photoId) {
     ) VALUES (
         @{i:photoId},
         @{i:productId}
-    )", [
+    ) ON DUPLICATE KEY UPDATE photo_id = photo_id", [
         "photoId" => $photoId,
         "productId" => $jsonBody->id,
     ]);
