@@ -92,7 +92,7 @@ if ($req->session->shopId) {
         "phoneNumber" => $xmlBody->phonenumber,
         "description" => $xmlBody->description,
         "disabled" => $xmlBody->disabled,
-        "userId" => $xmlBody->session->id,
+        "userId" => $req->session->id,
     ]);
     $stmt->execute();
     $shopId = $stmt->insert_id;

@@ -33,8 +33,12 @@ export default {
       }
     },
     imageIds(newVal) {
-      if (this.multiple) {
-        this.$emit("input", newVal);
+      if (this.multiple != undefined) {
+        if (!Array.isArray(newVal)) {
+          this.$emit("input", [newVal]);
+        } else {
+          this.$emit("input", newVal);
+        }
       } else {
         this.$emit("input", newVal[0]);
       }

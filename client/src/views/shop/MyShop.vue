@@ -139,8 +139,12 @@ export default {
       fetch(`/api/shop/user/get.php`)
         .then(res => res.json())
         .then(json => {
-          this.myShop = json;
-          this.myShop.location = [json.latitude, json.longitude];
+          if (json.success) {
+            this.myShop = json;
+            this.myShop.location = [json.latitude, json.longitude];
+          } else {
+            this.newShop();
+          }
         });
     },
     getShopCategories() {

@@ -10,19 +10,19 @@ router.beforeEach(function (to, from, next) {
   let privileges = to.meta.privileges;
   if (store.state.session == null) {
     store.dispatch('fetchSession', function (session) {
-      if (privileges == "user") {
-        if (session.role != "visitor") {
-          router.push('/login');
-        }
-      } else if (privileges == "employee") {
-        if (session.role != "employee" && session.role != "admin") {
-          router.push('/login');
-        }
-      } else if (privileges == "admin") {
-        if (session.role != "admin") {
-          router.push('/login');
-        }
-      }
+      // if (privileges == "user") {
+      //   if (session.role != "visitor") {
+      //     router.push('/login');
+      //   }
+      // } else if (privileges == "employee") {
+      //   if (session.role != "employee" && session.role != "admin") {
+      //     router.push('/login');
+      //   }
+      // } else if (privileges == "admin") {
+      //   if (session.role != "admin") {
+      //     router.push('/login');
+      //   }
+      // }
     });
   }
   next();

@@ -9,8 +9,6 @@ if ($_SERVER["REQUEST_METHOD"] != "POST") {
 $req->useDb();
 $req->useSession();
 
-$req->requireAdminPrivileges();
-
 $body = $req->getBody();
 
 $stmt = $req->prepareQuery("INSERT INTO photos(photo) VALUES (@{s:photo})", [
