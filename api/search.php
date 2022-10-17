@@ -42,11 +42,19 @@ if ($_GET["q"] != null) {
     $params["searchQuery"] = $searchQuery;
 }
 
-$categoryConditions = array();
+$prodCategoryConditions = array();
 
 foreach ($productCategories as $i => $category) {
-    array_push($categoryConditions, "SELECT product_id FROM product_category WHERE category_id = @{s:category" . $i . "}");
+    array_push($prodCategoryConditions, "SELECT product_id FROM product_category WHERE category_id = @{s:category" . $i . "}");
     $params["category" . $i] = $category;
+}
+
+$shopCategoryConditions = array();
+
+foreach ($shopCategories as $i => $category) {
+    $j = count($prodCategoryConditions) + $i;
+    array_push($shopCategoryConditions, "SELECT shop_id FROM shop_category WHERE category_id = @{s:category" . $j . "}");
+    $params["category" . $j] = $category;
 }
 
 if (count($conditions) > 0) {
@@ -54,9 +62,15 @@ if (count($conditions) > 0) {
     $query .= join(" AND ", $conditions);
 }
 
-if (count($categoryConditions) > 0) {
+if (count($prodCategoryConditions) > 0) {
     $query .= " AND p.product_id IN (";
-    $query .= join(" INTERSECT ", $categoryConditions);
+    $query .= join(" INTERSECT ", $prodCategoryConditions);
+    $query .= ")";
+}
+
+if (count($shopCategoryConditions) > 0) {
+    $query .= " AND s.shop_id IN (";
+    $query .= join(" INTERSECT ", $shopCategoryConditions);
     $query .= ")";
 }
 
@@ -107,10 +121,10 @@ if ($_GET["q"] != null) {
     $params["searchQuery"] = $searchQuery;
 }
 
-$categoryConditions = array();
+$shopCategoryConditions = array();
 
 foreach ($shopCategories as $i => $category) {
-    array_push($categoryConditions, "SELECT shop_id FROM shop_category WHERE category_id = @{s:category" . $i . "}");
+    array_push($shopCategoryConditions, "SELECT shop_id FROM shop_category WHERE category_id = @{s:category" . $i . "}");
     $params["category" . $i] = $category;
 }
 
@@ -119,9 +133,9 @@ if (count($conditions) > 0) {
     $query .= join(" AND ", $conditions);
 }
 
-if (count($categoryConditions) > 0) {
+if (count($shopCategoryConditions) > 0) {
     $query .= " AND s.shop_id IN (";
-    $query .= join(" INTERSECT ", $categoryConditions);
+    $query .= join(" INTERSECT ", $shopCategoryConditions);
     $query .= ")";
 }
 
