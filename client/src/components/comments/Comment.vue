@@ -27,7 +27,7 @@ export default {
   methods: {
     upvote() {
       let newVote = this.comment.voted == 1 ? 0 : 1;
-      fetch("http://localhost:8080/api/comment/vote.php", {
+      fetch("/api/comment/vote.php", {
         "method": "POST",
         "body": JSON.stringify({ id: this.comment.id, value: newVote }),
       })
@@ -40,7 +40,7 @@ export default {
     },
     downvote() {
       let newVote = this.comment.voted == -1 ? 0 : -1;
-      fetch("http://localhost:8080/api/comment/vote.php", {
+      fetch("/api/comment/vote.php", {
         "method": "POST",
         "body": JSON.stringify({ id: this.comment.id, value: newVote }),
       })
