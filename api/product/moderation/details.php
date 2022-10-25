@@ -2,9 +2,6 @@
 
 require '../../utils/request.php';
 
-$req->useDb();
-$req->useSession();
-
 $req->requireEmployeePrivileges();
 
 $product = new \stdClass();

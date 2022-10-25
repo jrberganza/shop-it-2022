@@ -2,13 +2,10 @@
 
 require '../utils/request.php';
 
-$req->useDb();
-$req->useSession();
-
 $req->requireLoggedIn();
 
 $stmt = $req->prepareQuery("DELETE FROM sessions WHERE token = @{s:token}", [
-    "token" => $req->session->token
+    "token" => $req->getSession()->token
 ]);
 $stmt->execute();
 

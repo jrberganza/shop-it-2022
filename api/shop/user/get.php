@@ -2,9 +2,6 @@
 
 require '../../utils/request.php';
 
-$req->useDb();
-$req->useSession();
-
 $stmt = $req->prepareQuery("SELECT
     s.shop_id as id,
     s.name as name,
@@ -18,7 +15,7 @@ FROM
     shops s
 WHERE
     shop_id = @{i:shopId}", [
-    "shopId" => $req->session->shopId,
+    "shopId" => $req->getSession()->shopId,
 ]);
 $stmt->execute();
 $result = $stmt->get_result();
@@ -32,7 +29,7 @@ if (!$resObj) {
 $resObj->disabled = $resObj->disabled != 0;
 
 $stmt = $req->prepareQuery("SELECT p.photo_id FROM shop_photo sp JOIN photos p USING (photo_id) WHERE sp.shop_id = @{i:shopId}", [
-    "shopId" => $req->session->shopId,
+    "shopId" => $req->getSession()->shopId,
 ]);
 $stmt->execute();
 $result = $stmt->get_result();
@@ -43,7 +40,7 @@ while ($row = $result->fetch_array()) {
 }
 
 $stmt = $req->prepareQuery("SELECT c.category_id FROM shop_category sc JOIN categories c USING (category_id) WHERE sc.shop_id = @{i:shopId}", [
-    "shopId" => $req->session->shopId,
+    "shopId" => $req->getSession()->shopId,
 ]);
 $stmt->execute();
 $result = $stmt->get_result();

@@ -2,9 +2,6 @@
 
 require '../../utils/request.php';
 
-$req->useDb();
-$req->useSession();
-
 $req->requireLoggedIn();
 
 if (!isset($_GET["id"])) {
@@ -23,7 +20,7 @@ WHERE
     product_id = @{i:productId} AND
     shop_id = @{i:shopId}", [
     "productId" => $productId,
-    "shopId" => $req->session->shopId,
+    "shopId" => $req->getSession()->shopId,
 ]);
 $stmt->execute();
 $result = $stmt->get_result();

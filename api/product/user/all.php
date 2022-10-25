@@ -2,9 +2,6 @@
 
 require '../../utils/request.php';
 
-$req->useDb();
-$req->useSession();
-
 $req->requireLoggedIn();
 
 $allProducts = array();
@@ -21,7 +18,7 @@ FROM
 JOIN
     shops s USING (shop_id)
 WHERE shop_id = @{i:shopId}", [
-    "shopId" => $req->session->shopId
+    "shopId" => $req->getSession()->shopId
 ]);
 $stmt->execute();
 $result = $stmt->get_result();

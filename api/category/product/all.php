@@ -2,9 +2,6 @@
 
 require '../../utils/request.php';
 
-$req->useDb();
-$req->useSession();
-
 $stmt = $req->prepareQuery("SELECT
     category_id as id,
     name as name

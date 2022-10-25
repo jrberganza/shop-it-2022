@@ -2,8 +2,6 @@
 
 require '../utils/request.php';
 
-$req->useDb();
-
 $stmt = $req->prepareQuery("SELECT
     hb.type as blockType,
     hb.size as size,

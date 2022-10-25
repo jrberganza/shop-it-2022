@@ -6,9 +6,6 @@ if ($_SERVER["REQUEST_METHOD"] != "POST") {
     $req->fail("Wrong HTTP Method");
 }
 
-$req->useDb();
-$req->useSession();
-
 $req->requireLoggedIn();
 
 $jsonBody = $req->getJsonBody([
@@ -48,7 +45,7 @@ $query .= "
 
 $stmt = $req->prepareQuery($query, [
     "itemId" => $jsonBody->itemId,
-    "authorId" => $req->session->id,
+    "authorId" => $req->getSession()->id,
     "content" => $jsonBody->content,
     "parentCommentId" => isset($jsonBody->parentCommentId) ? $jsonBody->parentCommentId : null,
 ]);

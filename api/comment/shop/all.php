@@ -2,9 +2,6 @@
 
 require '../../utils/request.php';
 
-$req->useDb();
-$req->useSession();
-
 if (!isset($_GET["id"])) {
     $req->fail("No product specified");
 }
@@ -34,7 +31,7 @@ function getComments(Request $req, int $shopId, ?int $parent = null)
         coalesce(cv.total_votes, 0) DESC", [
         "shopId" => $shopId,
         "parentCommentId" => $parent,
-        "userId" => $req->session->id,
+        "userId" => $req->getSession()->id,
     ]);
     $stmt->execute();
     $result = $stmt->get_result();

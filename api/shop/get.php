@@ -2,9 +2,6 @@
 
 require '../utils/request.php';
 
-$req->useDb();
-$req->useSession();
-
 if (!isset($_GET["id"])) {
     $req->fail("No shop specified");
 }
@@ -28,7 +25,7 @@ WHERE
     disabled = FALSE AND
     shop_id = @{i:shopId}", [
     "shopId" => $shopId,
-    "userId" => $req->session->id,
+    "userId" => $req->getSession()->id,
 ]);
 $stmt->execute();
 $result = $stmt->get_result();

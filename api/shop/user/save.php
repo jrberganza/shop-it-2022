@@ -6,9 +6,6 @@ if ($_SERVER["REQUEST_METHOD"] != "POST") {
     $req->fail("Wrong HTTP Method");
 }
 
-$req->useDb();
-$req->useSession();
-
 $req->requireLoggedIn();
 
 $jsonBody = $req->getJsonBody([
@@ -39,7 +36,7 @@ $jsonBody = $req->getJsonBody([
     ],
 ]);
 
-if ($req->session->shopId) {
+if ($req->getSession()->shopId) {
     $stmt = $req->prepareQuery("UPDATE
         shops
     SET
@@ -59,7 +56,7 @@ if ($req->session->shopId) {
         "phoneNumber" => $jsonBody->phoneNumber,
         "description" => $jsonBody->description,
         "disabled" => $jsonBody->disabled,
-        "shopId" => $req->session->shopId,
+        "shopId" => $req->getSession()->shopId,
     ]);
     $stmt->execute();
 } else {
@@ -89,22 +86,22 @@ if ($req->session->shopId) {
         "phoneNumber" => $jsonBody->phoneNumber,
         "description" => $jsonBody->description,
         "disabled" => $jsonBody->disabled,
-        "userId" => $req->session->id,
+        "userId" => $req->getSession()->id,
     ]);
     $stmt->execute();
     $shopId = $stmt->insert_id;
 
     $stmt = $req->prepareQuery("UPDATE users SET shop_id = @{i:shopId} WHERE user_id = @{i:userId}", [
         "shopId" => $shopId,
-        "userId" => $req->session->id,
+        "userId" => $req->getSession()->id,
     ]);
     $stmt->execute();
 
-    $req->session->shopId = $shopId;
+    $req->getSession()->shopId = $shopId;
 }
 
 $stmt = $req->prepareQuery("DELETE FROM shop_category WHERE shop_id = @{i:shopId}", [
-    "shopId" => $req->session->shopId,
+    "shopId" => $req->getSession()->shopId,
 ]);
 $stmt->execute();
 
@@ -117,7 +114,7 @@ foreach ($jsonBody->categories as $categoryId) {
         @{i:shopId}
     )", [
         "categoryId" => $categoryId,
-        "shopId" => $req->session->shopId,
+        "shopId" => $req->getSession()->shopId,
     ]);
     $stmt->execute();
 }
@@ -131,12 +128,12 @@ foreach ($jsonBody->photos as $photoId) {
         @{i:shopId}
     ) ON DUPLICATE KEY UPDATE photo_id = photo_id", [
         "photoId" => $photoId,
-        "shopId" => $req->session->shopId,
+        "shopId" => $req->getSession()->shopId,
     ]);
     $stmt->execute();
 }
 
 $resObj = new \stdClass();
-$resObj->id = $req->session->shopId;
+$resObj->id = $req->getSession()->shopId;
 
 $req->success($resObj);

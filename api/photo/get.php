@@ -2,8 +2,6 @@
 
 require "../utils/request.php";
 
-$req->useDb();
-
 if (!isset($_GET["id"])) {
     $req->fail("No photo specified");
 }

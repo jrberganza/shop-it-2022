@@ -2,9 +2,6 @@
 
 require '../../utils/request.php';
 
-$req->useDb();
-$req->useSession();
-
 $req->requireAdminPrivileges();
 
 $stmt = $req->prepareQuery("SELECT

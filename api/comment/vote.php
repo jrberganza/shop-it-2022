@@ -6,9 +6,6 @@ if ($_SERVER["REQUEST_METHOD"] != "POST") {
     $req->fail("Wrong HTTP Method");
 }
 
-$req->useDb();
-$req->useSession();
-
 $req->requireLoggedIn();
 
 $jsonBody = $req->getJsonBody([
@@ -33,7 +30,7 @@ $stmt = $req->prepareQuery("INSERT INTO comment_votes(
 ) ON DUPLICATE KEY UPDATE
     value = @{i:value}", [
     "commentId" => $jsonBody->id,
-    "userId" => $req->session->id,
+    "userId" => $req->getSession()->id,
     "value" => $jsonBody->value,
 ]);
 $stmt->execute();

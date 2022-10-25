@@ -2,9 +2,6 @@
 
 require '../utils/request.php';
 
-$req->useDb();
-$req->useSession();
-
 if (!isset($_GET["id"])) {
     $req->fail("No product specified");
 }

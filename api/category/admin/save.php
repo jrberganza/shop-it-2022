@@ -6,9 +6,6 @@ if ($_SERVER["REQUEST_METHOD"] != "POST") {
     $req->fail("Wrong HTTP Method");
 }
 
-$req->useDb();
-$req->useSession();
-
 $req->requireAdminPrivileges();
 
 $jsonBody = $req->getJsonBody([

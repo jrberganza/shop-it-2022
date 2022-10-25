@@ -4,9 +4,6 @@ require "../../utils/request.php";
 
 $req->contentType("text/xml");
 
-$req->useDb();
-$req->useSession();
-
 $req->requireLoggedIn();
 
 $stmt = $req->prepareQuery("SELECT
@@ -21,7 +18,7 @@ FROM
     shops s
 WHERE
     shop_id = @{i:shopId}", [
-    "shopId" => $req->session->shopId,
+    "shopId" => $req->getSession()->shopId,
 ]);
 $stmt->execute();
 $result = $stmt->get_result();
@@ -67,7 +64,7 @@ FROM
     products p
 WHERE
     shop_id = @{i:shopId}", [
-    "shopId" => $req->session->shopId
+    "shopId" => $req->getSession()->shopId
 ]);
 $stmt->execute();
 $result = $stmt->get_result();

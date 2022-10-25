@@ -2,12 +2,9 @@
 
 require '../utils/request.php';
 
-$req->useDb();
-$req->useSession();
-
 $resObj = new \stdClass();
-$resObj->displayName = $req->session->displayName;
-$resObj->role = $req->session->role;
-$resObj->shopId = $req->session->shopId;
+$resObj->displayName = $req->getSession()->displayName;
+$resObj->role = $req->getSession()->role;
+$resObj->shopId = $req->getSession()->shopId;
 
 $req->success($resObj);

@@ -9,31 +9,43 @@ require "validation.php";
 // TODO: handle GET and POST payloads better
 class Request
 {
-    public ?DbWrapper $db = null;
     public string $mimeType = 'application/json';
-    public ?Session $session = null;
+    private ?DbWrapper $db = null;
+    private ?Session $session = null;
 
     public function useDb()
     {
-        $this->db = new DbWrapper();
-        $this->db->connectDb();
-        $this->db->startTransaction();
+        if (!$this->db) {
+            $this->db = new DbWrapper();
+            $this->db->connectDb();
+            $this->db->startTransaction();
+        }
+    }
+
+    public function getDbInstance()
+    {
+        $this->useDb();
+        return $this->db;
     }
 
     public function useSession()
     {
-        if (!$this->db) {
-            throw new Error("You need to call Request::useDb()");
-        }
+        if (!$this->session) {
+            $this->useDb();
 
-        $this->session = getCurrentSession($this->db);
+            $this->session = getCurrentSession($this->db);
+        }
+    }
+
+    public function getSession()
+    {
+        $this->useSession();
+        return $this->session;
     }
 
     public function requireLoggedIn()
     {
-        if (!$this->session) {
-            throw new Error("You need to call Request::useSession()");
-        }
+        $this->useSession();
 
         if (!$this->session->isLoggedIn()) {
             $this->fail("Not logged in", 401);
@@ -42,9 +54,7 @@ class Request
 
     public function requireEmployeePrivileges()
     {
-        if (!$this->session) {
-            throw new Error("You need to call Request::useSession()");
-        }
+        $this->useSession();
 
         if (!$this->session->hasEmployeePrivileges()) {
             $this->fail("Not authorized", 403);
@@ -53,9 +63,7 @@ class Request
 
     public function requireAdminPrivileges()
     {
-        if (!$this->session) {
-            throw new Error("You need to call Request::useSession()");
-        }
+        $this->useSession();
 
         if (!$this->session->hasAdminPrivileges()) {
             $this->fail("Not authorized", 403);
@@ -94,9 +102,7 @@ class Request
 
     public function prepareQuery($query, $params): mysqli_stmt
     {
-        if (!$this->db) {
-            throw new Error("You need to call Request::useDb()");
-        }
+        $this->useDb();
 
         return $this->db->prepareQuery($query, $params);
     }

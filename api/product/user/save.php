@@ -6,9 +6,6 @@ if ($_SERVER["REQUEST_METHOD"] != "POST") {
     $req->fail("Wrong HTTP Method");
 }
 
-$req->useDb();
-$req->useSession();
-
 $req->requireLoggedIn();
 
 $jsonBody = $req->getJsonBody([
@@ -32,7 +29,7 @@ $jsonBody = $req->getJsonBody([
     ],
 ]);
 
-if (!$req->session->shopId) {
+if (!$req->getSession()->shopId) {
     $req->fail("No shop has been created for this user");
 }
 
@@ -52,7 +49,7 @@ if (isset($jsonBody->id)) {
         "description" => $jsonBody->description,
         "disabled" => $jsonBody->disabled,
         "productId" => $jsonBody->id,
-        "shopId" => $req->session->shopId,
+        "shopId" => $req->getSession()->shopId,
     ]);
     $stmt->execute();
 } else {
@@ -73,7 +70,7 @@ if (isset($jsonBody->id)) {
         "price" => $jsonBody->price,
         "description" => $jsonBody->description,
         "disabled" => $jsonBody->disabled,
-        "shopId" => $req->session->shopId,
+        "shopId" => $req->getSession()->shopId,
     ]);
     $stmt->execute();
     $jsonBody->id = $stmt->insert_id;

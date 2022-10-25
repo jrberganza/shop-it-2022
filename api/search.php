@@ -2,8 +2,6 @@
 
 require 'utils/request.php';
 
-$req->useDb();
-
 $searchQuery = isset($_GET["q"]) ? $_GET["q"] : null;
 $productCategories = isset($_GET["productCategories"]) ? (strlen($_GET["productCategories"]) == 0 ? [] : explode(",", $_GET["productCategories"])) : [];
 $shopCategories = isset($_GET["shopCategories"]) ? (strlen($_GET["shopCategories"]) == 0 ? [] : explode(",", $_GET["shopCategories"])) : [];

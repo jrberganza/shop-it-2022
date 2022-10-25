@@ -6,8 +6,6 @@ if ($_SERVER["REQUEST_METHOD"] != "POST") {
     $req->fail("Wrong HTTP Method");
 }
 
-$req->useDb();
-
 $jsonBody = $req->getJsonBody([
     "email" => [
         "type" => "string",

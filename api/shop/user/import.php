@@ -2,9 +2,6 @@
 
 require "../../utils/request.php";
 
-$req->useDb();
-$req->useSession();
-
 $req->requireLoggedIn();
 
 $xmlBody = simplexml_load_file("php://input");
@@ -42,7 +39,7 @@ validateObj($xmlBody, [
     ],
 ]);
 
-if ($req->session->shopId) {
+if ($req->getSession()->shopId) {
     $stmt = $req->prepareQuery("UPDATE
         shops
     SET
@@ -62,7 +59,7 @@ if ($req->session->shopId) {
         "phoneNumber" => $xmlBody->phonenumber,
         "description" => $xmlBody->description,
         "disabled" => $xmlBody->disabled,
-        "shopId" => $req->session->shopId,
+        "shopId" => $req->getSession()->shopId,
     ]);
     $stmt->execute();
 } else {
@@ -92,18 +89,18 @@ if ($req->session->shopId) {
         "phoneNumber" => $xmlBody->phonenumber,
         "description" => $xmlBody->description,
         "disabled" => $xmlBody->disabled,
-        "userId" => $req->session->id,
+        "userId" => $req->getSession()->id,
     ]);
     $stmt->execute();
     $shopId = $stmt->insert_id;
 
     $stmt = $req->prepareQuery("UPDATE users SET shop_id = @{i:shopId} WHERE user_id = @{i:userId}", [
         "shopId" => $shopId,
-        "userId" => $req->session->id,
+        "userId" => $req->getSession()->id,
     ]);
     $stmt->execute();
 
-    $req->session->shopId = $shopId;
+    $req->getSession()->shopId = $shopId;
 }
 
 if (isset($xmlBody->product)) {
@@ -116,7 +113,7 @@ if (isset($xmlBody->product)) {
             product_id = @{i:productId} AND
             shop_id = @{i:shopId}", [
             "productId" => $product->id,
-            "shopId" => $req->session->shopId,
+            "shopId" => $req->getSession()->shopId,
         ]);
         $stmt->execute();
         $result = $stmt->get_result();
@@ -156,7 +153,7 @@ if (isset($xmlBody->product)) {
                 "price" => $product->price,
                 "description" => $product->description,
                 "disabled" => $product->disabled,
-                "shopId" => $req->session->shopId,
+                "shopId" => $req->getSession()->shopId,
             ]);
             $stmt->execute();
         }
@@ -164,6 +161,6 @@ if (isset($xmlBody->product)) {
 }
 
 $resObj = new \stdClass();
-$resObj->id = $req->session->shopId;
+$resObj->id = $req->getSession()->shopId;
 
 $req->success($resObj);
