@@ -2,9 +2,35 @@
 
 require 'utils/request.php';
 
-$searchQuery = isset($_GET["q"]) ? $_GET["q"] : null;
-$productCategories = isset($_GET["productCategories"]) ? (strlen($_GET["productCategories"]) == 0 ? [] : explode(",", $_GET["productCategories"])) : [];
-$shopCategories = isset($_GET["shopCategories"]) ? (strlen($_GET["shopCategories"]) == 0 ? [] : explode(",", $_GET["shopCategories"])) : [];
+$params = $req->getParams([
+    "q" => [
+        "optional" => true,
+        "default" => null,
+    ],
+    "productCategories" => [
+        "optional" => true,
+        "default" => [],
+        "validation" => function ($val) {
+            return preg_match("/\d+(,\d+)*/", $val) ? false : "Expected a comma-separated list of categories";
+        },
+        "postProcess" => function ($val) {
+            return strlen($val) == 0 ? [] : explode(",", $val);
+        }
+    ],
+    "shopCategories" => [
+        "optional" => true,
+        "default" => [],
+        "validation" => function ($val) {
+            return preg_match("/\d+(,\d+)*/", $val) ? false : "Expected a comma-separated list of categories";
+        },
+        "postProcess" => function ($val) {
+            return strlen($val) == 0 ? [] : explode(",", $val);
+        }
+    ],
+]);
+$searchQuery = $params["q"];
+$productCategories = $params["productCategories"];
+$shopCategories = $params["shopCategories"];
 
 $searchResults = new \stdClass;
 
@@ -31,7 +57,7 @@ WHERE
 $conditions = array();
 $params = array();
 
-if ($_GET["q"] != null) {
+if ($searchQuery != null) {
     array_push($conditions, "(
         p.name LIKE CONCAT('%', @{s:searchQuery}, '%') OR
         p.description LIKE CONCAT('%', @{s:searchQuery}, '%') OR
@@ -111,7 +137,7 @@ WHERE
 $conditions = array();
 $params = array();
 
-if ($_GET["q"] != null) {
+if ($searchQuery != null) {
     array_push($conditions, "(
         s.name LIKE CONCAT('%', @{s:searchQuery}, '%') OR
         s.description LIKE CONCAT('%', @{s:searchQuery}, '%')

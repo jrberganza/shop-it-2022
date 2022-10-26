@@ -2,10 +2,9 @@
 
 require '../../utils/request.php';
 
-if (!isset($_GET["id"])) {
-    $req->fail("No product specified");
-}
-$shopId = $_GET['id'];
+$params = $req->getParams([
+    "id" => [],
+]);
 
 function getComments(Request $req, int $shopId, ?int $parent = null)
 {
@@ -55,7 +54,7 @@ function getComments(Request $req, int $shopId, ?int $parent = null)
 }
 
 
-$allComments = getComments($req, $shopId);
+$allComments = getComments($req, $params["id"]);
 
 $resObj = new \stdClass();
 $resObj->comments = $allComments;

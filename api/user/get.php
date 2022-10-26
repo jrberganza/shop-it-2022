@@ -4,13 +4,12 @@ require "../utils/request.php";
 
 $req->requireAdminPrivileges();
 
-if (!isset($_GET["id"])) {
-    $req->fail("No user specified");
-}
-$userId = $_GET["id"];
+$params = $req->getParams([
+    "id" => [],
+]);
 
 $stmt = $req->prepareQuery("SELECT user_id as id, email as email, display_name as displayName, role as role FROM users WHERE user_id = @{i:userId} ORDER BY created_at", [
-    "userId" => $userId,
+    "userId" => $params["id"],
 ]);
 $stmt->execute();
 $result = $stmt->get_result();

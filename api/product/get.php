@@ -2,10 +2,9 @@
 
 require '../utils/request.php';
 
-if (!isset($_GET["id"])) {
-    $req->fail("No product specified");
-}
-$productId = $_GET['id'];
+$params = $req->getParams([
+    "id" => [],
+]);
 
 $stmt = $req->prepareQuery("SELECT
     p.product_id as id,
@@ -26,7 +25,7 @@ WHERE
     p.disabled = FALSE AND
     s.disabled = FALSE AND
     p.product_id = @{i:productId}", [
-    "productId" => $productId,
+    "productId" => $params["id"],
 ]);
 $stmt->execute();
 $result = $stmt->get_result();
@@ -38,7 +37,7 @@ if (!$resObj) {
 }
 
 $stmt = $req->prepareQuery("SELECT p.photo_id FROM product_photo pp JOIN photos p USING (photo_id) WHERE pp.product_id = @{i:productId}", [
-    "productId" => $productId,
+    "productId" => $params["id"],
 ]);
 $stmt->execute();
 $result = $stmt->get_result();
@@ -49,7 +48,7 @@ while ($row = $result->fetch_array()) {
 }
 
 $stmt = $req->prepareQuery("SELECT c.category_id as id, c.name as name FROM product_category pc JOIN categories c USING (category_id) WHERE pc.product_id = @{i:productId}", [
-    "productId" => $productId,
+    "productId" => $params["id"],
 ]);
 $stmt->execute();
 $result = $stmt->get_result();

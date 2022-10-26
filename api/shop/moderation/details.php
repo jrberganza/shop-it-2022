@@ -6,13 +6,15 @@ $req->requireEmployeePrivileges();
 
 $shop = new \stdClass();
 
-$currId = $_GET["id"];
+$params = $req->getParams([
+    "id" => [],
+]);
 
-$shop->id = $currId;
-$shop->name = "Tienda " . $currId;
-$shop->address = $currId . " Calle, Guatemala";
-$shop->phoneNumber =  ($currId % 9 + 1) . "123456" . ($currId % 9 + 1);
-$shop->description = "Shop description " . $currId;
+$shop->id = $params["id"];
+$shop->name = "Tienda " . $params["id"];
+$shop->address = $params["id"] . " Calle, Guatemala";
+$shop->phoneNumber =  ($params["id"] % 9 + 1) . "123456" . ($params["id"] % 9 + 1);
+$shop->description = "Shop description " . $params["id"];
 $shop->photos = [];
 
 $req->success($shop);

@@ -2,10 +2,9 @@
 
 require '../utils/request.php';
 
-if (!isset($_GET["id"])) {
-    $req->fail("No shop specified");
-}
-$shopId = $_GET["id"];
+$params = $req->getParams([
+    "id" => [],
+]);
 
 $stmt = $req->prepareQuery("SELECT
     s.shop_id as id,
@@ -24,7 +23,7 @@ LEFT JOIN
 WHERE
     disabled = FALSE AND
     shop_id = @{i:shopId}", [
-    "shopId" => $shopId,
+    "shopId" => $params["id"],
     "userId" => $req->getSession()->id,
 ]);
 $stmt->execute();
@@ -37,7 +36,7 @@ if (!$resObj) {
 }
 
 $stmt = $req->prepareQuery("SELECT p.photo_id FROM shop_photo sp JOIN photos p USING (photo_id) WHERE sp.shop_id = @{i:shopId}", [
-    "shopId" => $shopId,
+    "shopId" => $params["id"],
 ]);
 $stmt->execute();
 $result = $stmt->get_result();
@@ -58,7 +57,7 @@ WHERE
     disabled = FALSE AND
     shop_id = @{i:shopId}
 ORDER BY rand() LIMIT 5", [
-    "shopId" => $shopId
+    "shopId" => $params["id"]
 ]);
 $stmt->execute();
 $result = $stmt->get_result();
@@ -69,7 +68,7 @@ while ($row = $result->fetch_object()) {
 }
 
 $stmt = $req->prepareQuery("SELECT c.category_id as id, c.name as name FROM shop_category sc JOIN categories c USING (category_id) WHERE sc.shop_id = @{i:shopId}", [
-    "shopId" => $shopId,
+    "shopId" => $params["id"],
 ]);
 $stmt->execute();
 $result = $stmt->get_result();

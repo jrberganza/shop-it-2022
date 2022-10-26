@@ -43,6 +43,13 @@ class Request
         return $this->session;
     }
 
+    public function requireMethod(string $method)
+    {
+        if ($_SERVER["REQUEST_METHOD"] != $method) {
+            $this->fail("Wrong HTTP Method");
+        }
+    }
+
     public function requireLoggedIn()
     {
         $this->useSession();
@@ -73,6 +80,15 @@ class Request
     public function contentType($mimeType)
     {
         $this->mimeType = $mimeType;
+    }
+
+    public function getParams(array $expected)
+    {
+        if ($error = validateParams($_GET, $expected)) {
+            $this->fail($error, 400);
+        }
+
+        return $_GET;
     }
 
     public function getBody()

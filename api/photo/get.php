@@ -2,10 +2,9 @@
 
 require "../utils/request.php";
 
-if (!isset($_GET["id"])) {
-    $req->fail("No photo specified");
-}
-$photoId = $_GET["id"];
+$params = $req->getParams([
+    "id" => [],
+]);
 
 $stmt = $req->prepareQuery("SELECT
     photo
@@ -13,7 +12,7 @@ FROM
     photos
 WHERE
     photo_id = @{i:photoId}", [
-    "photoId" => $photoId,
+    "photoId" => $params["id"],
 ]);
 $stmt->execute();
 $result = $stmt->get_result();
