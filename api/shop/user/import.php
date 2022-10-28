@@ -10,11 +10,20 @@ if (!$xmlBody) {
     $req->fail("Malformed request body");
 }
 
-validateObj($xmlBody, [
-    "name" => [
-        "type" => "string",
-        "maxLength" => 255,
-    ],
+$body = new \stdClass();
+$body->name = strval($xmlBody->name);
+$body->address = strval($xmlBody->address);
+$body->latitude = doubleval($xmlBody->latitude);
+$body->longitude = doubleval($xmlBody->longitude);
+$body->phonenumber = strval($xmlBody->phonenumber);
+$body->description = strval($xmlBody->description);
+$body->disabled = boolval($xmlBody->disabled);
+$body->categories = [...$xmlBody->categories]; // TODO: fix
+$body->products = [...$xmlBody->product]; // TODO: fix
+
+$req->fail($body);
+
+if ($error = validate($body, [
     "name" => [
         "type" => "string",
         "maxLength" => 255,
@@ -37,7 +46,10 @@ validateObj($xmlBody, [
         "type" => "string",
         "maxLength" => 512,
     ],
-]);
+    // TODO: Add missing props
+])) {
+    $req->fail($error);
+};
 
 if ($req->getSession()->shopId) {
     $stmt = $req->prepareQuery("UPDATE

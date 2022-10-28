@@ -13,7 +13,7 @@ class Request
     private ?DbWrapper $db = null;
     private ?Session $session = null;
 
-    public function useDb()
+    private function useDb()
     {
         if (!$this->db) {
             $this->db = new DbWrapper();
@@ -28,7 +28,7 @@ class Request
         return $this->db;
     }
 
-    public function useSession()
+    private function useSession()
     {
         if (!$this->session) {
             $this->useDb();
@@ -84,7 +84,7 @@ class Request
 
     public function getParams(array $expected)
     {
-        if ($error = validateParams($_GET, $expected)) {
+        if ($error = validate($_GET, $expected)) {
             $this->fail($error, 400);
         }
 
@@ -109,7 +109,7 @@ class Request
             $this->fail("Malformed request body", 400);
         }
 
-        if ($error = validateObj($json, $expected)) {
+        if ($error = validate($json, $expected)) {
             $this->fail($error, 400);
         }
 

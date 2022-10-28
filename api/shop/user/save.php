@@ -32,6 +32,12 @@ $jsonBody = $req->getJsonBody([
     "disabled" => [
         "type" => "boolean",
     ],
+    "categories" => [
+        "type" => "array"
+    ],
+    "photos" => [
+        "type" => "array"
+    ]
 ]);
 
 if ($req->getSession()->shopId) {
