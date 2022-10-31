@@ -4,24 +4,47 @@ require "../../utils/request.php";
 
 $req->requireLoggedIn();
 
-$xmlBody = simplexml_load_file("php://input");
-
-if (!$xmlBody) {
+$dom = new DOMDocument();
+if (!$dom->load("php://input")) {
     $req->fail("Malformed request body");
 }
 
-$body = new \stdClass();
-$body->name = strval($xmlBody->name);
-$body->address = strval($xmlBody->address);
-$body->latitude = doubleval($xmlBody->latitude);
-$body->longitude = doubleval($xmlBody->longitude);
-$body->phonenumber = strval($xmlBody->phonenumber);
-$body->description = strval($xmlBody->description);
-$body->disabled = boolval($xmlBody->disabled);
-$body->categories = [...$xmlBody->categories]; // TODO: fix
-$body->products = [...$xmlBody->product]; // TODO: fix
+$processed = domToJson([$dom], [
+    "type" => "object",
+    "children" => [
+        "shop" => [
+            "type" => "object",
+            "children" => [
+                "name" => ["type" => "string"],
+                "address" => ["type" => "string"],
+                "latitude" => ["type" => "double"],
+                "longitude" => ["type" => "double"],
+                "phonenumber" => ["type" => "string"],
+                "description" => ["type" => "string"],
+                "disabled" => ["type" => "boolean"],
+                "product" => [
+                    "type" => "array",
+                    "child" => [
+                        "type" => "object",
+                        "children" => [
+                            "id" => ["type" => "integer"],
+                            "name" => ["type" => "string"],
+                            "price" => ["type" => "double"],
+                            "description" => ["type" => "string"],
+                            "disabled" => ["type" => "boolean"],
+                        ]
+                    ]
+                ],
+            ],
+        ]
+    ],
+]);
 
-$req->fail($body);
+if (!isset($processed->shop)) {
+    $req->fail("Malformed request body");
+}
+
+$body = $processed->shop;
 
 if ($error = validate($body, [
     "name" => [
@@ -46,6 +69,38 @@ if ($error = validate($body, [
         "type" => "string",
         "maxLength" => 512,
     ],
+    "disabled" => [
+        "type" => "boolean",
+    ],
+    "product" => [
+        "type" => "array",
+        "validation" => function ($arr) use ($req) {
+            foreach ($arr as $child) {
+                if ($error = validate($child, [
+                    "id" => [
+                        "type" => "integer",
+                    ],
+                    "name" => [
+                        "type" => "string",
+                        "maxLength" => 255,
+                    ],
+                    "price" => [
+                        "type" => "double",
+                    ],
+                    "description" => [
+                        "type" => "string",
+                        "maxLength" => 512,
+                    ],
+                    "disabled" => [
+                        "type" => "boolean",
+                    ],
+                    // TODO: Add missing props
+                ])) {
+                    $req->fail($error);
+                }
+            }
+        }
+    ],
     // TODO: Add missing props
 ])) {
     $req->fail($error);
@@ -64,13 +119,13 @@ if ($req->getSession()->shopId) {
         disabled = @{i:disabled}
     WHERE
         shop_id = @{i:shopId}", [
-        "name" => $xmlBody->name,
-        "address" => $xmlBody->address,
-        "latitude" => $xmlBody->latitude,
-        "longitude" => $xmlBody->longitude,
-        "phoneNumber" => $xmlBody->phonenumber,
-        "description" => $xmlBody->description,
-        "disabled" => $xmlBody->disabled,
+        "name" => $body->name,
+        "address" => $body->address,
+        "latitude" => $body->latitude,
+        "longitude" => $body->longitude,
+        "phoneNumber" => $body->phonenumber,
+        "description" => $body->description,
+        "disabled" => $body->disabled,
         "shopId" => $req->getSession()->shopId,
     ]);
     $stmt->execute();
@@ -94,13 +149,13 @@ if ($req->getSession()->shopId) {
         @{i:disabled},
         @{i:userId}
     )", [
-        "name" => $xmlBody->name,
-        "address" => $xmlBody->address,
-        "latitude" => $xmlBody->latitude,
-        "longitude" => $xmlBody->longitude,
-        "phoneNumber" => $xmlBody->phonenumber,
-        "description" => $xmlBody->description,
-        "disabled" => $xmlBody->disabled,
+        "name" => $body->name,
+        "address" => $body->address,
+        "latitude" => $body->latitude,
+        "longitude" => $body->longitude,
+        "phoneNumber" => $body->phonenumber,
+        "description" => $body->description,
+        "disabled" => $body->disabled,
         "userId" => $req->getSession()->id,
     ]);
     $stmt->execute();
@@ -115,8 +170,8 @@ if ($req->getSession()->shopId) {
     $req->getSession()->shopId = $shopId;
 }
 
-if (isset($xmlBody->product)) {
-    foreach ($xmlBody->product as $product) {
+if (isset($body->product)) {
+    foreach ($body->product as $product) {
         $stmt = $req->prepareQuery("SELECT
             product_id
         FROM

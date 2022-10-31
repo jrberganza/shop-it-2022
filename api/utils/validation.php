@@ -141,3 +141,85 @@ function validate(mixed &$toCheck, array $expected)
 
     return false;
 }
+
+$VALIDATION_EMPTY_VAL = new \stdClass;
+
+function domToJson(array $domlist, array $schema): mixed
+{
+    global $VALIDATION_EMPTY_VAL;
+
+    if ($schema["type"] == "object") {
+        if (count($domlist) != 1) {
+            return $VALIDATION_EMPTY_VAL;
+        }
+        $objEl = $domlist[0];
+
+        $map = array();
+        foreach ($objEl->childNodes as $dom) {
+            if (!isset($map[$dom->nodeName])) {
+                $map[$dom->nodeName] = array();
+            }
+
+            array_push($map[$dom->nodeName], $dom);
+        }
+
+        $obj = new \stdClass;
+
+        foreach ($schema["children"] as $name => $chSchema) {
+            $converted = domToJson($map[$name], $chSchema);
+            if (gettype($converted) != "object") {
+                $obj->$name = domToJson($map[$name], $chSchema);
+            } elseif ($converted != $VALIDATION_EMPTY_VAL) {
+                $obj->$name = domToJson($map[$name], $chSchema);
+            }
+        }
+
+        return $obj;
+    } elseif ($schema["type"] == "array") {
+        $arr = array();
+
+        foreach ($domlist as $dom) {
+            $converted = domToJson([$dom], $schema["child"]);
+            if (gettype($converted) != "object") {
+                array_push($arr, $converted);
+            } elseif ($converted != $VALIDATION_EMPTY_VAL) {
+                array_push($arr, $converted);
+            }
+        }
+
+        return $arr;
+    } elseif (
+        $schema["type"] == "string" ||
+        $schema["type"] == "integer" ||
+        $schema["type"] == "double" ||
+        $schema["type"] == "boolean"
+    ) {
+        if (count($domlist) != 1) {
+            return $VALIDATION_EMPTY_VAL;
+        }
+        $stringEl = $domlist[0];
+
+        if ($stringEl->childNodes->count() != 1) {
+            return $VALIDATION_EMPTY_VAL;
+        }
+
+        if ($stringEl->firstChild->nodeType != XML_TEXT_NODE) {
+            return $VALIDATION_EMPTY_VAL;
+        }
+
+        $value = $stringEl->firstChild->textContent;
+        if ($schema["type"] == "string") {
+            return $value;
+        } elseif ($schema["type"] == "integer") {
+            return is_numeric($value) ? intval($value) : $VALIDATION_EMPTY_VAL;
+        } elseif ($schema["type"] == "double") {
+            return is_numeric($value) ? doubleval($value) : $VALIDATION_EMPTY_VAL;
+        } elseif ($schema["type"] == "boolean") {
+            return ($value == "true" || $value == "1") ? true
+                : ($value == "false" || $value == "0" ? false
+                    : $VALIDATION_EMPTY_VAL);
+        }
+    } else {
+        return $schema["type"];
+    }
+}
