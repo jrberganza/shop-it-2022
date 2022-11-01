@@ -58,7 +58,7 @@ function getCurrentSession(DbWrapper $db)
         u.display_name,
         u.role,
         ss.token,
-        ss.last_access_at,
+        unix_timestamp(ss.last_access_at) as last_access_at,
         s.shop_id
     FROM
         users u
@@ -78,7 +78,7 @@ function getCurrentSession(DbWrapper $db)
         return $session;
     }
 
-    $lastAccessAt = strtotime($row["last_access_at"]);
+    $lastAccessAt = $row["last_access_at"];
     if (time() - $lastAccessAt > 86400 * 7) {
         return $session;
     }
