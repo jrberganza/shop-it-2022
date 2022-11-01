@@ -73,14 +73,14 @@ function validate(mixed &$toCheck, array $expected)
         }
 
         if (!isset($what["type"])) {
-            $what["type"] = "string";
+            $what["type"] = "any";
         }
 
         if (hasfield($toCheck, $name)) {
             $fieldVal = getfield($toCheck, $name);
             $fieldType = gettype($fieldVal);
 
-            if ($what["type"] != "mixed" && $fieldType != $what["type"]) {
+            if ($what["type"] != "any" && $fieldType != $what["type"]) {
                 if (($what["type"] == "double" || $what["type"] == "integer") && is_numeric($fieldVal)) {
                     $intVal = intval($fieldVal);
                     $floatVal = floatval($fieldVal);
