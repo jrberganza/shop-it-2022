@@ -9,10 +9,27 @@ CREATE TABLE `users` (
   `updated_at` datetime NOT NULL DEFAULT (now())
 );
 
+CREATE TABLE `departments` (
+  `department_id` int PRIMARY KEY AUTO_INCREMENT,
+  `name` varchar(128) NOT NULL
+);
+
+CREATE TABLE `municipalities` (
+  `municipality_id` int PRIMARY KEY AUTO_INCREMENT,
+  `name` varchar(128) NOT NULL,
+  `department_id` int NOT NULL
+);
+
+CREATE TABLE `addresses` (
+  `address_id` int PRIMARY KEY AUTO_INCREMENT,
+  `zone` int NOT NULL,
+  `municipality_id` int NOT NULL
+);
+
 CREATE TABLE `shops` (
   `shop_id` int PRIMARY KEY AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
-  `address` varchar(255) NOT NULL,
+  `address_id` int NOT NULL,
   `latitude` double NOT NULL,
   `longitude` double NOT NULL,
   `phone_number` varchar(20) NOT NULL,
@@ -149,9 +166,15 @@ CREATE TABLE `banner_blocks` (
   `photo_id` int
 );
 
+ALTER TABLE `municipalities` ADD FOREIGN KEY (`department_id`) REFERENCES `departments` (`department_id`);
+
+ALTER TABLE `addresses` ADD FOREIGN KEY (`municipality_id`) REFERENCES `municipalities` (`municipality_id`);
+
 ALTER TABLE `shops` ADD FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`);
 
 ALTER TABLE `users` ADD FOREIGN KEY (`shop_id`) REFERENCES `shops` (`shop_id`);
+
+ALTER TABLE `shops` ADD FOREIGN KEY (`address_id`) REFERENCES `addresses` (`address_id`);
 
 ALTER TABLE `products` ADD FOREIGN KEY (`shop_id`) REFERENCES `shops` (`shop_id`);
 
