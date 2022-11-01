@@ -18,8 +18,14 @@
       </VCardTitle>
       <VCardSubtitle>
         <PhotoInput v-model="myShop.photos" multiple />
-        <VTextField label="Address" v-model="myShop.address" :rules="[rules.required]" maxlength="255">
-        </VTextField>
+        <VSelect label="Department" :disabled="departments == null" :items="departments" itemText="name" itemValue="id"
+          v-model="myShop.department" maxlength="255">
+        </VSelect>
+        <VSelect label="Municipalities" :disabled="municipalities == null || myShop.department == null"
+          :items="municipalities" itemText="name" itemValue="id" v-model="myShop.municipality" maxlength="255">
+        </VSelect>
+        <VTextField label="Zone" :disabled="departments == null || municipalities == null" v-model="myShop.zone"
+          :rules="[rules.required, rules.phoneNumber.format]" maxlength="10"></VTextField>
         <Map v-model="myShop.location" input></Map>
         <VTextField label="Phone Number" v-model="myShop.phoneNumber"
           :rules="[rules.required, rules.phoneNumber.format]" maxlength="20"></VTextField>
@@ -60,7 +66,7 @@
 </template>
 
 <script>
-import { VRow, VCol, VForm, VTextField, VTextarea, VBtn, VCheckbox, VFileInput, VDataIterator, VCard, VCardTitle, VCardSubtitle, VCardText, VCardActions, VIcon, VImg } from 'vuetify/lib';
+import { VRow, VCol, VForm, VTextField, VSelect, VTextarea, VBtn, VCheckbox, VFileInput, VDataIterator, VCard, VCardTitle, VCardSubtitle, VCardText, VCardActions, VIcon, VImg } from 'vuetify/lib';
 import Map from '../../components/map/Map.vue';
 import PhotoInput from '../../components/photo/PhotoInput.vue';
 
@@ -68,21 +74,45 @@ export default {
   name: 'MyShop',
   data: () => ({
     /** @type {Blob | null} */ xmlFile: null,
-    /** @type {any | null} */ myShop: null,
+    myShop: {
+      id: null,
+      name: '',
+      zone: '',
+      municipality: null,
+      department: null,
+      phoneNumber: '',
+      location: null,
+      description: '',
+      categories: [],
+      disabled: true,
+      photos: [],
+    },
     shopCategories: [],
+    departments: null,
+    municipalities: null,
     rules: {
       required: v => !!v || "Required",
+      number: {
+        format: v => (/^\d+$/).test(v) || "Invalid zone"
+      },
       phoneNumber: {
         format: v => (/^\+?\d+$/).test(v) || "Invalid phone number"
       },
     }
   }),
+  watch: {
+    ['myShop.department'](newVal) {
+      this.getMunicipalities(newVal);
+    }
+  },
   methods: {
     newShop() {
       this.myShop = {
         id: null,
         name: '',
-        address: '',
+        zone: '',
+        municipality: null,
+        department: null,
         phoneNumber: '',
         location: null,
         description: '',
@@ -94,7 +124,9 @@ export default {
     saveShop() {
       let body = {
         name: this.myShop.name,
-        address: this.myShop.address,
+        zone: parseInt(this.myShop.zone, 10),
+        municipality: this.myShop.municipality,
+        department: this.myShop.department,
         latitude: this.myShop.location[0],
         longitude: this.myShop.location[1],
         phoneNumber: this.myShop.phoneNumber,
@@ -156,11 +188,31 @@ export default {
           }
         });
     },
+    getDepartments() {
+      fetch(`/api/location/departments.php`)
+        .then(res => res.json())
+        .then(json => {
+          if (json.success) {
+            this.departments = json.departments;
+          }
+        });
+    },
+    getMunicipalities(department) {
+      this.municipalities = null;
+      fetch(`/api/location/municipalities.php?department=${department}`)
+        .then(res => res.json())
+        .then(json => {
+          if (json.success) {
+            this.municipalities = json.municipalities;
+          }
+        });
+    },
   },
   mounted() {
     this.getShop();
     this.getShopCategories();
+    this.getDepartments();
   },
-  components: { VRow, VCol, VForm, VTextField, VBtn, VCheckbox, VFileInput, VDataIterator, VCard, VCardTitle, VCardSubtitle, VCardText, VTextarea, VCardActions, VIcon, VImg, Map, PhotoInput },
+  components: { VRow, VCol, VForm, VTextField, VSelect, VBtn, VCheckbox, VFileInput, VDataIterator, VCard, VCardTitle, VCardSubtitle, VCardText, VTextarea, VCardActions, VIcon, VImg, Map, PhotoInput },
 };
 </script>

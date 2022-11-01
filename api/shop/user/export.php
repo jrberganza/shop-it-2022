@@ -9,8 +9,7 @@ $req->requireLoggedIn();
 $stmt = $req->prepareQuery("SELECT
     name,
     ad.zone,
-    mn.name as municipality,
-    dp.name as department,
+    mn.municipality_id as municipality,
     latitude,
     longitude,
     phone_number,
