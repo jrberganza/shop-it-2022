@@ -3,7 +3,7 @@
     min-width="auto">
     <template v-slot:activator="{ on, attrs }">
       <VTextField :value="date" :label="label" :dense="dense" prepend-icon="mdi-calendar" readonly v-bind="attrs"
-        v-on="on">
+        v-on="on" :placeholder="placeholder" :persistent-placeholder="persistentPlaceholder" :clearable="clearable">
       </VTextField>
     </template>
     <VDatePicker v-model="date">
@@ -23,7 +23,7 @@ import { VMenu, VDatePicker, VBtn, VSpacer, VTextField } from 'vuetify/lib';
 
 export default {
   name: 'DateInput',
-  props: ['label', 'dense', 'value'],
+  props: ['label', 'dense', 'value', 'placeholder', 'persistentPlaceholder', 'clearable'],
   data: () => ({
     date: null,
     menu: false,
