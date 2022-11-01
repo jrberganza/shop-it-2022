@@ -33,18 +33,11 @@ Table municipalities {
 
 Ref: municipalities.department_id > departments.department_id
 
-Table addresses {
-    address_id int [pk, increment]
-    zone int [not null]
-    municipality_id int [not null]
-}
-
-Ref: addresses.municipality_id > municipalities.municipality_id
-
 Table shops {
     shop_id int [pk, increment]
     name varchar(255) [not null]
-    address_id int [not null]
+    zone int [not null]
+    municipality_id int [not null]
     latitude double [not null]
     longitude double [not null]
     phone_number varchar(20) [not null]
@@ -58,7 +51,7 @@ Table shops {
 Ref: users.user_id - shops.user_id
 Ref: shops.shop_id - users.shop_id
 
-Ref: shops.address_id > addresses.address_id
+Ref: shops.municipality_id > municipalities.municipality_id
 
 Table products {
     product_id int [pk, increment]
