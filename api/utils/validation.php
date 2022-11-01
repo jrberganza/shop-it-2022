@@ -68,7 +68,7 @@ function validate(mixed &$toCheck, array $expected)
                 }
                 continue;
             } else {
-                return "Missing field " . $name . " of type " . $what["type"];
+                return "Missing field " . $name . (isset($what["type"]) ? " of type " . $what["type"] : "");
             }
         }
 
