@@ -5,7 +5,7 @@ require '../../utils/request.php';
 $stmt = $req->prepareQuery("SELECT
     s.shop_id as id,
     s.name as name,
-    ad.zone as zone,
+    s.zone as zone,
     mn.municipality_id as municipality,
     dp.department_id as department,
     s.latitude as latitude,
@@ -15,8 +15,6 @@ $stmt = $req->prepareQuery("SELECT
     s.disabled as disabled
 FROM
     shops s
-JOIN
-    addresses ad
 JOIN
     municipalities mn USING (municipality_id)
 JOIN

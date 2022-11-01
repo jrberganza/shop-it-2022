@@ -8,7 +8,7 @@ $req->requireLoggedIn();
 
 $stmt = $req->prepareQuery("SELECT
     name,
-    ad.zone,
+    s.zone,
     mn.municipality_id as municipality,
     latitude,
     longitude,
@@ -17,8 +17,6 @@ $stmt = $req->prepareQuery("SELECT
     disabled
 FROM
     shops s
-JOIN
-    addresses ad
 JOIN
     municipalities mn USING (municipality_id)
 JOIN

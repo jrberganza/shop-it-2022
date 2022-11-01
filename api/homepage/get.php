@@ -31,7 +31,7 @@ while ($block = $result->fetch_object()) {
             $stmt2 = $req->prepareQuery("SELECT
                 s.shop_id as id,
                 s.name as name,
-                ad.zone as zone,
+                s.zone as zone,
                 mn.name as municipality,
                 dp.name as department,
                 s.phone_number as phoneNumber,
@@ -40,8 +40,6 @@ while ($block = $result->fetch_object()) {
                 cast(coalesce(r.rating, 0.0) as double) as rating
             FROM
                 shops s
-            JOIN
-                addresses ad
             JOIN
                 municipalities mn USING (municipality_id)
             JOIN
