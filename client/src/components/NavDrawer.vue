@@ -1,34 +1,51 @@
 <template>
-  <VNavigationDrawer v-model="internalDrawer" @input="() => $emit('input', internalDrawer)" absolute temporary
-    color="primary" dark class="nav-drawer">
-    <VListItem>
-      <VListItemContent>
-        <VListItemTitle>
-          <Logo></Logo>
-        </VListItemTitle>
-      </VListItemContent>
-    </VListItem>
+  <div class="nav-drawer-absolute" :class="{ 'nav-drawer-hidden': !internalDrawer }">
+    <div class="nav-drawer-sticky">
+      <VNavigationDrawer v-model="internalDrawer" @input="() => $emit('input', internalDrawer)" temporary
+        color="primary" dark>
+        <VListItem>
+          <VListItemContent>
+            <VListItemTitle>
+              <Logo></Logo>
+            </VListItemTitle>
+          </VListItemContent>
+        </VListItem>
 
-    <VDivider></VDivider>
+        <VDivider></VDivider>
 
-    <VList dense>
-      <VListItem v-for="item in items" :key="item.title" link
-        @click="item.action ? item.action() : $router.push(item.path)">
-        <VListItemIcon>
-          <VIcon>{{ item.icon }}</VIcon>
-        </VListItemIcon>
+        <VList dense>
+          <VListItem v-for="item in items" :key="item.title" link
+            @click="item.action ? item.action() : $router.push(item.path)">
+            <VListItemIcon>
+              <VIcon>{{ item.icon }}</VIcon>
+            </VListItemIcon>
 
-        <VListItemContent>
-          <VListItemTitle>{{ item.title }}</VListItemTitle>
-        </VListItemContent>
-      </VListItem>
-    </VList>
-  </VNavigationDrawer>
+            <VListItemContent>
+              <VListItemTitle>{{ item.title }}</VListItemTitle>
+            </VListItemContent>
+          </VListItem>
+        </VList>
+      </VNavigationDrawer>
+    </div>
+  </div>
 </template>
 
 <style>
-.nav-drawer {
+.nav-drawer-hidden {
+  width: 0px;
+}
+
+.nav-drawer-absolute {
+  position: absolute;
+  top: 0;
+  height: 100%;
   z-index: 10001;
+}
+
+.nav-drawer-sticky {
+  position: sticky;
+  top: 0;
+  height: 100vh;
 }
 </style>
 
