@@ -63,6 +63,8 @@ function validate(mixed &$toCheck, array $expected)
             if ($what["optional"]) {
                 if (isset($what["default"])) {
                     setfield($toCheck, $name, $what["default"]);
+                } else {
+                    unsetfield($toCheck, $name);
                 }
                 continue;
             } else {
