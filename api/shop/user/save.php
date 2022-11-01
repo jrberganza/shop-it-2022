@@ -11,9 +11,11 @@ $jsonBody = $req->getJsonBody([
         "type" => "string",
         "maxLength" => 255,
     ],
-    "address" => [
-        "type" => "string",
-        "maxLength" => 255,
+    "zone" => [
+        "type" => "integer",
+    ],
+    "municipality" => [
+        "type" => "integer",
     ],
     "latitude" => [
         "type" => "double",
@@ -45,7 +47,8 @@ if ($req->getSession()->shopId) {
         shops
     SET
         name = @{s:name},
-        address = @{s:address},
+        zone = @{i:zone},
+        municipality_id = @{i:municipalityId},
         latitude = @{d:latitude},
         longitude = @{d:longitude},
         phone_number = @{s:phoneNumber},
@@ -54,7 +57,8 @@ if ($req->getSession()->shopId) {
     WHERE
         shop_id = @{i:shopId}", [
         "name" => $jsonBody->name,
-        "address" => $jsonBody->address,
+        "zone" => $jsonBody->zone,
+        "municipalityId" => $jsonBody->municipality,
         "latitude" => $jsonBody->latitude,
         "longitude" => $jsonBody->longitude,
         "phoneNumber" => $jsonBody->phoneNumber,
@@ -66,7 +70,8 @@ if ($req->getSession()->shopId) {
 } else {
     $stmt = $req->prepareQuery("INSERT INTO shops(
         name,
-        address,
+        zone,
+        municipality_id,
         latitude,
         longitude,
         phone_number,
@@ -75,7 +80,8 @@ if ($req->getSession()->shopId) {
         user_id
     ) VALUES (
         @{s:name},
-        @{s:address},
+        @{i:zone},
+        @{i:municipalityId},
         @{d:latitude},
         @{d:longitude},
         @{s:phoneNumber},
@@ -84,7 +90,8 @@ if ($req->getSession()->shopId) {
         @{i:userId}
     )", [
         "name" => $jsonBody->name,
-        "address" => $jsonBody->address,
+        "zone" => $jsonBody->zone,
+        "municipalityId" => $jsonBody->municipality,
         "latitude" => $jsonBody->latitude,
         "longitude" => $jsonBody->longitude,
         "phoneNumber" => $jsonBody->phoneNumber,

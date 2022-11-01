@@ -125,8 +125,7 @@ export default {
       let body = {
         name: this.myShop.name,
         zone: parseInt(this.myShop.zone, 10),
-        municipality: this.myShop.municipality,
-        department: this.myShop.department,
+        municipality: parseInt(this.myShop.municipality, 10),
         latitude: this.myShop.location[0],
         longitude: this.myShop.location[1],
         phoneNumber: this.myShop.phoneNumber,

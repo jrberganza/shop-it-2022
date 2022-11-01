@@ -16,7 +16,8 @@ $processed = domToJson([$dom], [
             "type" => "object",
             "children" => [
                 "name" => ["type" => "string"],
-                "address" => ["type" => "string"],
+                "zone" => ["type" => "integer"],
+                "municipality" => ["type" => "integer"],
                 "latitude" => ["type" => "double"],
                 "longitude" => ["type" => "double"],
                 "phonenumber" => ["type" => "string"],
@@ -51,9 +52,11 @@ if ($error = validate($body, [
         "type" => "string",
         "maxLength" => 255,
     ],
-    "address" => [
-        "type" => "string",
-        "maxLength" => 255,
+    "zone" => [
+        "type" => "integer",
+    ],
+    "municipality" => [
+        "type" => "integer",
     ],
     "latitude" => [
         "type" => "double",
@@ -111,7 +114,8 @@ if ($req->getSession()->shopId) {
         shops
     SET
         name = @{s:name},
-        address = @{s:address},
+        zone = @{i:zone},
+        municipality_id = @{i:municipalityId},
         latitude = @{d:latitude},
         longitude = @{d:longitude},
         phone_number = @{s:phoneNumber},
@@ -120,7 +124,8 @@ if ($req->getSession()->shopId) {
     WHERE
         shop_id = @{i:shopId}", [
         "name" => $body->name,
-        "address" => $body->address,
+        "zone" => $body->zone,
+        "municipalityId" => $body->municipality,
         "latitude" => $body->latitude,
         "longitude" => $body->longitude,
         "phoneNumber" => $body->phonenumber,
@@ -132,7 +137,8 @@ if ($req->getSession()->shopId) {
 } else {
     $stmt = $req->prepareQuery("INSERT INTO shops(
         name,
-        address,
+        zone,
+        municipality_id,
         latitude,
         longitude,
         phone_number,
@@ -141,7 +147,8 @@ if ($req->getSession()->shopId) {
         user_id
     ) VALUES (
         @{s:name},
-        @{s:address},
+        @{i:zone},
+        @{i:municipalityId},
         @{d:latitude},
         @{d:longitude},
         @{s:phoneNumber},
@@ -150,7 +157,8 @@ if ($req->getSession()->shopId) {
         @{i:userId}
     )", [
         "name" => $body->name,
-        "address" => $body->address,
+        "zone" => $body->zone,
+        "municipalityId" => $body->municipality,
         "latitude" => $body->latitude,
         "longitude" => $body->longitude,
         "phoneNumber" => $body->phonenumber,
