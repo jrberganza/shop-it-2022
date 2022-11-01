@@ -1,7 +1,7 @@
 <?php
 
-if (__FILE__ == $_SERVER["SCRIPT_FILENAME"]) {
-    require '../utils/request.php';
+if (realpath(__FILE__) == realpath($_SERVER["SCRIPT_FILENAME"])) {
+    require_once '../utils/request.php';
     $req->fail("Forbidden", 403);
 }
 
