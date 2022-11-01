@@ -9,16 +9,16 @@
           </VCol>
           <VCol cols="12" md="8" order="2" order-md="2">
             <VCard elevation="0">
-              <VCardTitle>{{shop.name}}</VCardTitle>
+              <VCardTitle>{{ shop.name }}</VCardTitle>
               <VCardSubtitle>
-                {{shop.address}} - {{shop.phoneNumber}}
+                Zona {{ shop.zone }}, {{ shop.municipality }}, {{ shop.department }} - {{ shop.phoneNumber }}
                 <VChipGroup column>
                   <VChip v-for="category in shop.categories" :key="category.id">
-                    {{category.name}}
+                    {{ category.name }}
                   </VChip>
                 </VChipGroup>
               </VCardSubtitle>
-              <VCardText>{{shop.description}}</VCardText>
+              <VCardText>{{ shop.description }}</VCardText>
               <VCardActions>
                 <VRating hover size="30" half-increments readonly v-model="shop.rating"></VRating>
               </VCardActions>
@@ -36,9 +36,9 @@
           <VRow>
             <VCol v-for="product in items" :key="product.id" cols="12" sm="6" md="4" lg="3">
               <VCard @click="() => $router.push('/product/' + product.id)">
-                <VCardTitle>{{product.name}}</VCardTitle>
-                <VCardSubtitle>{{product.price}} - {{product.shopName}}</VCardSubtitle>
-                <VCardText>{{product.description}}</VCardText>
+                <VCardTitle>{{ product.name }}</VCardTitle>
+                <VCardSubtitle>{{ product.price }} - {{ product.shopName }}</VCardSubtitle>
+                <VCardText>{{ product.description }}</VCardText>
               </VCard>
             </VCol>
           </VRow>

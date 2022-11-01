@@ -5,7 +5,9 @@ require '../../utils/request.php';
 $stmt = $req->prepareQuery("SELECT
     s.shop_id as id,
     s.name as name,
-    s.address as address,
+    ad.zone as zone,
+    mn.name as municipality,
+    dp.name as department,
     s.latitude as latitude,
     s.longitude as longitude,
     s.phone_number as phoneNumber,
@@ -13,6 +15,12 @@ $stmt = $req->prepareQuery("SELECT
     s.disabled as disabled
 FROM
     shops s
+JOIN
+    addresses ad
+JOIN
+    municipalities mn USING (municipality_id)
+JOIN
+    departments dp USING (department_id)
 WHERE
     shop_id = @{i:shopId}", [
     "shopId" => $req->getSession()->shopId,

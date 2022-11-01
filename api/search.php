@@ -122,13 +122,21 @@ $searchResults->shops = array();
 $query = "SELECT
     s.shop_id as id,
     s.name as name,
-    s.address as address,
+    ad.zone as zone,
+    mn.name as municipality,
+    dp.name as department,
     s.phone_number as phoneNumber,
     s.description as description,
     s.disabled as disabled,
     cast(coalesce(r.rating, 0.0) as double) as rating
 FROM
     shops s
+JOIN
+    addresses ad
+JOIN
+    municipalities mn USING (municipality_id)
+JOIN
+    departments dp USING (department_id)
 LEFT JOIN
     (SELECT avg(rating) as rating, shop_id FROM shop_ratings GROUP BY shop_id) r USING (shop_id)
 WHERE

@@ -5,9 +5,10 @@
         <VCard @click="() => $router.push('/shop/' + shop.id)">
           <VImg v-if="shop.photos.length > 0" :src="'/api/photo/get.php?id=' + shop.photos[0]" height="100" />
           <VImg v-else src="/images/placeholder.png" height="100" />
-          <VCardTitle>{{shop.name}}</VCardTitle>
-          <VCardSubtitle>{{shop.address}} - {{shop.phoneNumber}}</VCardSubtitle>
-          <VCardText>{{shop.description}}</VCardText>
+          <VCardTitle>{{ shop.name }}</VCardTitle>
+          <VCardSubtitle>Zona {{ shop.zone }}, {{ shop.municipality }}, {{ shop.department }} - {{ shop.phoneNumber }}
+          </VCardSubtitle>
+          <VCardText>{{ shop.description }}</VCardText>
         </VCard>
       </VCol>
     </template>

@@ -8,7 +8,9 @@ $req->requireLoggedIn();
 
 $stmt = $req->prepareQuery("SELECT
     name,
-    address,
+    ad.zone,
+    mn.name as municipality,
+    dp.name as department,
     latitude,
     longitude,
     phone_number,
@@ -16,6 +18,12 @@ $stmt = $req->prepareQuery("SELECT
     disabled
 FROM
     shops s
+JOIN
+    addresses ad
+JOIN
+    municipalities mn USING (municipality_id)
+JOIN
+    departments dp USING (department_id)
 WHERE
     shop_id = @{i:shopId}", [
     "shopId" => $req->getSession()->shopId,
@@ -36,8 +44,14 @@ $xml->appendChild($shopEl);
 $nameEl = $xml->createElement("name", $shop["name"]);
 $shopEl->appendChild($nameEl);
 
-$addressEl = $xml->createElement("address", $shop["address"]);
-$shopEl->appendChild($addressEl);
+$zoneEl = $xml->createElement("zone", $shop["zone"]);
+$shopEl->appendChild($zoneEl);
+
+$municipalityEl = $xml->createElement("municipality", $shop["municipality"]);
+$shopEl->appendChild($municipalityEl);
+
+$departmentEl = $xml->createElement("department", $shop["department"]);
+$shopEl->appendChild($departmentEl);
 
 $latitudeEl = $xml->createElement("latitude", $shop["latitude"]);
 $shopEl->appendChild($latitudeEl);

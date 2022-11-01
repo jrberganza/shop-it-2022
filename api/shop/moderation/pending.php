@@ -11,7 +11,9 @@ for ($currId = 0; $currId < 10; $currId++) {
 
     $shop->id = $currId;
     $shop->name = "Tienda " . $currId;
-    $shop->address = $currId . " Calle, Guatemala";
+    $shop->zone = 1;
+    $shop->municipality = "Guatemala";
+    $shop->department = "Guatemala";
     $shop->phoneNumber =  ($currId % 9 + 1) . "123456" . ($currId % 9 + 1);
     $shop->description = "Shop description " . $currId;
     $shop->photos = [];

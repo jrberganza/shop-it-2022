@@ -12,7 +12,9 @@ $params = $req->getParams([
 
 $shop->id = $params["id"];
 $shop->name = "Tienda " . $params["id"];
-$shop->address = $params["id"] . " Calle, Guatemala";
+$shop->zone = 1;
+$shop->municipality = "Guatemala";
+$shop->department = "Guatemala";
 $shop->phoneNumber =  ($params["id"] % 9 + 1) . "123456" . ($params["id"] % 9 + 1);
 $shop->description = "Shop description " . $params["id"];
 $shop->photos = [];

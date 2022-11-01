@@ -9,7 +9,9 @@ $params = $req->getParams([
 $stmt = $req->prepareQuery("SELECT
     s.shop_id as id,
     s.name as name,
-    s.address as address,
+    ad.zone as zone,
+    mn.name as municipality,
+    dp.name as department,
     s.latitude as latitude,
     s.longitude as longitude,
     s.phone_number as phoneNumber,
@@ -18,6 +20,12 @@ $stmt = $req->prepareQuery("SELECT
     cast(coalesce(r.rating, 0.0) as double) as rating
 FROM
     shops s
+JOIN
+    addresses ad
+JOIN
+    municipalities mn USING (municipality_id)
+JOIN
+    departments dp USING (department_id)
 LEFT JOIN
     (SELECT avg(rating) as rating, shop_id FROM shop_ratings WHERE shop_id = @{i:shopId}) r USING (shop_id)
 WHERE
