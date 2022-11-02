@@ -43,7 +43,9 @@ $validReports = [
         'columns' => [
             ['name' => 'ID', 'column' => 'id', 'type' => 'number',],
             ['name' => 'Name', 'column' => 'name', 'type' => 'text',],
-            ['name' => 'Address', 'column' => 'address', 'type' => 'text',],
+            ['name' => 'Zone', 'column' => 'zone', 'type' => 'number',],
+            ['name' => 'Municipality', 'column' => 'municipality', 'type' => 'text',],
+            ['name' => 'Department', 'column' => 'department', 'type' => 'text',],
             ['name' => 'Latitude', 'column' => 'latitude', 'type' => 'number',],
             ['name' => 'Longitude', 'column' => 'longitude', 'type' => 'number',],
             ['name' => 'Phone number', 'column' => 'phone_number', 'type' => 'text',],
