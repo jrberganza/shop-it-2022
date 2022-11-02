@@ -1,6 +1,6 @@
 <?php
 
-require '../../utils/request.php';
+require_once '../../utils/request.php';
 
 $req->requireLoggedIn();
 

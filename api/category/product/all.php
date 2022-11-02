@@ -1,6 +1,6 @@
 <?php
 
-require '../../utils/request.php';
+require_once '../../utils/request.php';
 
 $stmt = $req->prepareQuery("SELECT
     category_id as id,

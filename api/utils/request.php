@@ -1,9 +1,9 @@
 <?php
 
-require "strict.php";
-require "db.php";
-require "session.php";
-require "validation.php";
+require_once "strict.php";
+require_once "db.php";
+require_once "session.php";
+require_once "validation.php";
 
 
 // TODO: handle GET and POST payloads better

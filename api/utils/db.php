@@ -1,6 +1,6 @@
 <?php
 
-require "query.php";
+require_once "query.php";
 
 class DbWrapper
 {
