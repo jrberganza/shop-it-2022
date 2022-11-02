@@ -138,6 +138,10 @@ if (count($orders) > 0) {
     $query .= join(", ", $orders);
 }
 
+if (!$body->csv) {
+    $query .= " LIMIT 50";
+}
+
 $stmt = $req->prepareQuery($query, $params);
 $stmt->execute();
 $result = $stmt->get_result();
