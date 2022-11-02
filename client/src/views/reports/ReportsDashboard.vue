@@ -18,34 +18,38 @@
                 </VSelect>
                 <template v-if="filter.column.type == 'number'">
                   <template v-if="filter.type == '='">
-                    <VTextField label="Value"></VTextField>
+                    <VTextField label="Value" v-model="filter.value"></VTextField>
                   </template>
                   <template v-else-if="filter.type == '<>'">
-                    <VTextField label="Minimum" placeholder="Any" persistent-placeholder clearable></VTextField>
-                    <VTextField label="Maximum" placeholder="Any" persistent-placeholder clearable></VTextField>
+                    <VTextField label="Minimum" placeholder="Any" persistent-placeholder clearable
+                      v-model="filter.start"></VTextField>
+                    <VTextField label="Maximum" placeholder="Any" persistent-placeholder clearable v-model="filter.end">
+                    </VTextField>
                   </template>
                 </template>
                 <template v-else-if="filter.column.type == 'text'">
                   <template v-if="filter.type == '='">
-                    <VTextField label="Value"></VTextField>
+                    <VTextField label="Value" v-model="filter.value"></VTextField>
                   </template>
                   <template v-if="filter.type == 'in'">
-                    <VTextField label="Value"></VTextField>
+                    <VTextField label="Value" v-model="filter.value"></VTextField>
                   </template>
                 </template>
                 <template v-if="filter.column.type == 'date'">
                   <template v-if="filter.type == '='">
-                    <DateInput label="Value"></DateInput>
+                    <DateInput label="Value" v-model="filter.value"></DateInput>
                   </template>
                   <template v-else-if="filter.type == '<>'">
-                    <DateInput label="Minimum" placeholder="Any" persistent-placeholder clearable></DateInput>
-                    <DateInput label="Maximum" placeholder="Any" persistent-placeholder clearable></DateInput>
+                    <DateInput label="Minimum" placeholder="Any" persistent-placeholder clearable
+                      v-model="filter.start"></DateInput>
+                    <DateInput label="Maximum" placeholder="Any" persistent-placeholder clearable v-model="filter.end">
+                    </DateInput>
                   </template>
                 </template>
                 <template v-if="filter.column.type == 'boolean'">
                   <template v-if="filter.type == '='">
                     <VSelect label="Value" :items="[{ name: 'True', value: true }, { name: 'False', value: false }]"
-                      itemText="name" itemValue="value"></VSelect>
+                      itemText="name" itemValue="value" v-model="filter.value"></VSelect>
                   </template>
                 </template>
               </template>
@@ -88,13 +92,15 @@
           </VBtn>
         </VCardActions>
       </VCard>
-      <VBtn @click="generateReport">Generate report</VBtn>
+      <VBtn @click="generateReport">Preview report</VBtn>
+      <VBtn @click="downloadReport">Download report</VBtn>
     </template>
+    <VDataTable v-if="generatedReport" :headers="tableHeaders" :items="generatedReport"></VDataTable>
   </div>
 </template>
 
 <script>
-import { VCol, VRow, VCard, VBtn, VChipGroup, VChip, VIcon, VCardTitle, VCardText, VCardActions, VDatePicker, VTextField, VSelect, VSwitch } from 'vuetify/lib';
+import { VCol, VRow, VCard, VBtn, VChipGroup, VChip, VIcon, VCardTitle, VCardText, VCardActions, VDatePicker, VTextField, VSelect, VSwitch, VDataTable } from 'vuetify/lib';
 import DateInput from '../../components/DateInput.vue';
 
 export default {
@@ -116,7 +122,8 @@ export default {
       { name: 'Descending', value: 'desc' },
     ],
     generators: [],
-    tab: null,
+    generatedReport: null,
+    tableHeaders: [],
   }),
   watch: {
     ['report.table']() {
@@ -169,14 +176,32 @@ export default {
         .then(res => res.json())
         .then(json => {
           if (json.success) {
-            console.log(json);
+            this.generatedReport = json.report;
+            this.tableHeaders = this.report.fields
+              .map(f => this.tableGenerator.columns.filter(c => c.column == f)[0])
+              .map(f => ({ ...f, text: f.name, value: f.column }));
           }
+        });
+    },
+    downloadReport() {
+      fetch('/api/reports/generate.php', {
+        method: "POST",
+        body: JSON.stringify({ ...this.report, csv: true }),
+      })
+        .then(res => res.blob())
+        .then(blob => {
+          let url = URL.createObjectURL(blob);
+          let link = document.createElement("a");
+          link.download = `report_${Math.floor(Date.now() / 1000)}.csv`;
+          link.href = url;
+          link.click();
+          URL.revokeObjectURL(blob);
         });
     }
   },
   mounted() {
     this.getGenerators();
   },
-  components: { VCol, VRow, VCard, VBtn, VChipGroup, VChip, VIcon, VCardTitle, VCardText, VCardActions, VDatePicker, VTextField, VSelect, DateInput, VSwitch }
+  components: { VCol, VRow, VCard, VBtn, VChipGroup, VChip, VIcon, VCardTitle, VCardText, VCardActions, VDatePicker, VTextField, VSelect, DateInput, VSwitch, VDataTable }
 }
 </script>

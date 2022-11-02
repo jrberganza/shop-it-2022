@@ -119,13 +119,13 @@ function validate(mixed &$toCheck, array $expected)
             }
 
             if (isset($what["validation"])) {
-                if ($error = $what["validation"]($fieldVal, $name, $what)) {
+                if ($error = $what["validation"]($fieldVal, $name, $what, $toCheck)) {
                     return $error;
                 }
             }
 
             if (isset($what["postProcess"])) {
-                setfield($toCheck, $name, $what["postProcess"]($fieldVal, $name, $what));
+                setfield($toCheck, $name, $what["postProcess"]($fieldVal, $name, $what, $toCheck));
             }
         }
     }

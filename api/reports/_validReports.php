@@ -90,3 +90,95 @@ $validReports = [
         ],
     ],
 ];
+
+$baseQueries = [
+    'users' => 'SELECT
+        u.user_id as id,
+        u.email as email,
+        u.display_name as display_name,
+        u.role as role,
+        u.created_at as created_at,
+        u.updated_at as updated_at
+    FROM
+        users u',
+    'products' => 'SELECT
+        p.product_id as id,
+        p.name as name,
+        p.price as price,
+        p.description as description,
+        p.disabled as disabled,
+        COALESCE(c.comments, 0) as comments,
+        COALESCE(r.average_rating, 0) as average_rating,
+        s.shop_id as shop_id,
+        s.name as shop_name,
+        u.user_id as owner_id,
+        u.display_name as owner_name,
+        p.created_at as created_at,
+        p.updated_at as updated_at
+    FROM
+        products p
+    JOIN
+        shops s USING (shop_id)
+    JOIN
+        users u USING (shop_id)
+    LEFT JOIN
+        (SELECT avg(rating) as average_rating, product_id FROM product_ratings GROUP BY product_id) r USING (product_id)
+    LEFT JOIN
+        (SELECT count(*) as comments, product_id FROM comments GROUP BY product_id) c USING (product_id)',
+    'shops' => 'SELECT
+        s.shop_id as id,
+        s.name as name,
+        s.zone as zone,
+        mn.name as municipality,
+        dp.name as department,
+        s.latitude as latitude,
+        s.longitude as longitude,
+        s.phone_number as phone_number,
+        s.description as description,
+        s.disabled as disabled,
+        COALESCE(pt.products, 0) as total_products,
+        COALESCE(pe.products, 0) as enabled_products,
+        COALESCE(c.comments, 0) as comments,
+        COALESCE(r.average_rating, 0) as average_rating,
+        u.user_id as owner_id,
+        u.display_name as owner_name,
+        s.created_at as created_at,
+        s.updated_at as updated_at
+    FROM
+        shops s
+    JOIN
+        users u USING (shop_id)
+    JOIN
+        municipalities mn USING (municipality_id)
+    JOIN
+        departments dp USING (department_id)
+    LEFT JOIN
+        (SELECT count(*) as products, shop_id FROM products GROUP BY shop_id) pt USING (shop_id)
+    LEFT JOIN
+        (SELECT count(*) as products, shop_id FROM products WHERE disabled = FALSE GROUP BY shop_id) pe USING (shop_id)
+    LEFT JOIN
+        (SELECT avg(rating) as average_rating, shop_id FROM shop_ratings GROUP BY shop_id) r USING (shop_id)
+    LEFT JOIN
+        (SELECT count(*) as comments, shop_id FROM comments GROUP BY shop_id) c USING (shop_id)',
+    'comments' => 'SELECT
+        c.comment_id as id,
+        u.user_id as author_id,
+        u.display_name as author_name,
+        c.content as content,
+        c.parent_comment_id as parent_comment_id,
+        pc.author_id as parent_comment_author_id,
+        pc.author_name as parent_comment_author_name,
+        COALESCE(rc.replies, 0) as replies,
+        COALESCE(cv.total_votes, 0) as votes,
+        c.created_at as created_at
+    FROM
+        comments c
+    JOIN
+        users u ON c.author_id = u.user_id
+    LEFT JOIN
+        (SELECT sum(value) as total_votes, comment_id FROM comment_votes GROUP BY comment_id) cv USING (comment_id)
+    LEFT JOIN
+        (SELECT c.comment_id, u.user_id as author_id, u.display_name as author_name FROM comments c JOIN users u ON c.author_id = u.user_id) pc ON c.parent_comment_id = pc.comment_id
+    LEFT JOIN
+        (SELECT count(*) as replies, parent_comment_id FROM comments GROUP BY parent_comment_id) rc ON c.comment_id = rc.parent_comment_id',
+];
