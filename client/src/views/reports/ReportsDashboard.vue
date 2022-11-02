@@ -179,7 +179,7 @@ export default {
             this.generatedReport = json.report;
             this.tableHeaders = this.report.fields
               .map(f => this.tableGenerator.columns.filter(c => c.column == f)[0])
-              .map(f => ({ ...f, text: f.name, value: f.column }));
+              .map(f => ({ ...f, text: f.name, value: f.column, sortable: false, }));
           }
         });
     },
