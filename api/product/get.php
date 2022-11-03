@@ -12,20 +12,24 @@ $stmt = $req->prepareQuery("SELECT
     p.price as price,
     p.description as description,
     p.disabled as disabled,
-    cast(coalesce(r.rating, 0.0) as double) as rating,
     s.shop_id as shopId,
-    s.name as shopName
+    s.name as shopName,
+    cast(coalesce(r.rating, 0.0) as double) as rating,
+    CAST(coalesce(ur.rating, 3) as unsigned) as ownRating
 FROM
     products p
 JOIN
     shops s USING (shop_id)
 LEFT JOIN
     (SELECT avg(rating) as rating, product_id FROM product_ratings WHERE product_id = @{i:productId}) r USING (product_id)
+LEFT JOIN
+    (SELECT rating, product_id FROM product_ratings WHERE user_id = @{i:userId}) ur USING (product_id)
 WHERE
     p.disabled = FALSE AND
     s.disabled = FALSE AND
     p.product_id = @{i:productId}", [
     "productId" => $params["id"],
+    "userId" => $req->getSession()->id,
 ]);
 $stmt->execute();
 $result = $stmt->get_result();

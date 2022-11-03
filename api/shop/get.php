@@ -17,7 +17,8 @@ $stmt = $req->prepareQuery("SELECT
     s.phone_number as phoneNumber,
     s.description as description,
     s.disabled as disabled,
-    cast(coalesce(r.rating, 0.0) as double) as rating
+    cast(coalesce(r.rating, 0.0) as double) as rating,
+    CAST(coalesce(ur.rating, 3) as unsigned) as ownRating
 FROM
     shops s
 JOIN
@@ -26,10 +27,13 @@ JOIN
     departments dp USING (department_id)
 LEFT JOIN
     (SELECT avg(rating) as rating, shop_id FROM shop_ratings GROUP BY shop_id) r USING (shop_id)
+LEFT JOIN
+    (SELECT rating, shop_id FROM shop_ratings WHERE user_id = @{i:userId}) ur USING (shop_id)
 WHERE
     disabled = FALSE AND
     shop_id = @{i:shopId}", [
     "shopId" => $params["id"],
+    "userId" => $req->getSession()->id,
 ]);
 $stmt->execute();
 $result = $stmt->get_result();

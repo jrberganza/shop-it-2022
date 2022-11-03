@@ -47,7 +47,7 @@
       <template v-if="session != null && session.role != 'visitor'">
         <VDivider></VDivider>
         <h1>Rate it!</h1>
-        <VRating class="mb-5" hover size="40" v-model="ownRating"></VRating>
+        <VRating class="mb-5" hover size="40" v-model="shop.ownRating"></VRating>
       </template>
       <VDivider></VDivider>
       <h1>Comments</h1>
@@ -69,11 +69,24 @@ export default {
   name: 'ShopPage',
   data: () => ({
     /** @type {any | null} */ shop: null,
-    comments: [],
-    ownRating: null
+    comments: []
   }),
   computed: {
     ...mapState(['session']),
+  },
+  watch: {
+    ['shop.ownRating'](newVal) {
+      fetch(`/api/rating/shop/rate.php`, {
+        method: "POST",
+        body: JSON.stringify({ id: this.$route.params.id, rating: newVal }),
+      })
+        .then(res => res.json())
+        .then(json => {
+          if (json.success) {
+            // Nothing
+          }
+        });
+    }
   },
   methods: {
     getShop(id) {
@@ -82,8 +95,6 @@ export default {
         .then(json => {
           if (json.success) {
             this.shop = json
-          } else {
-            this.$router.replace(`/shop/${id}/notfound`);
           }
         });
     },
