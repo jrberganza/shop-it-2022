@@ -2,7 +2,7 @@
 
 require_once '../../utils/request.php';
 
-$req->requireAdminPrivileges();
+$req->requireEmployeePrivileges();
 
 $stmt = $req->prepareQuery("SELECT
     category_id as id,

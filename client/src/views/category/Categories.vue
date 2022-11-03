@@ -44,8 +44,7 @@
           <VTabItem v-for="categories, i in [shopCategories, productCategories]" :key="i">
             <VDataIterator :items="categories" :itemsPerPage="5">
               <template v-slot:default="{ items }">
-                <VCard v-for="item in items" class="my-4" :key="item.id"
-                  @click="() => myCategory = { ...item }">
+                <VCard v-for="item in items" class="my-4" :key="item.id" @click="() => myCategory = { ...item }">
                   <VCardTitle>{{ item.name }}</VCardTitle>
                   <VCardText>
                     <template v-if="item.disabled">
@@ -101,7 +100,7 @@ export default {
         disabled: this.myCategory.disabled,
         type: this.myCategory.type || ["shop", "product"][this.tab],
       }
-      fetch(`/api/category/admin/save.php`, {
+      fetch(`/api/category/employee/save.php`, {
         method: "POST",
         body: JSON.stringify(body)
       })
@@ -117,7 +116,7 @@ export default {
         });
     },
     getProductCategories() {
-      fetch(`/api/category/admin/allProduct.php`)
+      fetch(`/api/category/employee/allProduct.php`)
         .then(res => res.json())
         .then(json => {
           if (json.success) {
@@ -128,7 +127,7 @@ export default {
         });
     },
     getShopCategories() {
-      fetch(`/api/category/admin/allShop.php`)
+      fetch(`/api/category/employee/allShop.php`)
         .then(res => res.json())
         .then(json => {
           if (json.success) {

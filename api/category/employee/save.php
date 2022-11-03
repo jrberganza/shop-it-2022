@@ -4,7 +4,7 @@ require_once '../../utils/request.php';
 
 $req->requireMethod("POST");
 
-$req->requireAdminPrivileges();
+$req->requireEmployeePrivileges();
 
 $jsonBody = $req->getJsonBody([
     "id" => [
