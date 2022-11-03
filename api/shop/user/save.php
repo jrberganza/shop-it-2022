@@ -42,82 +42,60 @@ $jsonBody = $req->getJsonBody([
     ]
 ]);
 
-if ($req->getSession()->shopId) {
-    $stmt = $req->prepareQuery("UPDATE
-        shops
-    SET
-        name = @{s:name},
-        zone = @{i:zone},
-        municipality_id = @{i:municipalityId},
-        latitude = @{d:latitude},
-        longitude = @{d:longitude},
-        phone_number = @{s:phoneNumber},
-        description = @{s:description},
-        disabled = @{i:disabled}
-    WHERE
-        shop_id = @{i:shopId}", [
-        "name" => $jsonBody->name,
-        "zone" => $jsonBody->zone,
-        "municipalityId" => $jsonBody->municipality,
-        "latitude" => $jsonBody->latitude,
-        "longitude" => $jsonBody->longitude,
-        "phoneNumber" => $jsonBody->phoneNumber,
-        "description" => $jsonBody->description,
-        "disabled" => $jsonBody->disabled,
-        "shopId" => $req->getSession()->shopId,
-    ]);
-    $stmt->execute();
-} else {
-    $stmt = $req->prepareQuery("INSERT INTO shops(
-        name,
-        zone,
-        municipality_id,
-        latitude,
-        longitude,
-        phone_number,
-        description,
-        disabled,
-        user_id
-    ) VALUES (
-        @{s:name},
-        @{i:zone},
-        @{i:municipalityId},
-        @{d:latitude},
-        @{d:longitude},
-        @{s:phoneNumber},
-        @{s:description},
-        @{i:disabled},
-        @{i:userId}
-    )", [
-        "name" => $jsonBody->name,
-        "zone" => $jsonBody->zone,
-        "municipalityId" => $jsonBody->municipality,
-        "latitude" => $jsonBody->latitude,
-        "longitude" => $jsonBody->longitude,
-        "phoneNumber" => $jsonBody->phoneNumber,
-        "description" => $jsonBody->description,
-        "disabled" => $jsonBody->disabled,
-        "userId" => $req->getSession()->id,
-    ]);
-    $stmt->execute();
-    $shopId = $stmt->insert_id;
-
-    $stmt = $req->prepareQuery("UPDATE users SET shop_id = @{i:shopId} WHERE user_id = @{i:userId}", [
-        "shopId" => $shopId,
-        "userId" => $req->getSession()->id,
-    ]);
-    $stmt->execute();
-
-    $req->getSession()->shopId = $shopId;
+$stmt = $req->prepareQuery("INSERT INTO \$moderation\$shops(
+    shop_id,
+    name,
+    zone,
+    municipality_id,
+    latitude,
+    longitude,
+    phone_number,
+    description,
+    disabled,
+    user_id
+) VALUES (
+    @{i:shopId},
+    @{s:name},
+    @{i:zone},
+    @{i:municipalityId},
+    @{d:latitude},
+    @{d:longitude},
+    @{s:phoneNumber},
+    @{s:description},
+    @{i:disabled},
+    @{i:userId}
+) ON DUPLICATE KEY UPDATE
+    name = @{s:name},
+    zone = @{i:zone},
+    municipality_id = @{i:municipalityId},
+    latitude = @{d:latitude},
+    longitude = @{d:longitude},
+    phone_number = @{s:phoneNumber},
+    description = @{s:description},
+    disabled = @{i:disabled}", [
+    "shopId" => $req->getSession()->shopId,
+    "name" => $jsonBody->name,
+    "zone" => $jsonBody->zone,
+    "municipalityId" => $jsonBody->municipality,
+    "latitude" => $jsonBody->latitude,
+    "longitude" => $jsonBody->longitude,
+    "phoneNumber" => $jsonBody->phoneNumber,
+    "description" => $jsonBody->description,
+    "disabled" => $jsonBody->disabled,
+    "userId" => $req->getSession()->id,
+]);
+$stmt->execute();
+if (!$req->getSession()->shopId) {
+    $req->getSession()->shopId = $stmt->insert_id;
 }
 
-$stmt = $req->prepareQuery("DELETE FROM shop_category WHERE shop_id = @{i:shopId}", [
+$stmt = $req->prepareQuery("DELETE FROM \$moderation\$shop_category WHERE shop_id = @{i:shopId}", [
     "shopId" => $req->getSession()->shopId,
 ]);
 $stmt->execute();
 
 foreach ($jsonBody->categories as $categoryId) {
-    $stmt = $req->prepareQuery("INSERT INTO shop_category(
+    $stmt = $req->prepareQuery("INSERT INTO \$moderation\$shop_category(
         category_id,
         shop_id
     ) VALUES (
@@ -131,7 +109,7 @@ foreach ($jsonBody->categories as $categoryId) {
 }
 
 foreach ($jsonBody->photos as $photoId) {
-    $stmt = $req->prepareQuery("INSERT INTO shop_photo(
+    $stmt = $req->prepareQuery("INSERT INTO \$moderation\$shop_photo(
         photo_id,
         shop_id
     ) VALUES (
