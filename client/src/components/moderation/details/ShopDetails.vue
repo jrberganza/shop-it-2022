@@ -5,22 +5,27 @@
     <VCardTitle>{{ shop.name }}</VCardTitle>
     <VCardSubtitle>Zona {{ shop.zone }}, {{ shop.municipality }}, {{ shop.department }} - {{ shop.phoneNumber }}
     </VCardSubtitle>
-    <VCardText>{{ shop.description }}</VCardText>
+    <VCardText>
+      {{ shop.description }}
+      <VTextarea label="Reason" v-if="shop.moderatable" v-model="reason"></VTextarea>
+    </VCardText>
     <VCardText v-if="!shop.moderatable">Please publish or reject all pending products from this shop</VCardText>
     <VCardActions v-else>
-      <VBtn @click="$emit('publish')">Publish</VBtn>
-      <VBtn @click="$emit('reject')">Reject</VBtn>
+      <VBtn @click="$emit('publish', reason)">Publish</VBtn>
+      <VBtn @click="$emit('reject', reason)">Reject</VBtn>
     </VCardActions>
   </VCard>
 </template>
 
 <script>
-import { VCard, VCardTitle, VCardSubtitle, VCardText, VCardActions, VBtn, VIcon, VImg } from 'vuetify/lib';
+import { VCard, VCardTitle, VCardSubtitle, VCardText, VCardActions, VBtn, VIcon, VImg, VTextarea } from 'vuetify/lib';
 
 export default {
   name: 'ShopDetails',
   props: ['shop'],
-  data: () => ({}),
-  components: { VCard, VCardTitle, VCardSubtitle, VCardText, VCardActions, VBtn, VIcon, VImg }
+  data: () => ({
+    reason: '',
+  }),
+  components: { VCard, VCardTitle, VCardSubtitle, VCardText, VCardActions, VBtn, VIcon, VImg, VTextarea }
 }
 </script>

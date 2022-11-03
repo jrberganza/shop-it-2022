@@ -3,13 +3,16 @@
     <VRow>
       <VCol cols="12" lg="6" order="1" order-lg="12">
         <ShopDetails v-if="selected.type == 'shop'" :shop="selected.data"
-          @publish="publish(selected.type, selected.data.id)" @reject="reject(selected.type, selected.data.id)">
+          @publish="(reason) => publish(selected.type, selected.data.id, reason)"
+          @reject="(reason) => reject(selected.type, selected.data.id, reason)">
         </ShopDetails>
         <ProductDetails v-else-if="selected.type == 'product'" :product="selected.data"
-          @publish="publish(selected.type, selected.data.id)" @reject="reject(selected.type, selected.data.id)">
+          @publish="(reason) => publish(selected.type, selected.data.id, reason)"
+          @reject="(reason) => reject(selected.type, selected.data.id, reason)">
         </ProductDetails>
         <CommentDetails v-else-if="selected.type == 'comment'" :comment="selected.data"
-          @publish="publish(selected.type, selected.data.id)" @reject="reject(selected.type, selected.data.id)">
+          @publish="(reason) => publish(selected.type, selected.data.id, reason)"
+          @reject="(reason) => reject(selected.type, selected.data.id, reason)">
         </CommentDetails>
         <p v-else><em>No item has been selected</em></p>
       </VCol>
@@ -97,10 +100,10 @@ export default {
           this.selected.data = json;
         });
     },
-    publish(/** @type {"shop"|"product"|"comment"} */ type, id) {
+    publish(/** @type {"shop"|"product"|"comment"} */ type, id, reason = '') {
       fetch(`/api/moderation/${type}/publish.php`, {
         "method": "POST",
-        "body": JSON.stringify({ id })
+        "body": JSON.stringify({ id, reason })
       })
         .then(res => res.json())
         .then(json => {
@@ -117,10 +120,10 @@ export default {
           }
         });
     },
-    reject(/** @type {"shop"|"product"|"comment"} */ type, id) {
+    reject(/** @type {"shop"|"product"|"comment"} */ type, id, reason = '') {
       fetch(`/api/moderation/${type}/reject.php`, {
         "method": "POST",
-        "body": JSON.stringify({ id })
+        "body": JSON.stringify({ id, reason })
       })
         .then(res => res.json())
         .then(json => {
