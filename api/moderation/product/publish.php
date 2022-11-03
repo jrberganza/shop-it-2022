@@ -10,7 +10,24 @@ $jsonBody = $req->getJsonBody([
     ],
 ]);
 
-$stmt = $req->prepareQuery("INSERT INTO products SELECT * FROM \$moderation\$products p WHERE p.product_id = @{i:productId}", [
+$stmt = $req->prepareQuery("INSERT INTO
+    products
+SELECT * FROM \$moderation\$products p WHERE p.product_id = @{i:productId}
+ON DUPLICATE KEY UPDATE
+    name = p.name,
+    price = p.price,
+    description = p.description,
+    disabled = p.disabled", [
+    "productId" => $jsonBody->id,
+]);
+$stmt->execute();
+
+$stmt = $req->prepareQuery("DELETE FROM product_category WHERE product_id = @{i:productId}", [
+    "productId" => $jsonBody->id,
+]);
+$stmt->execute();
+
+$stmt = $req->prepareQuery("DELETE FROM product_photo WHERE product_id = @{i:productId}", [
     "productId" => $jsonBody->id,
 ]);
 $stmt->execute();
