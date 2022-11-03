@@ -4,7 +4,6 @@ CREATE TABLE `users` (
   `display_name` varchar(100) NOT NULL,
   `password_hash` varchar(255) NOT NULL,
   `role` ENUM ('user', 'employee', 'admin') NOT NULL,
-  `shop_id` int,
   `created_at` datetime NOT NULL DEFAULT (now()),
   `updated_at` datetime NOT NULL DEFAULT (now())
 );
@@ -164,8 +163,6 @@ CREATE TABLE `banner_blocks` (
 ALTER TABLE `municipalities` ADD FOREIGN KEY (`department_id`) REFERENCES `departments` (`department_id`);
 
 ALTER TABLE `shops` ADD FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`);
-
-ALTER TABLE `users` ADD FOREIGN KEY (`shop_id`) REFERENCES `shops` (`shop_id`);
 
 ALTER TABLE `shops` ADD FOREIGN KEY (`municipality_id`) REFERENCES `municipalities` (`municipality_id`);
 
