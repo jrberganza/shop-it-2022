@@ -63,7 +63,7 @@ export default {
       { text: "Top rated", value: "auto_top_rated" },
       { text: "Trending", value: "auto_trending" },
       { text: "Recent", value: "auto_recent" },
-      { text: "Manual", value: "manual" },
+      // { text: "Manual", value: "manual" },
     ],
     feedItemTypes: [
       { text: "Shops", value: "shop" },
