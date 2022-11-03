@@ -106,6 +106,11 @@ export default {
         .then(json => {
           if (json.success) {
             this.getPending(type);
+
+            if (type == "product") {
+              this.getPending("shop");
+            }
+
             if (this.selected.data.id == id) {
               this.selected.type = null;
             }
@@ -121,6 +126,11 @@ export default {
         .then(json => {
           if (json.success) {
             this.getPending(type);
+
+            if (type == "product") {
+              this.getPending("shop");
+            }
+
             if (this.selected.data.id == id) {
               this.selected.type = null;
             }
