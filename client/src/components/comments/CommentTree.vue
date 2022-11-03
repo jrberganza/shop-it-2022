@@ -64,6 +64,7 @@ export default {
                 author: this.session.displayName,
                 publishedAt: new Date(),
                 content: this.content,
+                moderated: false,
               },
               children: []
             });
