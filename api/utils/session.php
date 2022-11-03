@@ -65,7 +65,7 @@ function getCurrentSession(DbWrapper $db)
     JOIN
         sessions ss USING (user_id)
     LEFT JOIN
-        shops s USING (shop_id)
+        shops s USING (user_id)
     WHERE
         ss.token = @{s:token};", [
         "token" => $token

@@ -78,16 +78,22 @@ $validReports = [
         ],
     ],
     [
-        'name' => 'Moderation',
-        'table' => 'moderation',
+        'name' => 'Moderation events',
+        'table' => 'moderation_events',
         'columns' => [
             ['name' => 'ID', 'column' => 'id', 'type' => 'number',],
-            ['name' => 'Moderator ID', 'column' => 'author_id', 'type' => 'number',],
-            ['name' => 'Moderator name', 'column' => 'author_name', 'type' => 'text',],
-            ['name' => 'Content type', 'column' => 'content_type', 'type' => 'text',],
-            ['name' => 'Content ID', 'column' => 'content_id', 'type' => 'number',],
-            ['name' => 'Content', 'column' => 'content', 'type' => 'text',],
+            ['name' => 'Moderator ID', 'column' => 'moderator_id', 'type' => 'number',],
+            ['name' => 'Moderator name', 'column' => 'moderator_name', 'type' => 'text',],
+            ['name' => 'Item owner ID', 'column' => 'item_owner_id', 'type' => 'number',],
+            ['name' => 'Item owner name', 'column' => 'item_owner_name', 'type' => 'text',],
+            ['name' => 'Item ID', 'column' => 'item_id', 'type' => 'number',],
+            ['name' => 'Item type', 'column' => 'item_type', 'type' => 'text',],
+            ['name' => 'Item name', 'column' => 'item_name', 'type' => 'text',],
+            ['name' => 'Item description', 'column' => 'item_description', 'type' => 'text',],
+            ['name' => 'Item creation date', 'column' => 'item_created_at', 'type' => 'date',],
+            ['name' => 'Item update date', 'column' => 'item_updated_at', 'type' => 'date',],
             ['name' => 'Moderation status', 'column' => 'moderation_status', 'type' => 'text',],
+            ['name' => 'Reason', 'column' => 'reason', 'type' => 'text',],
             ['name' => 'Moderated at', 'column' => 'moderated_at', 'type' => 'date',],
         ],
     ],
@@ -122,7 +128,7 @@ $baseQueries = [
     JOIN
         shops s USING (shop_id)
     JOIN
-        users u USING (shop_id)
+        users u USING (user_id)
     LEFT JOIN
         (SELECT avg(rating) as average_rating, product_id FROM product_ratings GROUP BY product_id) r USING (product_id)
     LEFT JOIN
@@ -149,7 +155,7 @@ $baseQueries = [
     FROM
         shops s
     JOIN
-        users u USING (shop_id)
+        users u USING (user_id)
     JOIN
         municipalities mn USING (municipality_id)
     JOIN
@@ -183,4 +189,25 @@ $baseQueries = [
         (SELECT c.comment_id, u.user_id as author_id, u.display_name as author_name FROM comments c JOIN users u ON c.author_id = u.user_id) pc ON c.parent_comment_id = pc.comment_id
     LEFT JOIN
         (SELECT count(*) as replies, parent_comment_id FROM comments GROUP BY parent_comment_id) rc ON c.comment_id = rc.parent_comment_id',
+    'moderation_events' => 'SELECT
+        me.moderation_event_id as id,
+        me.user_id as moderator_id,
+        mu.display_name as moderator_name,
+        me.item_owner_id as item_owner_id,
+        iou.display_name as item_owner_name,
+        me.item_id as item_id,
+        me.item_type as item_type,
+        me.item_name as item_name,
+        me.item_description as item_description,
+        me.item_created_at as item_created_at,
+        me.item_updated_at as item_updated_at,
+        IF(me.published, "Published", "Rejected") as moderation_status,
+        me.reason as reason,
+        me.date as moderated_at
+    FROM
+        moderation_events me
+    JOIN
+        users mu USING (user_id)
+    JOIN
+        users iou ON me.item_owner_id = u.user_id',
 ];
