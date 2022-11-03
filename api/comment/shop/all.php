@@ -13,8 +13,26 @@ function getComments(Request $req, int $shopId, ?int $parent = null)
         u.display_name as author,
         c.created_at as publishedAt,
         c.content as content,
+        0 as totalVotes,
+        0 as voted,
+        false as moderated
+    FROM
+        \$moderation\$comments c
+    JOIN
+        users u ON c.author_id = u.user_id
+    WHERE
+        c.shop_id = @{i:shopId} AND
+        (c.parent_comment_id = @{i:parentCommentId} OR (@{i:parentCommentId} IS NULL AND c.parent_comment_id IS NULL)) AND
+        c.author_id = @{i:userId}
+    UNION
+    (SELECT
+        c.comment_id as id,
+        u.display_name as author,
+        c.created_at as publishedAt,
+        c.content as content,
         coalesce(cv.total_votes, 0) as totalVotes,
-        CAST(coalesce(uv.value, 0) as signed) as voted
+        CAST(coalesce(uv.value, 0) as signed) as voted,
+        true as moderated
     FROM
         comments c
     JOIN
@@ -27,7 +45,7 @@ function getComments(Request $req, int $shopId, ?int $parent = null)
         c.shop_id = @{i:shopId} AND
         (c.parent_comment_id = @{i:parentCommentId} OR (@{i:parentCommentId} IS NULL AND c.parent_comment_id IS NULL))
     ORDER BY
-        coalesce(cv.total_votes, 0) DESC", [
+        coalesce(cv.total_votes, 0) DESC)", [
         "shopId" => $shopId,
         "parentCommentId" => $parent,
         "userId" => $req->getSession()->id,
