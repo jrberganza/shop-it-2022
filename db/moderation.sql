@@ -1,3 +1,10 @@
+CREATE TABLE `moderation_events` (
+  `moderation_event_id` int PRIMARY KEY AUTO_INCREMENT,
+  `reason` varchar(255) NOT NULL,
+  `published` bool NOT NULL,
+  `date` datetime NOT NULL DEFAULT (now())
+);
+
 CREATE TABLE `$moderation$shops` (
   `shop_id` int PRIMARY KEY AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
