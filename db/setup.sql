@@ -160,6 +160,20 @@ CREATE TABLE `banner_blocks` (
   `photo_id` int
 );
 
+CREATE TABLE `moderation_events` (
+  `moderation_event_id` int PRIMARY KEY AUTO_INCREMENT,
+  `user_id` int NOT NULL,
+  `item_id` int DEFAULT NULL,
+  `item_type` ENUM ('shop', 'product', 'comment') NOT NULL,
+  `item_name` varchar(255) NOT NULL,
+  `item_description` varchar(512) NOT NULL,
+  `item_created_at` datetime NOT NULL,
+  `item_updated_at` datetime DEFAULT NULL,
+  `reason` varchar(255) NOT NULL,
+  `published` bool NOT NULL,
+  `date` datetime NOT NULL DEFAULT (now())
+);
+
 ALTER TABLE `municipalities` ADD FOREIGN KEY (`department_id`) REFERENCES `departments` (`department_id`);
 
 ALTER TABLE `shops` ADD FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`);
@@ -219,4 +233,6 @@ ALTER TABLE `feed_block_items` ADD FOREIGN KEY (`product_id`) REFERENCES `produc
 ALTER TABLE `banner_blocks` ADD FOREIGN KEY (`block_id`) REFERENCES `homepage_blocks` (`block_id`) ON DELETE CASCADE;
 
 ALTER TABLE `banner_blocks` ADD FOREIGN KEY (`photo_id`) REFERENCES `photos` (`photo_id`);
+
+ALTER TABLE `moderation_events` ADD FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`);
 

@@ -256,3 +256,25 @@ Table banner_blocks {
 
 Ref: banner_blocks.block_id > homepage_blocks.block_id [delete: cascade]
 Ref: banner_blocks.photo_id > photos.photo_id
+
+enum moderation_event_item_type {
+  shop
+  product
+  comment
+}
+
+Table moderation_events {
+    moderation_event_id int [pk, increment]
+    user_id int [not null]
+    item_id int [null, default: NULL]
+    item_type moderation_event_item_type [not null]
+    item_name varchar(255) [not null]
+    item_description varchar(512) [not null]
+    item_created_at datetime [not null]
+    item_updated_at datetime [null, default: NULL]
+    reason varchar(255) [not null]
+    published bool [not null]
+    date datetime [not null, default: `now()`]
+}
+
+Ref: moderation_events.user_id > users.user_id
