@@ -20,7 +20,7 @@ JOIN
 JOIN
     departments dp USING (department_id)
 WHERE
-    shop_id = @{i:shopId}
+    s.shop_id = @{i:shopId}
 UNION
 SELECT
     s.shop_id as id,
@@ -40,7 +40,7 @@ JOIN
 JOIN
     departments dp USING (department_id)
 WHERE
-    shop_id = @{i:shopId}", [
+    s.shop_id = @{i:shopId}", [
     "shopId" => $req->getSession()->shopId,
 ]);
 $stmt->execute();
@@ -53,11 +53,12 @@ if (!$resObj) {
 }
 
 $resObj->disabled = $resObj->disabled != 0;
+$shopId = $resObj->id;
 
 $stmt = $req->prepareQuery("SELECT p.photo_id FROM \$moderation\$shop_photo sp JOIN photos p USING (photo_id) WHERE sp.shop_id = @{i:shopId}
 UNION
 SELECT p.photo_id FROM shop_photo sp JOIN photos p USING (photo_id) WHERE sp.shop_id = @{i:shopId}", [
-    "shopId" => $req->getSession()->shopId,
+    "shopId" => $shopId,
 ]);
 $stmt->execute();
 $result = $stmt->get_result();
@@ -70,7 +71,7 @@ while ($row = $result->fetch_array()) {
 $stmt = $req->prepareQuery("SELECT c.category_id FROM \$moderation\$shop_category sc JOIN categories c USING (category_id) WHERE sc.shop_id = @{i:shopId}
 UNION
 SELECT c.category_id FROM shop_category sc JOIN categories c USING (category_id) WHERE sc.shop_id = @{i:shopId}", [
-    "shopId" => $req->getSession()->shopId,
+    "shopId" => $shopId,
 ]);
 $stmt->execute();
 $result = $stmt->get_result();

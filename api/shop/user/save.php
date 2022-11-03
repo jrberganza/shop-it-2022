@@ -42,6 +42,34 @@ $jsonBody = $req->getJsonBody([
     ]
 ]);
 
+$stmt = $req->prepareQuery("INSERT INTO \$moderation\$shops SELECT * FROM shops WHERE shop_id = @{i:shopId} ON DUPLICATE KEY UPDATE shop_id = shops.shop_id", [
+    "shopId" => $req->getSession()->shopId,
+]);
+$stmt->execute();
+
+$stmt = $req->prepareQuery("INSERT INTO \$moderation\$shop_category SELECT * FROM shop_category WHERE shop_id = @{i:shopId} ON DUPLICATE KEY UPDATE shop_id = shop_category.shop_id", [
+    "shopId" => $req->getSession()->shopId,
+]);
+$stmt->execute();
+
+$stmt = $req->prepareQuery("INSERT INTO \$moderation\$shop_photo SELECT * FROM shop_photo WHERE shop_id = @{i:shopId} ON DUPLICATE KEY UPDATE shop_id = shop_photo.shop_id", [
+    "shopId" => $req->getSession()->shopId,
+]);
+$stmt->execute();
+
+$nextId = $req->getSession()->shopId;
+if (!$req->getSession()->shopId) {
+    $stmt = $req->prepareQuery("SELECT AUTO_INCREMENT FROM information_schema.tables WHERE table_name = 'shops' AND table_schema = DATABASE()", []);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $nextId = $result->fetch_column(0);
+
+    $stmt = $req->prepareQuery("SELECT max(shop_id)+1 FROM \$moderation\$shops", []);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $nextId = max($nextId, $result->fetch_column(0));
+}
+
 $stmt = $req->prepareQuery("INSERT INTO \$moderation\$shops(
     shop_id,
     name,
@@ -73,7 +101,7 @@ $stmt = $req->prepareQuery("INSERT INTO \$moderation\$shops(
     phone_number = @{s:phoneNumber},
     description = @{s:description},
     disabled = @{i:disabled}", [
-    "shopId" => $req->getSession()->shopId,
+    "shopId" => $nextId,
     "name" => $jsonBody->name,
     "zone" => $jsonBody->zone,
     "municipalityId" => $jsonBody->municipality,
@@ -86,11 +114,11 @@ $stmt = $req->prepareQuery("INSERT INTO \$moderation\$shops(
 ]);
 $stmt->execute();
 if (!$req->getSession()->shopId) {
-    $req->getSession()->shopId = $stmt->insert_id;
+    $req->getSession()->shopId = $nextId;
 }
 
 $stmt = $req->prepareQuery("DELETE FROM \$moderation\$shop_category WHERE shop_id = @{i:shopId}", [
-    "shopId" => $req->getSession()->shopId,
+    "shopId" => $nextId,
 ]);
 $stmt->execute();
 
@@ -103,13 +131,13 @@ foreach ($jsonBody->categories as $categoryId) {
         @{i:shopId}
     )", [
         "categoryId" => $categoryId,
-        "shopId" => $req->getSession()->shopId,
+        "shopId" => $nextId,
     ]);
     $stmt->execute();
 }
 
 $stmt = $req->prepareQuery("DELETE FROM \$moderation\$shop_photo WHERE shop_id = @{i:shopId}", [
-    "shopId" => $req->getSession()->shopId,
+    "shopId" => $nextId,
 ]);
 $stmt->execute();
 
@@ -122,12 +150,12 @@ foreach ($jsonBody->photos as $photoId) {
         @{i:shopId}
     ) ON DUPLICATE KEY UPDATE photo_id = photo_id", [
         "photoId" => $photoId,
-        "shopId" => $req->getSession()->shopId,
+        "shopId" => $nextId,
     ]);
     $stmt->execute();
 }
 
 $resObj = new \stdClass();
-$resObj->id = $req->getSession()->shopId;
+$resObj->id = $nextId;
 
 $req->success($resObj);
