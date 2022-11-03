@@ -4,7 +4,7 @@ CREATE VIEW trending_shops AS SELECT
     s.zone as zone,
     mn.name as municipality,
     dp.name as department,
-    s.phone_number as phone_number,
+    s.phone_number as phoneNumber,
     s.description as description,
     s.disabled as disabled,
     COALESCE(c.comments, 0) as comments,
@@ -30,7 +30,7 @@ CREATE VIEW top_rated_shops AS SELECT
     s.zone as zone,
     mn.name as municipality,
     dp.name as department,
-    s.phone_number as phone_number,
+    s.phone_number as phoneNumber,
     s.description as description,
     s.disabled as disabled,
     COALESCE(c.comments, 0) as comments,
@@ -56,7 +56,7 @@ CREATE VIEW recent_shops AS SELECT
     s.zone as zone,
     mn.name as municipality,
     dp.name as department,
-    s.phone_number as phone_number,
+    s.phone_number as phoneNumber,
     s.description as description,
     s.disabled as disabled,
     COALESCE(c.comments, 0) as comments,
@@ -77,13 +77,14 @@ ORDER BY
     s.updated_at DESC;
 
 CREATE VIEW trending_products AS SELECT
-p.product_id as id,
-p.name as name,
-p.price as price,
-p.description as description,
-p.disabled as disabled,
-COALESCE(c.comments, 0) as comments,
-COALESCE(r.average_rating, 0) as average_rating
+    p.product_id as id,
+    p.name as name,
+    p.price as price,
+    p.description as description,
+    p.disabled as disabled,
+    s.name as shopName,
+    COALESCE(c.comments, 0) as comments,
+    COALESCE(r.average_rating, 0) as average_rating
 FROM
     products p
 JOIN
@@ -103,6 +104,7 @@ CREATE VIEW top_rated_products AS SELECT
     p.price as price,
     p.description as description,
     p.disabled as disabled,
+    s.name as shopName,
     COALESCE(c.comments, 0) as comments,
     COALESCE(r.average_rating, 0) as average_rating
 FROM
@@ -124,6 +126,7 @@ CREATE VIEW recent_products AS SELECT
     p.price as price,
     p.description as description,
     p.disabled as disabled,
+    s.name as shopName,
     COALESCE(c.comments, 0) as comments,
     COALESCE(r.average_rating, 0) as average_rating
 FROM

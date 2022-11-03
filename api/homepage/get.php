@@ -42,7 +42,7 @@ while ($block = $result->fetch_object()) {
                     s.zone as zone,
                     mn.name as municipality,
                     dp.name as department,
-                    s.phone_number as phone_number,
+                    s.phone_number as phoneNumber,
                     s.description as description,
                     s.disabled as disabled,
                     COALESCE(r.average_rating, 0) as average_rating
@@ -93,11 +93,14 @@ while ($block = $result->fetch_object()) {
                     p.price as price,
                     p.description as description,
                     p.disabled as disabled,
+                    s.name as shopName,
                     COALESCE(r.average_rating, 0) as average_rating
                 FROM
                     feed_block_items fbi
                 JOIN
                     products p USING (product_id)
+                JOIN
+                    shops s USING (shop_id)
                 LEFT JOIN
                     (SELECT avg(rating) as average_rating, product_id FROM product_ratings GROUP BY product_id) r USING (product_id)
                 WHERE
