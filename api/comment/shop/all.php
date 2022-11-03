@@ -25,7 +25,7 @@ function getComments(Request $req, int $shopId, ?int $parent = null)
         (c.parent_comment_id = @{i:parentCommentId} OR (@{i:parentCommentId} IS NULL AND c.parent_comment_id IS NULL)) AND
         c.author_id = @{i:userId}
     UNION
-    (SELECT
+    SELECT
         c.comment_id as id,
         u.display_name as author,
         c.created_at as publishedAt,
@@ -45,7 +45,7 @@ function getComments(Request $req, int $shopId, ?int $parent = null)
         c.shop_id = @{i:shopId} AND
         (c.parent_comment_id = @{i:parentCommentId} OR (@{i:parentCommentId} IS NULL AND c.parent_comment_id IS NULL))
     ORDER BY
-        coalesce(cv.total_votes, 0) DESC)", [
+        moderated ASC, totalVotes DESC, publishedAt DESC", [
         "shopId" => $shopId,
         "parentCommentId" => $parent,
         "userId" => $req->getSession()->id,
