@@ -156,105 +156,81 @@ if (!$req->getSession()->shopId) {
     $req->getSession()->shopId = $stmt->insert_id;
 }
 
-// $stmt = $req->prepareQuery("DELETE FROM \$moderation\$shop_category WHERE shop_id = @{i:shopId}", [
-//     "shopId" => $req->getSession()->shopId,
-// ]);
-// $stmt->execute();
+$stmt = $req->prepareQuery("INSERT INTO \$moderation\$shop_category SELECT * FROM shop_category WHERE shop_id = @{i:shopId} ON DUPLICATE KEY UPDATE shop_id = shop_category.shop_id", [
+    "shopId" => $req->getSession()->shopId,
+]);
+$stmt->execute();
 
-// foreach ($jsonBody->categories as $categoryId) {
-//     $stmt = $req->prepareQuery("INSERT INTO \$moderation\$shop_category(
-//         category_id,
-//         shop_id
-//     ) VALUES (
-//         @{i:categoryId},
-//         @{i:shopId}
-//     )", [
-//         "categoryId" => $categoryId,
-//         "shopId" => $req->getSession()->shopId,
-//     ]);
-//     $stmt->execute();
+$stmt = $req->prepareQuery("INSERT INTO \$moderation\$shop_photo SELECT * FROM shop_photo WHERE shop_id = @{i:shopId} ON DUPLICATE KEY UPDATE shop_id = shop_photo.shop_id", [
+    "shopId" => $req->getSession()->shopId,
+]);
+$stmt->execute();
+
+// if (isset($body->product)) {
+//     foreach ($body->product as $product) {
+//         $stmt = $req->prepareQuery("INSERT INTO \$moderation\$products SELECT * FROM products WHERE product_id = @{i:productId} AND shop_id = @{i:shopId} ON DUPLICATE KEY UPDATE product_id = products.product_id", [
+//             "productId" => $product->id,
+//             "shopId" => $req->getSession()->shopId,
+//         ]);
+//         $stmt->execute();
+
+//         if (isset($product->id)) {
+//             $stmt = $req->prepareQuery("UPDATE
+//                 \$moderation\$products
+//             SET
+//                 name = @{s:name},
+//                 price = @{s:price},
+//                 description = @{s:description},
+//                 disabled = @{i:disabled}
+//             WHERE
+//                 product_id = @{i:productId} AND
+//                 shop_id = @{i:shopId}", [
+//                 "name" => $jsonBody->name,
+//                 "price" => $jsonBody->price,
+//                 "description" => $jsonBody->description,
+//                 "disabled" => $jsonBody->disabled,
+//                 "productId" => $jsonBody->id,
+//                 "shopId" => $req->getSession()->shopId,
+//             ]);
+//             $stmt->execute();
+//         } else {
+//             $stmt = $req->prepareQuery("SELECT AUTO_INCREMENT FROM information_schema.tables WHERE table_name = 'products' AND table_schema = DATABASE()", []);
+//             $stmt->execute();
+//             $result = $stmt->get_result();
+//             $nextId = $result->fetch_column(0);
+
+//             $stmt = $req->prepareQuery("SELECT max(product_id)+1 FROM \$moderation\$products", []);
+//             $stmt->execute();
+//             $result = $stmt->get_result();
+//             $nextId = max($nextId, $result->fetch_column(0));
+
+//             $stmt = $req->prepareQuery("INSERT INTO \$moderation\$products(
+//                 product_id,
+//                 name,
+//                 price,
+//                 description,
+//                 disabled,
+//                 shop_id
+//             ) VALUES (
+//                 @{i:productId},
+//                 @{s:name},
+//                 @{s:price},
+//                 @{s:description},
+//                 @{i:disabled},
+//                 @{i:shopId}
+//             )", [
+//                 "productId" => $nextId,
+//                 "name" => $jsonBody->name,
+//                 "price" => $jsonBody->price,
+//                 "description" => $jsonBody->description,
+//                 "disabled" => $jsonBody->disabled,
+//                 "shopId" => $req->getSession()->shopId,
+//             ]);
+//             $stmt->execute();
+//             $jsonBody->id = $stmt->insert_id;
+//         }
+//     }
 // }
-
-// $stmt = $req->prepareQuery("DELETE FROM \$moderation\$shop_photo WHERE shop_id = @{i:shopId}", [
-//     "shopId" => $req->getSession()->shopId,
-// ]);
-// $stmt->execute();
-
-// foreach ($jsonBody->photos as $photoId) {
-//     $stmt = $req->prepareQuery("INSERT INTO \$moderation\$shop_photo(
-//         photo_id,
-//         shop_id
-//     ) VALUES (
-//         @{i:photoId},
-//         @{i:shopId}
-//     ) ON DUPLICATE KEY UPDATE photo_id = photo_id", [
-//         "photoId" => $photoId,
-//         "shopId" => $req->getSession()->shopId,
-//     ]);
-//     $stmt->execute();
-// }
-
-// $resObj = new \stdClass();
-// $resObj->id = $req->getSession()->shopId;
-
-// $req->success($resObj);
-
-if (isset($body->product)) {
-    foreach ($body->product as $product) {
-        $stmt = $req->prepareQuery("SELECT
-            product_id
-        FROM
-            products
-        WHERE
-            product_id = @{i:productId} AND
-            shop_id = @{i:shopId}", [
-            "productId" => $product->id,
-            "shopId" => $req->getSession()->shopId,
-        ]);
-        $stmt->execute();
-        $result = $stmt->get_result();
-        $row = $result->fetch_object();
-
-        if ($row) {
-            $stmt = $req->prepareQuery("UPDATE products SET
-                name = @{s:name},
-                price = @{s:price},
-                description = @{s:description},
-                disabled = @{i:disabled}
-            WHERE
-                product_id = @{i:productId}", [
-                "name" => $product->name,
-                "price" => $product->price,
-                "description" => $product->description,
-                "disabled" => $product->disabled,
-                "productId" => $product->id,
-            ]);
-            $stmt->execute();
-        } else {
-            $stmt = $req->prepareQuery("INSERT INTO products(
-                name,
-                price,
-                description,
-                disabled,
-                shop_id
-            ) VALUES (
-                @{s:name},
-                @{s:price},
-                @{s:description},
-                @{i:disabled},
-                @{i:shopId}
-            )", [
-                "productId" => $product->id,
-                "name" => $product->name,
-                "price" => $product->price,
-                "description" => $product->description,
-                "disabled" => $product->disabled,
-                "shopId" => $req->getSession()->shopId,
-            ]);
-            $stmt->execute();
-        }
-    }
-}
 
 $resObj = new \stdClass();
 $resObj->id = $req->getSession()->shopId;

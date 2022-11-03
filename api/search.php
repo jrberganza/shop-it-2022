@@ -78,6 +78,7 @@ JOIN
 LEFT JOIN
     (SELECT avg(rating) as rating, product_id FROM product_ratings GROUP BY product_id) r USING (product_id)
 WHERE
+    s.disabled = FALSE AND
     p.disabled = FALSE";
 
 $conditions = array();
