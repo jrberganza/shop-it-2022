@@ -27,10 +27,34 @@ $params = $req->getParams([
             return strlen($val) == 0 ? [] : explode(",", $val);
         }
     ],
+    "department" => [
+        "optional" => true,
+        "default" => null,
+        "validation" => function ($val) {
+            return preg_match("/^\d+$/", $val) ? false : "Expected a numeric department id";
+        },
+    ],
+    "municipality" => [
+        "optional" => true,
+        "default" => null,
+        "validation" => function ($val) {
+            return preg_match("/^\d+$/", $val) ? false : "Expected a numeric municipality id";
+        },
+    ],
+    "zone" => [
+        "optional" => true,
+        "default" => null,
+        "validation" => function ($val) {
+            return preg_match("/^\d+$/", $val) ? false : "Expected a numeric zone";
+        },
+    ],
 ]);
 $searchQuery = $params["q"];
 $productCategories = $params["productCategories"];
 $shopCategories = $params["shopCategories"];
+$department = $params["department"];
+$municipality = $params["municipality"];
+$zone = $params["zone"];
 
 $searchResults = new \stdClass;
 
@@ -49,6 +73,8 @@ FROM
     products p
 JOIN
     shops s USING (shop_id)
+JOIN
+    municipalities mn USING (municipality_id)
 LEFT JOIN
     (SELECT avg(rating) as rating, product_id FROM product_ratings GROUP BY product_id) r USING (product_id)
 WHERE
@@ -64,6 +90,21 @@ if ($searchQuery != null) {
         s.name LIKE CONCAT('%', @{s:searchQuery}, '%')
     )");
     $params["searchQuery"] = $searchQuery;
+}
+
+if ($department != null) {
+    array_push($conditions, "mn.department_id = @{i:departmentId}");
+    $params["departmentId"] = $department;
+}
+
+if ($municipality != null) {
+    array_push($conditions, "s.municipality_id = @{i:municipalityId}");
+    $params["municipalityId"] = $municipality;
+}
+
+if ($zone != null) {
+    array_push($conditions, "s.zone = @{i:zone}");
+    $params["zone"] = $zone;
 }
 
 $prodCategoryConditions = array();
@@ -149,6 +190,21 @@ if ($searchQuery != null) {
         s.description LIKE CONCAT('%', @{s:searchQuery}, '%')
     )");
     $params["searchQuery"] = $searchQuery;
+}
+
+if ($department != null) {
+    array_push($conditions, "mn.department_id = @{i:departmentId}");
+    $params["departmentId"] = $department;
+}
+
+if ($municipality != null) {
+    array_push($conditions, "s.municipality_id = @{i:municipalityId}");
+    $params["municipalityId"] = $municipality;
+}
+
+if ($zone != null) {
+    array_push($conditions, "s.zone = @{i:zone}");
+    $params["zone"] = $zone;
 }
 
 $shopCategoryConditions = array();

@@ -61,7 +61,7 @@ function validate(mixed &$toCheck, array $expected)
             (!isset($what["type"]) && gettype(getfield($toCheck, $name)) == 'string' && strlen(getfield($toCheck, $name)) == 0) // Special case: A type hasn't been given, and the field is an empty string
         ) {
             if ($what["optional"]) {
-                if (isset($what["default"])) {
+                if (array_key_exists("default", $what)) {
                     setfield($toCheck, $name, $what["default"]);
                 } else {
                     unsetfield($toCheck, $name);
