@@ -10,6 +10,9 @@ export default new Vuex.Store({
       query: '',
       shopCategories: [],
       productCategories: [],
+      department: '',
+      municipality: '',
+      zone: '',
     },
   },
   mutations: {

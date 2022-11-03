@@ -25,7 +25,7 @@
           :items="municipalities" itemText="name" itemValue="id" v-model="myShop.municipality" maxlength="255">
         </VSelect>
         <VTextField label="Zone" :disabled="departments == null || municipalities == null" v-model="myShop.zone"
-          :rules="[rules.required, rules.phoneNumber.format]" maxlength="10"></VTextField>
+          :rules="[rules.required, rules.number.format]" maxlength="10"></VTextField>
         <Map v-model="myShop.location" input></Map>
         <VTextField label="Phone Number" v-model="myShop.phoneNumber"
           :rules="[rules.required, rules.phoneNumber.format]" maxlength="20"></VTextField>
