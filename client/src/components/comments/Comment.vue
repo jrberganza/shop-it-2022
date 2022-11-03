@@ -7,8 +7,8 @@
       This comment hasn't been checked by moderators
     </VCardText>
     <VCardActions v-else>
-      <VBtn icon @click="upvote" :disabled="session.role == 'visitor'">
-        <VIcon :color="comment.voted == 1 ? 'primary' : 'default'">mdi-arrow-up</VIcon>
+      <VBtn icon @click="upvote  " :disabled="  session.role == 'visi  tor'">
+        <VIcon :color="comment.voted == 1 ?   'primary' : 'default'">mdi-arrow-up</VIcon>
       </VBtn>
       <span>{{ comment.totalVotes }}</span>
       <VBtn icon @click="downvote" :disabled="session.role == 'visitor'">
@@ -23,7 +23,7 @@
 
 <script>
 import { VCard, VCardTitle, VCardSubtitle, VCardText, VCardActions, VBtn, VIcon } from 'vuetify/lib';
-import { mapState } from 'vuex';
+import { mapState, mapMutations } from 'vuex';
 
 export default {
   name: 'CommentTree',
@@ -45,6 +45,8 @@ export default {
             this.comment.totalVotes -= this.comment.voted;
             this.comment.voted = newVote;
             this.comment.totalVotes += this.comment.voted;
+          } else {
+            this.openSnackbar({ shown: true, message: json._error });
           }
         });
     },
@@ -60,9 +62,12 @@ export default {
             this.comment.totalVotes -= this.comment.voted;
             this.comment.voted = newVote;
             this.comment.totalVotes += this.comment.voted;
+          } else {
+            this.openSnackbar({ shown: true, message: json._error });
           }
         });
     },
+    ...mapMutations(['openSnackbar']),
   },
   components: { VCard, VCardTitle, VCardSubtitle, VCardText, VCardActions, VBtn, VIcon }
 }

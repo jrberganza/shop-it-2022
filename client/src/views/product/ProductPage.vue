@@ -44,7 +44,7 @@
 <script>
 import { VRow, VCol, VSkeletonLoader, VRating, VDivider, VImg, VCard, VCardTitle, VCardSubtitle, VCardText, VCardActions, VDataIterator } from 'vuetify/lib';
 import CommentTree from '../../components/comments/CommentTree.vue';
-import { mapState } from 'vuex';
+import { mapState, mapMutations } from 'vuex';
 import { RouterLink } from 'vue-router';
 
 export default {
@@ -66,6 +66,8 @@ export default {
         .then(json => {
           if (json.success) {
             // Nothing
+          } else {
+            this.openSnackbar({ shown: true, message: json._error });
           }
         });
     }
@@ -77,6 +79,8 @@ export default {
         .then(json => {
           if (json.success) {
             this.product = json
+          } else {
+            this.openSnackbar({ shown: true, message: json._error });
           }
         });
     },
@@ -86,9 +90,12 @@ export default {
         .then(json => {
           if (json.success) {
             this.comments = json.comments
+          } else {
+            this.openSnackbar({ shown: true, message: json._error });
           }
         });
     },
+    ...mapMutations(['openSnackbar']),
   },
   mounted() {
     this.getShop(this.$route.params.id);

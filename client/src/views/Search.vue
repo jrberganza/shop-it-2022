@@ -89,6 +89,8 @@ export default {
         .then(json => {
           if (json.success) {
             this.searchResults = json;
+          } else {
+            this.openSnackbar({ shown: true, message: json._error });
           }
         });
     },
@@ -98,6 +100,8 @@ export default {
         .then(json => {
           if (json.success) {
             this.productCategories = json.categories;
+          } else {
+            this.openSnackbar({ shown: true, message: json._error });
           }
         });
     },
@@ -107,6 +111,8 @@ export default {
         .then(json => {
           if (json.success) {
             this.shopCategories = json.categories;
+          } else {
+            this.openSnackbar({ shown: true, message: json._error });
           }
         });
     },
@@ -116,6 +122,8 @@ export default {
         .then(json => {
           if (json.success) {
             this.departments = [{ id: '', name: '-' }, ...json.departments];
+          } else {
+            this.openSnackbar({ shown: true, message: json._error });
           }
         });
     },
@@ -126,10 +134,12 @@ export default {
         .then(json => {
           if (json.success) {
             this.municipalities = [{ id: '', name: '-' }, ...json.municipalities];
+          } else {
+            this.openSnackbar({ shown: true, message: json._error });
           }
         });
     },
-    ...mapMutations(['updateSearchRequest'])
+    ...mapMutations(['updateSearchRequest', 'openSnackbar']),
   },
   mounted() {
     this.selectedShopCategories = this.searchRequest.shopCategories;

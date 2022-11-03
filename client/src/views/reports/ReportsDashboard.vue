@@ -102,6 +102,7 @@
 <script>
 import { VCol, VRow, VCard, VBtn, VChipGroup, VChip, VIcon, VCardTitle, VCardText, VCardActions, VDatePicker, VTextField, VSelect, VSwitch, VDataTable } from 'vuetify/lib';
 import DateInput from '../../components/DateInput.vue';
+import { mapMutations } from 'vuex';
 
 export default {
   name: 'Dashboard',
@@ -144,6 +145,8 @@ export default {
         .then(json => {
           if (json.success) {
             this.generators = json.generators;
+          } else {
+            this.openSnackbar({ shown: true, message: json._error });
           }
         })
     },
@@ -185,6 +188,8 @@ export default {
               this.tableHeaders = this.tableGenerator.columns
                 .map(f => ({ ...f, text: f.name, value: f.column, sortable: false, }));
             }
+          } else {
+            this.openSnackbar({ shown: true, message: json._error });
           }
         });
     },
@@ -193,16 +198,26 @@ export default {
         method: "POST",
         body: JSON.stringify({ ...this.report, csv: true }),
       })
-        .then(res => res.blob())
+        .then(res => {
+          if (res.status == 200) {
+            return res.blob();
+          } else {
+            this.openSnackbar({ shown: true, message: json._error });
+            return Promise.resolve();
+          }
+        })
         .then(blob => {
-          let url = URL.createObjectURL(blob);
-          let link = document.createElement("a");
-          link.download = `report_${Math.floor(Date.now() / 1000)}.csv`;
-          link.href = url;
-          link.click();
-          URL.revokeObjectURL(blob);
+          if (blob) {
+            let url = URL.createObjectURL(blob);
+            let link = document.createElement("a");
+            link.download = `report_${Math.floor(Date.now() / 1000)}.csv`;
+            link.href = url;
+            link.click();
+            URL.revokeObjectURL(blob);
+          }
         });
-    }
+    },
+    ...mapMutations(['openSnackbar']),
   },
   mounted() {
     this.getGenerators();

@@ -14,6 +14,10 @@ export default new Vuex.Store({
       municipality: '',
       zone: '',
     },
+    snackbar: {
+      shown: false,
+      message: '',
+    }
   },
   mutations: {
     updateSession(state, session) {
@@ -22,6 +26,9 @@ export default new Vuex.Store({
     updateSearchRequest(state, searchRequest) {
       state.searchRequest = searchRequest;
     },
+    openSnackbar(state, snackbar) {
+      state.snackbar = { ...state.snackbar, ...snackbar };
+    }
   },
   actions: {
     async fetchSession({ commit }, redirectCallback) {

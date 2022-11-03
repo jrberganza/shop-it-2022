@@ -63,7 +63,7 @@
 import { VRow, VCol, VSkeletonLoader, VRating, VDivider, VImg, VCard, VCardTitle, VCardSubtitle, VCardText, VCardActions, VDataIterator } from 'vuetify/lib';
 import CommentTree from '../../components/comments/CommentTree.vue';
 import Map from '../../components/map/Map.vue';
-import { mapState } from 'vuex';
+import { mapState, mapMutations } from 'vuex';
 
 export default {
   name: 'ShopPage',
@@ -84,6 +84,8 @@ export default {
         .then(json => {
           if (json.success) {
             // Nothing
+          } else {
+            this.openSnackbar({ shown: true, message: json._error });
           }
         });
     }
@@ -95,6 +97,8 @@ export default {
         .then(json => {
           if (json.success) {
             this.shop = json
+          } else {
+            this.openSnackbar({ shown: true, message: json._error });
           }
         });
     },
@@ -104,9 +108,12 @@ export default {
         .then(json => {
           if (json.success) {
             this.comments = json.comments
+          } else {
+            this.openSnackbar({ shown: true, message: json._error });
           }
         });
     },
+    ...mapMutations(['openSnackbar']),
   },
   mounted() {
     this.getShop(this.$route.params.id);

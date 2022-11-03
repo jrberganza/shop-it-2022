@@ -51,7 +51,7 @@
 
 <script>
 import { VNavigationDrawer, VList, VDivider, VListItem, VListItemAvatar, VListItemContent, VListItemTitle, VListItemIcon, VImg, VIcon } from 'vuetify/lib';
-import { mapState } from 'vuex';
+import { mapMutations, mapState } from 'vuex';
 import Logo from './Logo.vue';
 
 export default {
@@ -76,9 +76,13 @@ export default {
           if (json.success) {
             this.$store.dispatch('fetchSession');
             this.$router.push('/');
+            this.openSnackbar({ shown: true, message: "Logged out" });
+          } else {
+            this.openSnackbar({ shown: true, message: json._error });
           }
         });
     },
+    ...mapMutations(['openSnackbar']),
   },
   watch: {
     drawer(newVal) {

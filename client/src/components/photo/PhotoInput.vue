@@ -16,6 +16,7 @@
 
 <script>
 import { VRow, VCol, VBtn, VImg, VFileInput, VIcon } from 'vuetify/lib';
+import { mapMutations } from 'vuex';
 
 export default {
   name: 'PhotoInput',
@@ -55,10 +56,13 @@ export default {
           .then(json => {
             if (json.success) {
               this.imageIds = [json.id];
+            } else {
+              this.openSnackbar({ shown: true, message: json._error });
             }
           });
       }
-    }
+    },
+    ...mapMutations(['openSnackbar']),
   },
   mounted() {
     if (!Array.isArray(this.value)) {

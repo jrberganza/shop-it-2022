@@ -69,6 +69,7 @@
 import { VRow, VCol, VForm, VTextField, VSelect, VTextarea, VBtn, VCheckbox, VFileInput, VDataIterator, VCard, VCardTitle, VCardSubtitle, VCardText, VCardActions, VIcon, VImg } from 'vuetify/lib';
 import Map from '../../components/map/Map.vue';
 import PhotoInput from '../../components/photo/PhotoInput.vue';
+import { mapMutations } from 'vuex';
 
 export default {
   name: 'MyShop',
@@ -143,6 +144,8 @@ export default {
           if (json.success) {
             this.myShop.id = json.id;
             this.getShop();
+          } else {
+            this.openSnackbar({ shown: true, message: json._error });
           }
         });
     },
@@ -161,7 +164,13 @@ export default {
             body: reader.result,
           })
             .then(res => res.json())
-            .then(json => this.getShop());
+            .then(json => {
+              if (json.success) {
+                this.getShop()
+              } else {
+                this.openSnackbar({ shown: true, message: json._error });
+              }
+            });
         };
         reader.readAsText(this.xmlFile);
       }
@@ -184,6 +193,8 @@ export default {
         .then(json => {
           if (json.success) {
             this.shopCategories = json.categories;
+          } else {
+            this.openSnackbar({ shown: true, message: json._error });
           }
         });
     },
@@ -193,6 +204,8 @@ export default {
         .then(json => {
           if (json.success) {
             this.departments = json.departments;
+          } else {
+            this.openSnackbar({ shown: true, message: json._error });
           }
         });
     },
@@ -203,9 +216,12 @@ export default {
         .then(json => {
           if (json.success) {
             this.municipalities = json.municipalities;
+          } else {
+            this.openSnackbar({ shown: true, message: json._error });
           }
         });
     },
+    ...mapMutations(['openSnackbar']),
   },
   mounted() {
     this.getShop();

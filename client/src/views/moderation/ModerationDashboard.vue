@@ -66,6 +66,7 @@ import CommentPreview from '../../components/moderation/preview/CommentPreview.v
 import ShopDetails from '../../components/moderation/details/ShopDetails.vue';
 import ProductDetails from '../../components/moderation/details/ProductDetails.vue';
 import CommentDetails from '../../components/moderation/details/CommentDetails.vue';
+import { mapMutations } from 'vuex';
 
 export default {
   name: 'Dashboard',
@@ -89,6 +90,8 @@ export default {
         .then(json => {
           if (json.success) {
             this.pending[type] = json.pending;
+          } else {
+            this.openSnackbar({ shown: true, message: json._error });
           }
         });
     },
@@ -96,8 +99,12 @@ export default {
       fetch(`/api/moderation/${type}/details.php?id=${id}`)
         .then(res => res.json())
         .then(json => {
-          this.selected.type = type;
-          this.selected.data = json;
+          if (json.success) {
+            this.selected.type = type;
+            this.selected.data = json;
+          } else {
+            this.openSnackbar({ shown: true, message: json._error });
+          }
         });
     },
     publish(/** @type {"shop"|"product"|"comment"} */ type, id, reason = '') {
@@ -117,6 +124,8 @@ export default {
             if (this.selected.data.id == id) {
               this.selected.type = null;
             }
+          } else {
+            this.openSnackbar({ shown: true, message: json._error });
           }
         });
     },
@@ -137,9 +146,12 @@ export default {
             if (this.selected.data.id == id) {
               this.selected.type = null;
             }
+          } else {
+            this.openSnackbar({ shown: true, message: json._error });
           }
         });
     },
+    ...mapMutations(['openSnackbar']),
   },
   mounted() {
     this.getPending("shop");

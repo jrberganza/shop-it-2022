@@ -24,7 +24,7 @@
 import {
   VFooter, VRow, VCol, VBtn
 } from 'vuetify/lib';
-import { mapState } from 'vuex';
+import { mapState, mapMutations } from 'vuex';
 
 export default {
   name: 'PageFooter',
@@ -39,10 +39,16 @@ export default {
       fetch('/api/session/logout.php')
         .then(res => res.json())
         .then(json => {
-          this.$store.dispatch('fetchSession');
-          this.$router.push('/');
+          if (json.success) {
+            this.$store.dispatch('fetchSession');
+            this.$router.push('/');
+            this.openSnackbar({ shown: true, message: "Logged out" });
+          } else {
+            this.openSnackbar({ shown: true, message: json._error });
+          }
         });
     },
+    ...mapMutations(['openSnackbar']),
   },
   watch: {
     drawer(newVal) {

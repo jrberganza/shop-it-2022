@@ -66,11 +66,16 @@ export default {
       fetch('/api/session/logout.php')
         .then(res => res.json())
         .then(json => {
-          this.$store.dispatch('fetchSession');
-          this.$router.push('/');
+          if (json.success) {
+            this.$store.dispatch('fetchSession');
+            this.$router.push('/');
+            this.openSnackbar({ shown: true, message: "Logged out" });
+          } else {
+            this.openSnackbar({ shown: true, message: json._error });
+          }
         });
     },
-    ...mapMutations(['updateSearchRequest'])
+    ...mapMutations(['updateSearchRequest', 'openSnackbar'])
   },
   mounted() {
     if (this.$route.name == "Search") {

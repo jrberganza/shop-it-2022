@@ -29,7 +29,7 @@
 <script>
 import { VTextarea, VBtn, VExpansionPanels, VExpansionPanel, VExpansionPanelHeader, VExpansionPanelContent } from 'vuetify/lib';
 import Comment from './Comment.vue';
-import { mapState } from 'vuex';
+import { mapState, mapMutations } from 'vuex';
 
 export default {
   name: 'CommentTree',
@@ -86,9 +86,12 @@ export default {
             });
             this.$emit("reply");
             this.content = "";
+          } else {
+            this.openSnackbar({ shown: true, message: json._error });
           }
         });
-    }
+    },
+    ...mapMutations(['openSnackbar']),
   },
   mounted() {
     this.internalComments = [...this.comments];

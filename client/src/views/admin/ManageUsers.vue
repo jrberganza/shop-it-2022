@@ -33,8 +33,8 @@
         <VDataIterator :items="users" :itemsPerPage="5">
           <template v-slot:default="{ items }">
             <VCard v-for="user in items" :key="user.id" class="my-2" @click="getUser(user.id)">
-              <VCardTitle>{{user.displayName}}</VCardTitle>
-              <VCardSubtitle>{{user.email}} - {{user.role}}</VCardSubtitle>
+              <VCardTitle>{{ user.displayName }}</VCardTitle>
+              <VCardSubtitle>{{ user.email }} - {{ user.role }}</VCardSubtitle>
             </VCard>
           </template>
         </VDataIterator>
@@ -46,6 +46,7 @@
 
 <script>
 import { VRow, VCol, VForm, VTextField, VTextarea, VBtn, VCheckbox, VFileInput, VDataIterator, VCard, VCardTitle, VCardSubtitle, VCardText, VCardActions, VIcon, VImg } from 'vuetify/lib';
+import { mapMutations } from 'vuex';
 
 export default {
   name: 'ManageUsers',
@@ -89,8 +90,12 @@ export default {
         })
           .then(res => res.json())
           .then(json => {
-            this.selectedUser.id = json.id;
-            this.getUsers();
+            if (json.success) {
+              this.selectedUser.id = json.id;
+              this.getUsers();
+            } else {
+              this.openSnackbar({ shown: true, message: json._error });
+            }
           });
       } else {
         fetch('/api/user/edit.php', {
@@ -98,19 +103,38 @@ export default {
           body: JSON.stringify(body),
         })
           .then(res => res.json())
-          .then(json => this.getUsers());
+          .then(json => {
+            if (json.success) {
+              this.getUsers()
+            } else {
+              this.openSnackbar({ shown: true, message: json._error });
+            }
+          });
       }
     },
     getUsers() {
       fetch('/api/user/all.php')
         .then(res => res.json())
-        .then(json => this.users = json.users);
+        .then(json => {
+          if (json.success) {
+            this.users = json.users
+          } else {
+            this.openSnackbar({ shown: true, message: json._error });
+          }
+        });
     },
     getUser(id) {
       fetch(`/api/user/get.php?id=${id}`)
         .then(res => res.json())
-        .then(json => this.selectedUser = json);
+        .then(json => {
+          if (json.success) {
+            this.selectedUser = json
+          } else {
+            this.openSnackbar({ shown: true, message: json._error });
+          }
+        });
     },
+    ...mapMutations(['openSnackbar']),
   },
   mounted() {
     this.getUsers();

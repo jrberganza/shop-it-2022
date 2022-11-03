@@ -4,7 +4,7 @@
       <template v-for="block in blocks">
         <VCol cols="12" :lg="{ full: 12, half: 6, third: 4, fourth: 3, twelfth: 1 }[block.size]" class="results">
           <template v-if="block.blockType == 'feed'">
-            <h1>{{block.feedTitle}}</h1>
+            <h1>{{ block.feedTitle }}</h1>
             <ProductFeed v-if="block.feedItemType == 'product'" :products="block.feedContent || []"></ProductFeed>
             <ShopFeed v-else-if="block.feedItemType == 'shop'" :shops="block.feedContent || []"></ShopFeed>
           </template>
@@ -12,8 +12,8 @@
             <VCard>
               <VImg v-if="block.bannerPhotoId" :src="'/api/photo/get.php?id=' + block.bannerPhotoId" height="350">
               </VImg>
-              <VCardTitle v-if="block.bannerTitle">{{block.bannerTitle}}</VCardTitle>
-              <VCardText v-if="block.bannerText">{{block.bannerText}}</VCardText>
+              <VCardTitle v-if="block.bannerTitle">{{ block.bannerTitle }}</VCardTitle>
+              <VCardText v-if="block.bannerText">{{ block.bannerText }}</VCardText>
             </VCard>
           </template>
         </VCol>
@@ -26,6 +26,7 @@
 import { VRow, VCol } from 'vuetify/lib';
 import ProductFeed from '../components/feeds/ProductFeed.vue';
 import ShopFeed from '../components/feeds/ShopFeed.vue';
+import { mapMutations } from 'vuex';
 
 export default {
   name: 'Home',
@@ -39,9 +40,12 @@ export default {
         .then(json => {
           if (json.success) {
             this.blocks = json.blocks
+          } else {
+            this.openSnackbar({ shown: true, message: json._error });
           }
         });
-    }
+    },
+    ...mapMutations(['openSnackbar']),
   },
   mounted() {
     this.getFeeds();

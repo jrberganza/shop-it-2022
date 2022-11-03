@@ -42,6 +42,7 @@
 <script>
 import { VRow, VCol } from 'vuetify/lib';
 import PhotoInput from '../components/photo/PhotoInput.vue';
+import { mapMutations } from 'vuex';
 
 export default {
   name: 'Home',
@@ -76,6 +77,8 @@ export default {
         .then(json => {
           if (json.success) {
             this.blocks = json.blocks
+          } else {
+            this.openSnackbar({ shown: true, message: json._error });
           }
         });
     },
@@ -88,6 +91,8 @@ export default {
         .then(json => {
           if (json.success) {
             this.getHomepage();
+          } else {
+            this.openSnackbar({ shown: true, message: json._error });
           }
         });
     },
@@ -117,6 +122,7 @@ export default {
         this.blocks.splice(i, 1);
       }
     },
+    ...mapMutations(['openSnackbar']),
   },
   mounted() {
     this.getHomepage();

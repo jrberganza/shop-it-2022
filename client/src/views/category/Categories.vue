@@ -44,8 +44,9 @@
           <VTabItem v-for="categories, i in [shopCategories, productCategories]" :key="i">
             <VDataIterator :items="categories" :itemsPerPage="5">
               <template v-slot:default="{ items }">
-                <VCard v-for="item in items" class="my-4" :key="item.id" @click="() => myCategory = {...item}">
-                  <VCardTitle>{{item.name}}</VCardTitle>
+                <VCard v-for="item in items" class="my-4" :key="item.id"
+                  @click="() => myCategory = { ...item }">
+                  <VCardTitle>{{ item.name }}</VCardTitle>
                   <VCardText>
                     <template v-if="item.disabled">
                       <VIcon small>mdi-close</VIcon> Disabled
@@ -66,6 +67,7 @@
 
 <script>
 import { VRow, VCol, VTabs, VTab, VTabsItems, VTabItem, VTabsSlider, VDataIterator, VTextField, VCheckbox, VBtn, VIcon, VCard, VCardTitle, VCardText, VCardActions } from 'vuetify/lib';
+import { mapMutations } from 'vuex';
 
 export default {
   name: 'Categories',
@@ -109,6 +111,8 @@ export default {
             this.getProductCategories();
             this.getShopCategories();
             this.newCategory();
+          } else {
+            this.openSnackbar({ shown: true, message: json._error });
           }
         });
     },
@@ -118,6 +122,8 @@ export default {
         .then(json => {
           if (json.success) {
             this.productCategories = json.categories;
+          } else {
+            this.openSnackbar({ shown: true, message: json._error });
           }
         });
     },
@@ -127,9 +133,12 @@ export default {
         .then(json => {
           if (json.success) {
             this.shopCategories = json.categories;
+          } else {
+            this.openSnackbar({ shown: true, message: json._error });
           }
         });
     },
+    ...mapMutations(['openSnackbar']),
   },
   mounted() {
     this.getProductCategories();

@@ -39,9 +39,9 @@
             <VCard v-for="product in items" :key="product.id" class="my-2" @click="getProduct(product.id)">
               <VImg v-if="product.photos.length > 0" :src="'/api/photo/get.php?id=' + product.photos[0]" height="100" />
               <VImg v-else src="/images/placeholder.png" height="100" />
-              <VCardTitle>{{product.name}}</VCardTitle>
-              <VCardSubtitle>{{product.price}} - {{product.shopName}}</VCardSubtitle>
-              <VCardText>{{product.description}}</VCardText>
+              <VCardTitle>{{ product.name }}</VCardTitle>
+              <VCardSubtitle>{{ product.price }} - {{ product.shopName }}</VCardSubtitle>
+              <VCardText>{{ product.description }}</VCardText>
             </VCard>
           </template>
         </VDataIterator>
@@ -53,6 +53,7 @@
 <script>
 import { VRow, VCol, VForm, VTextField, VTextarea, VBtn, VCheckbox, VDataIterator, VCard, VCardTitle, VCardSubtitle, VCardText, VCardActions, VImg, VIcon } from 'vuetify/lib';
 import PhotoInput from '../../components/photo/PhotoInput.vue';
+import { mapMutations } from 'vuex';
 
 export default {
   name: 'MyShopProducts',
@@ -95,18 +96,32 @@ export default {
           if (json.success) {
             this.myProduct.id = json.id;
             this.getProducts();
+          } else {
+            this.openSnackbar({ shown: true, message: json._error });
           }
         });
     },
     getProducts() {
       fetch(`/api/product/user/all.php`)
         .then(res => res.json())
-        .then(json => this.products = json.products);
+        .then(json => {
+          if (json.success) {
+            this.products = json.products
+          } else {
+            this.openSnackbar({ shown: true, message: json._error });
+          }
+        });
     },
     getProduct(id) {
       fetch(`/api/product/user/get.php?id=${id}`)
         .then(res => res.json())
-        .then(json => this.myProduct = json);
+        .then(json => {
+          if (json.success) {
+            this.myProduct = json
+          } else {
+            this.openSnackbar({ shown: true, message: json._error });
+          }
+        });
     },
     getProductCategories() {
       fetch(`/api/category/product/all.php`)
@@ -114,9 +129,12 @@ export default {
         .then(json => {
           if (json.success) {
             this.productCategories = json.categories;
+          } else {
+            this.openSnackbar({ shown: true, message: json._error });
           }
         });
     },
+    ...mapMutations(['openSnackbar']),
   },
   mounted() {
     this.getProducts();
