@@ -42,6 +42,16 @@ $stmt = $req->prepareQuery("INSERT INTO \$moderation\$shops SELECT * FROM shops 
 ]);
 $stmt->execute();
 
+$stmt = $req->prepareQuery("INSERT INTO \$moderation\$shop_category SELECT * FROM shop_category WHERE shop_id = @{i:shopId} ON DUPLICATE KEY UPDATE shop_id = shop_category.shop_id", [
+    "shopId" => $req->getSession()->shopId,
+]);
+$stmt->execute();
+
+$stmt = $req->prepareQuery("INSERT INTO \$moderation\$shop_photo SELECT * FROM shop_photo WHERE shop_id = @{i:shopId} ON DUPLICATE KEY UPDATE shop_id = shop_photo.shop_id", [
+    "shopId" => $req->getSession()->shopId,
+]);
+$stmt->execute();
+
 $stmt = $req->prepareQuery("INSERT INTO \$moderation\$products SELECT * FROM products WHERE product_id = @{i:productId} AND shop_id = @{i:shopId} ON DUPLICATE KEY UPDATE product_id = products.product_id", [
     "productId" => isset($jsonBody->id) ? $jsonBody->id : null,
     "shopId" => $req->getSession()->shopId,
