@@ -109,74 +109,95 @@ if ($error = validate($body, [
     $req->fail($error);
 };
 
-if ($req->getSession()->shopId) {
-    $stmt = $req->prepareQuery("UPDATE
-        shops
-    SET
-        name = @{s:name},
-        zone = @{i:zone},
-        municipality_id = @{i:municipalityId},
-        latitude = @{d:latitude},
-        longitude = @{d:longitude},
-        phone_number = @{s:phoneNumber},
-        description = @{s:description},
-        disabled = @{i:disabled}
-    WHERE
-        shop_id = @{i:shopId}", [
-        "name" => $body->name,
-        "zone" => $body->zone,
-        "municipalityId" => $body->municipality,
-        "latitude" => $body->latitude,
-        "longitude" => $body->longitude,
-        "phoneNumber" => $body->phonenumber,
-        "description" => $body->description,
-        "disabled" => $body->disabled,
-        "shopId" => $req->getSession()->shopId,
-    ]);
-    $stmt->execute();
-} else {
-    $stmt = $req->prepareQuery("INSERT INTO shops(
-        name,
-        zone,
-        municipality_id,
-        latitude,
-        longitude,
-        phone_number,
-        description,
-        disabled,
-        user_id
-    ) VALUES (
-        @{s:name},
-        @{i:zone},
-        @{i:municipalityId},
-        @{d:latitude},
-        @{d:longitude},
-        @{s:phoneNumber},
-        @{s:description},
-        @{i:disabled},
-        @{i:userId}
-    )", [
-        "name" => $body->name,
-        "zone" => $body->zone,
-        "municipalityId" => $body->municipality,
-        "latitude" => $body->latitude,
-        "longitude" => $body->longitude,
-        "phoneNumber" => $body->phonenumber,
-        "description" => $body->description,
-        "disabled" => $body->disabled,
-        "userId" => $req->getSession()->id,
-    ]);
-    $stmt->execute();
-    $shopId = $stmt->insert_id;
-
-    $stmt = $req->prepareQuery("UPDATE users SET shop_id = @{i:shopId} WHERE user_id = @{i:userId}", [
-        "shopId" => $shopId,
-        "userId" => $req->getSession()->id,
-    ]);
-    $stmt->execute();
-
-    $req->getSession()->shopId = $shopId;
+$stmt = $req->prepareQuery("INSERT INTO \$moderation\$shops(
+    shop_id,
+    name,
+    zone,
+    municipality_id,
+    latitude,
+    longitude,
+    phone_number,
+    description,
+    disabled,
+    user_id
+) VALUES (
+    @{i:shopId},
+    @{s:name},
+    @{i:zone},
+    @{i:municipalityId},
+    @{d:latitude},
+    @{d:longitude},
+    @{s:phoneNumber},
+    @{s:description},
+    @{i:disabled},
+    @{i:userId}
+) ON DUPLICATE KEY UPDATE
+    name = @{s:name},
+    zone = @{i:zone},
+    municipality_id = @{i:municipalityId},
+    latitude = @{d:latitude},
+    longitude = @{d:longitude},
+    phone_number = @{s:phoneNumber},
+    description = @{s:description},
+    disabled = @{i:disabled}", [
+    "shopId" => $req->getSession()->shopId,
+    "name" => $jsonBody->name,
+    "zone" => $jsonBody->zone,
+    "municipalityId" => $jsonBody->municipality,
+    "latitude" => $jsonBody->latitude,
+    "longitude" => $jsonBody->longitude,
+    "phoneNumber" => $jsonBody->phoneNumber,
+    "description" => $jsonBody->description,
+    "disabled" => $jsonBody->disabled,
+    "userId" => $req->getSession()->id,
+]);
+$stmt->execute();
+if (!$req->getSession()->shopId) {
+    $req->getSession()->shopId = $stmt->insert_id;
 }
+
+// $stmt = $req->prepareQuery("DELETE FROM \$moderation\$shop_category WHERE shop_id = @{i:shopId}", [
+//     "shopId" => $req->getSession()->shopId,
+// ]);
+// $stmt->execute();
+
+// foreach ($jsonBody->categories as $categoryId) {
+//     $stmt = $req->prepareQuery("INSERT INTO \$moderation\$shop_category(
+//         category_id,
+//         shop_id
+//     ) VALUES (
+//         @{i:categoryId},
+//         @{i:shopId}
+//     )", [
+//         "categoryId" => $categoryId,
+//         "shopId" => $req->getSession()->shopId,
+//     ]);
+//     $stmt->execute();
+// }
+
+// $stmt = $req->prepareQuery("DELETE FROM \$moderation\$shop_photo WHERE shop_id = @{i:shopId}", [
+//     "shopId" => $req->getSession()->shopId,
+// ]);
+// $stmt->execute();
+
+// foreach ($jsonBody->photos as $photoId) {
+//     $stmt = $req->prepareQuery("INSERT INTO \$moderation\$shop_photo(
+//         photo_id,
+//         shop_id
+//     ) VALUES (
+//         @{i:photoId},
+//         @{i:shopId}
+//     ) ON DUPLICATE KEY UPDATE photo_id = photo_id", [
+//         "photoId" => $photoId,
+//         "shopId" => $req->getSession()->shopId,
+//     ]);
+//     $stmt->execute();
+// }
+
+// $resObj = new \stdClass();
+// $resObj->id = $req->getSession()->shopId;
+
+// $req->success($resObj);
 
 if (isset($body->product)) {
     foreach ($body->product as $product) {
