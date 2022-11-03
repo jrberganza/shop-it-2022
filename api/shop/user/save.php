@@ -108,6 +108,11 @@ foreach ($jsonBody->categories as $categoryId) {
     $stmt->execute();
 }
 
+$stmt = $req->prepareQuery("DELETE FROM \$moderation\$shop_photo WHERE shop_id = @{i:shopId}", [
+    "shopId" => $req->getSession()->shopId,
+]);
+$stmt->execute();
+
 foreach ($jsonBody->photos as $photoId) {
     $stmt = $req->prepareQuery("INSERT INTO \$moderation\$shop_photo(
         photo_id,
