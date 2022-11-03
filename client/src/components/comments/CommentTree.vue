@@ -62,7 +62,7 @@ export default {
               data: {
                 id: json.id,
                 author: this.session.displayName,
-                createdAt: new Date(),
+                publishedAt: new Date(),
                 content: this.content,
               },
               children: []

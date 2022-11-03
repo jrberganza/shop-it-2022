@@ -1,9 +1,12 @@
 <template>
   <VCard>
-    <VCardTitle>{{comment.author}}</VCardTitle>
-    <VCardSubtitle>{{comment.publishedAt}}</VCardSubtitle>
-    <VCardText>{{comment.content}}</VCardText>
-    <VCardActions>
+    <VCardTitle>{{ comment.author }}</VCardTitle>
+    <VCardSubtitle>{{ comment.publishedAt }}</VCardSubtitle>
+    <VCardText>{{ comment.content }}</VCardText>
+    <VCardText v-if="!comment.moderated">
+      This comment hasn't been checked by moderators
+    </VCardText>
+    <VCardActions v-else>
       <VBtn icon @click="upvote">
         <VIcon :color="comment.voted == 1 ? 'primary' : 'default'">mdi-arrow-up</VIcon>
       </VBtn>
