@@ -4,15 +4,29 @@ require_once '../../utils/request.php';
 
 $req->requireEmployeePrivileges();
 
-$comment = new \stdClass();
-
 $params = $req->getParams([
     "id" => [],
 ]);
 
-$comment->id = random_int(0, 1000) * $params["id"];
-$comment->author = "Usuario " . random_int(1000, 9999);
-$comment->publishedAt = "31/12/2022";
-$comment->content = "Hey! " . random_int(1000, 9999);
+$stmt = $req->prepareQuery("SELECT
+    c.comment_id as id,
+    u.display_name as author,
+    c.created_at as publishedAt,
+    c.content as content,
+    0 as totalVotes,
+    0 as voted,
+    false as moderated
+FROM
+    \$moderation\$comments c
+JOIN
+    users u ON c.author_id = u.user_id
+WHERE
+    c.comment_id = @{i:commentId}", [
+    "commentId" => $params["id"],
+]);
+$stmt->execute();
+$result = $stmt->get_result();
+
+$comment = $result->fetch_object();
 
 $req->success($comment);
