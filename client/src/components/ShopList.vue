@@ -1,5 +1,5 @@
 <template>
-  <VRow>
+  <VRow class="px-4 my-2">
     <template v-if="shops.length > 0">
       <VCol v-for="shop in shops" :key="shop.id" cols="12" md="6">
         <VCard @click="() => $router.push('/shop/' + shop.id)">
@@ -12,11 +12,9 @@
         </VCard>
       </VCol>
     </template>
-    <template v-else>
-      <VCol v-for="i in Array(3 * 10)" :key="i" cols="4">
-        <VSkeletonLoader type="card"></VSkeletonLoader>
-      </VCol>
-    </template>
+    <div v-else>
+      <em>No results found.</em>
+    </div>
   </VRow>
 </template>
 
