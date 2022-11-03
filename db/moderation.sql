@@ -36,6 +36,18 @@ CREATE TABLE `$moderation$product_photo` (
   PRIMARY KEY (`photo_id`, `product_id`)
 );
 
+CREATE TABLE `$moderation$shop_category` (
+  `category_id` int NOT NULL,
+  `shop_id` int NOT NULL,
+  PRIMARY KEY (`category_id`, `shop_id`)
+);
+
+CREATE TABLE `$moderation$product_category` (
+  `category_id` int NOT NULL,
+  `product_id` int NOT NULL,
+  PRIMARY KEY (`category_id`, `product_id`)
+);
+
 CREATE TABLE `$moderation$comments` (
   `comment_id` int PRIMARY KEY AUTO_INCREMENT,
   `shop_id` int,
@@ -50,15 +62,23 @@ ALTER TABLE `$moderation$shops` ADD FOREIGN KEY (`user_id`) REFERENCES `users` (
 
 ALTER TABLE `$moderation$shops` ADD FOREIGN KEY (`municipality_id`) REFERENCES `municipalities` (`municipality_id`);
 
-ALTER TABLE `$moderation$products` ADD FOREIGN KEY (`shop_id`) REFERENCES `shops` (`shop_id`);
+ALTER TABLE `$moderation$products` ADD FOREIGN KEY (`shop_id`) REFERENCES `$moderation$shops` (`shop_id`);
 
 ALTER TABLE `$moderation$shop_photo` ADD FOREIGN KEY (`photo_id`) REFERENCES `photos` (`photo_id`);
 
-ALTER TABLE `$moderation$shop_photo` ADD FOREIGN KEY (`shop_id`) REFERENCES `shops` (`shop_id`);
+ALTER TABLE `$moderation$shop_photo` ADD FOREIGN KEY (`shop_id`) REFERENCES `$moderation$shops` (`shop_id`);
 
 ALTER TABLE `$moderation$product_photo` ADD FOREIGN KEY (`photo_id`) REFERENCES `photos` (`photo_id`);
 
-ALTER TABLE `$moderation$product_photo` ADD FOREIGN KEY (`product_id`) REFERENCES `products` (`product_id`);
+ALTER TABLE `$moderation$product_photo` ADD FOREIGN KEY (`product_id`) REFERENCES `$moderation$products` (`product_id`);
+
+ALTER TABLE `$moderation$shop_category` ADD FOREIGN KEY (`category_id`) REFERENCES `categories` (`category_id`);
+
+ALTER TABLE `$moderation$shop_category` ADD FOREIGN KEY (`shop_id`) REFERENCES `$moderation$shops` (`shop_id`);
+
+ALTER TABLE `$moderation$product_category` ADD FOREIGN KEY (`category_id`) REFERENCES `categories` (`category_id`);
+
+ALTER TABLE `$moderation$product_category` ADD FOREIGN KEY (`product_id`) REFERENCES `$moderation$products` (`product_id`);
 
 ALTER TABLE `$moderation$comments` ADD FOREIGN KEY (`shop_id`) REFERENCES `shops` (`shop_id`);
 
