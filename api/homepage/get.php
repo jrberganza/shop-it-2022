@@ -5,6 +5,7 @@ require_once '../utils/request.php';
 $stmt = $req->prepareQuery("SELECT
     hb.type as blockType,
     hb.size as size,
+    fb.feed_block_id as feedBlockId,
     fb.title as feedTitle,
     fb.type as feedType,
     fb.item_type as feedItemType,
@@ -28,28 +29,39 @@ while ($block = $result->fetch_object()) {
     if ($block->blockType == "feed") {
         $block->feedContent = array();
         if ($block->feedItemType == "shop") {
-            $stmt2 = $req->prepareQuery("SELECT
-                s.shop_id as id,
-                s.name as name,
-                s.zone as zone,
-                mn.name as municipality,
-                dp.name as department,
-                s.phone_number as phoneNumber,
-                s.description as description,
-                s.disabled as disabled,
-                cast(coalesce(r.rating, 0.0) as double) as rating
-            FROM
-                shops s
-            JOIN
-                municipalities mn USING (municipality_id)
-            JOIN
-                departments dp USING (department_id)
-            LEFT JOIN
-                (SELECT avg(rating) as rating, shop_id FROM shop_ratings GROUP BY shop_id) r USING (shop_id)
-            WHERE
-                s.disabled = FALSE
-            ORDER BY rating DESC
-            LIMIT 5", []);
+            if ($block->feedType == "auto_top_rated") {
+                $stmt2 = $req->prepareQuery("SELECT * FROM top_rated_shops LIMIT 5", []);
+            } elseif ($block->feedType == "auto_trending") {
+                $stmt2 = $req->prepareQuery("SELECT * FROM trending_shops LIMIT 5", []);
+            } elseif ($block->feedType == "auto_recent") {
+                $stmt2 = $req->prepareQuery("SELECT * FROM recent_shops LIMIT 5", []);
+            } elseif ($block->feedType == "manual") {
+                $stmt2 = $req->prepareQuery("SELECT
+                    s.shop_id as id,
+                    s.name as name,
+                    s.zone as zone,
+                    mn.name as municipality,
+                    dp.name as department,
+                    s.phone_number as phone_number,
+                    s.description as description,
+                    s.disabled as disabled,
+                    COALESCE(r.average_rating, 0) as average_rating
+                FROM
+                    feed_block_items fbi
+                JOIN
+                    shops s USING (shop_id)
+                JOIN
+                    municipalities mn USING (municipality_id)
+                JOIN
+                    departments dp USING (department_id)
+                LEFT JOIN
+                    (SELECT avg(rating) as average_rating, shop_id FROM shop_ratings GROUP BY shop_id) r USING (shop_id)
+                WHERE
+                    fbi.feed_block_id = @{i:feedBlockId}
+                LIMIT 5", [
+                    "feedBlockId" => $block->feedBlockId,
+                ]);
+            }
             $stmt2->execute();
             $result2 = $stmt2->get_result();
 
@@ -68,25 +80,32 @@ while ($block = $result->fetch_object()) {
                 array_push($block->feedContent, $shop);
             }
         } elseif ($block->feedItemType == "product") {
-            $stmt2 = $req->prepareQuery("SELECT
-                p.product_id as id,
-                p.name as name,
-                p.price as price,
-                p.description as description,
-                p.disabled as disabled,
-                cast(coalesce(r.rating, 0.0) as double) as rating,
-                s.shop_id as shopId,
-                s.name as shopName
-            FROM
-                products p
-            JOIN
-                shops s USING (shop_id)
-            LEFT JOIN
-                (SELECT avg(rating) as rating, product_id FROM product_ratings GROUP BY product_id) r USING (product_id)
-            WHERE
-                p.disabled = FALSE
-            ORDER BY rating DESC
-            LIMIT 5", []);
+            if ($block->feedType == "auto_top_rated") {
+                $stmt2 = $req->prepareQuery("SELECT * FROM top_rated_products LIMIT 5", []);
+            } elseif ($block->feedType == "auto_trending") {
+                $stmt2 = $req->prepareQuery("SELECT * FROM trending_products LIMIT 5", []);
+            } elseif ($block->feedType == "auto_recent") {
+                $stmt2 = $req->prepareQuery("SELECT * FROM recent_products LIMIT 5", []);
+            } elseif ($block->feedType == "manual") {
+                $stmt2 = $req->prepareQuery("SELECT
+                    p.product_id as id,
+                    p.name as name,
+                    p.price as price,
+                    p.description as description,
+                    p.disabled as disabled,
+                    COALESCE(r.average_rating, 0) as average_rating
+                FROM
+                    feed_block_items fbi
+                JOIN
+                    products p USING (product_id)
+                LEFT JOIN
+                    (SELECT avg(rating) as average_rating, product_id FROM product_ratings GROUP BY product_id) r USING (product_id)
+                WHERE
+                    fbi.feed_block_id = @{i:feedBlockId}
+                LIMIT 5", [
+                    "feedBlockId" => $block->feedBlockId,
+                ]);
+            }
             $stmt2->execute();
             $result2 = $stmt2->get_result();
 
