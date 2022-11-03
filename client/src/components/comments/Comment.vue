@@ -7,13 +7,14 @@
       This comment hasn't been checked by moderators
     </VCardText>
     <VCardActions v-else>
-      <VBtn icon @click="upvote">
+      <VBtn icon @click="upvote" :disabled="session.role == 'visitor'">
         <VIcon :color="comment.voted == 1 ? 'primary' : 'default'">mdi-arrow-up</VIcon>
       </VBtn>
-      <VBtn icon @click="downvote">
+      <span>{{ comment.totalVotes }}</span>
+      <VBtn icon @click="downvote" :disabled="session.role == 'visitor'">
         <VIcon :color="comment.voted == -1 ? 'primary' : 'default'">mdi-arrow-down</VIcon>
       </VBtn>
-      <VBtn text @click="$emit('askToReply')">
+      <VBtn v-if="session.role != 'visitor'" text @click="$emit('askToReply')">
         Reply
       </VBtn>
     </VCardActions>
@@ -22,11 +23,15 @@
 
 <script>
 import { VCard, VCardTitle, VCardSubtitle, VCardText, VCardActions, VBtn, VIcon } from 'vuetify/lib';
+import { mapState } from 'vuex';
 
 export default {
   name: 'CommentTree',
   props: ['comment'],
   data: () => ({}),
+  computed: {
+    ...mapState(['session']),
+  },
   methods: {
     upvote() {
       let newVote = this.comment.voted == 1 ? 0 : 1;
@@ -37,7 +42,9 @@ export default {
         .then(res => res.json())
         .then(json => {
           if (json.success) {
+            this.comment.totalVotes -= this.comment.voted;
             this.comment.voted = newVote;
+            this.comment.totalVotes += this.comment.voted;
           }
         });
     },
@@ -50,7 +57,9 @@ export default {
         .then(res => res.json())
         .then(json => {
           if (json.success) {
+            this.comment.totalVotes -= this.comment.voted;
             this.comment.voted = newVote;
+            this.comment.totalVotes += this.comment.voted;
           }
         });
     },

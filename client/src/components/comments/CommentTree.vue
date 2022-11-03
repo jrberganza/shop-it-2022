@@ -1,6 +1,6 @@
 <template>
   <div class="comment-tree">
-    <div v-if="!parentCommentId || replyOpen" class="comment-editor mb-4">
+    <div v-if="session.role != 'visitor' && (!parentCommentId || replyOpen)" class="comment-editor mb-4">
       <VTextarea v-model="content" :rules="[rules.required]" label="Comment"></VTextarea>
       <VBtn @click="publishComment">Publish</VBtn>
     </div>
