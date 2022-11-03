@@ -163,6 +163,7 @@ CREATE TABLE `banner_blocks` (
 CREATE TABLE `moderation_events` (
   `moderation_event_id` int PRIMARY KEY AUTO_INCREMENT,
   `user_id` int NOT NULL,
+  `item_owner_id` int NOT NULL,
   `item_id` int DEFAULT NULL,
   `item_type` ENUM ('shop', 'product', 'comment') NOT NULL,
   `item_name` varchar(255) NOT NULL,
@@ -235,4 +236,6 @@ ALTER TABLE `banner_blocks` ADD FOREIGN KEY (`block_id`) REFERENCES `homepage_bl
 ALTER TABLE `banner_blocks` ADD FOREIGN KEY (`photo_id`) REFERENCES `photos` (`photo_id`);
 
 ALTER TABLE `moderation_events` ADD FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`);
+
+ALTER TABLE `moderation_events` ADD FOREIGN KEY (`item_owner_id`) REFERENCES `users` (`user_id`);
 

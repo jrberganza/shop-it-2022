@@ -266,6 +266,7 @@ enum moderation_event_item_type {
 Table moderation_events {
     moderation_event_id int [pk, increment]
     user_id int [not null]
+    item_owner_id int [not null]
     item_id int [null, default: NULL]
     item_type moderation_event_item_type [not null]
     item_name varchar(255) [not null]
@@ -278,3 +279,4 @@ Table moderation_events {
 }
 
 Ref: moderation_events.user_id > users.user_id
+Ref: moderation_events.item_owner_id > users.user_id

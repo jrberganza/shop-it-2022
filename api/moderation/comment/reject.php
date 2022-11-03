@@ -28,6 +28,7 @@ $stmt->execute();
 
 $stmt = $req->prepareQuery("INSERT INTO moderation_events (
     user_id,
+    item_owner_id,
     item_type,
     item_name,
     item_description,
@@ -36,6 +37,7 @@ $stmt = $req->prepareQuery("INSERT INTO moderation_events (
     published
 ) VALUES (
     @{i:userId},
+    @{i:itemOwnerId},
     'comment',
     '',
     @{s:itemDescription},
@@ -43,7 +45,8 @@ $stmt = $req->prepareQuery("INSERT INTO moderation_events (
     @{s:reason},
     FALSE
 )", [
-    "userId" => $comment->author_id,
+    "userId" => $req->getSession()->id,
+    "itemOwnerId" => $comment->author_id,
     "itemDescription" => $comment->content,
     "itemCreatedAt" => $comment->created_at,
     "reason" => $jsonBody->reason,

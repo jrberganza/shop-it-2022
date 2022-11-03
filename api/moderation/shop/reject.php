@@ -38,6 +38,7 @@ $stmt->execute();
 
 $stmt = $req->prepareQuery("INSERT INTO moderation_events (
     user_id,
+    item_owner_id,
     item_type,
     item_name,
     item_description,
@@ -47,7 +48,8 @@ $stmt = $req->prepareQuery("INSERT INTO moderation_events (
     published
 ) VALUES (
     @{i:userId},
-    'product',
+    @{i:itemOwnerId},
+    'shop',
     @{s:itemName},
     @{s:itemDescription},
     @{s:itemCreatedAt},
@@ -55,7 +57,8 @@ $stmt = $req->prepareQuery("INSERT INTO moderation_events (
     @{s:reason},
     FALSE
 )", [
-    "userId" => $shop->user_id,
+    "userId" => $req->getSession()->id,
+    "itemOwnerId" => $shop->user_id,
     "itemName" => $shop->name,
     "itemDescription" => $shop->description,
     "itemCreatedAt" => $shop->created_at,
