@@ -69,7 +69,7 @@ export default {
   }),
   methods: {
     getPendingShops() {
-      fetch('/api/shop/moderation/pending.php')
+      fetch('/api/moderation/shop/pending.php')
         .then(res => res.json())
         .then(json => {
           if (json.success) {
@@ -78,7 +78,7 @@ export default {
         });
     },
     getPendingProducts() {
-      fetch('/api/product/moderation/pending.php')
+      fetch('/api/moderation/product/pending.php')
         .then(res => res.json())
         .then(json => {
           if (json.success) {
@@ -87,7 +87,7 @@ export default {
         });
     },
     getPendingComments() {
-      fetch('/api/comment/moderation/pending.php')
+      fetch('/api/moderation/comment/pending.php')
         .then(res => res.json())
         .then(json => {
           if (json.success) {
@@ -96,7 +96,7 @@ export default {
         });
     },
     selectShop(id) {
-      fetch(`/api/shop/moderation/details.php?id=${id}`)
+      fetch(`/api/moderation/shop/details.php?id=${id}`)
         .then(res => res.json())
         .then(json => {
           this.selected.type = "shop";
@@ -104,7 +104,7 @@ export default {
         });
     },
     selectProduct(id) {
-      fetch(`/api/product/moderation/details.php?id=${id}`)
+      fetch(`/api/moderation/product/details.php?id=${id}`)
         .then(res => res.json())
         .then(json => {
           this.selected.type = "product";
@@ -112,7 +112,7 @@ export default {
         });
     },
     selectComment(id) {
-      fetch(`/api/comment/moderation/details.php?id=${id}`)
+      fetch(`/api/moderation/comment/details.php?id=${id}`)
         .then(res => res.json())
         .then(json => {
           this.selected.type = "comment";

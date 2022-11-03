@@ -4,18 +4,29 @@ require_once '../../utils/request.php';
 
 $req->requireEmployeePrivileges();
 
-$allProducts = array();
+$stmt = $req->prepareQuery("SELECT
+    product_id as id,
+    name as name,
+    price as price,
+    description as description,
+    disabled as disabled
+FROM \$moderation\$products", []);
+$stmt->execute();
+$result = $stmt->get_result();
 
-for ($currId = 0; $currId < 10; $currId++) {
-    $product = new \stdClass();
+$allProducts = $result->fetch_all(MYSQLI_ASSOC);
 
-    $product->id = $currId;
-    $product->name = "Producto " . $currId;
-    $product->shopName = "Tienda " . random_int(0, 100);
-    $product->price =  random_int(0, 9999) / 100.0;
-    $product->description = "Product description " . $currId;
-    $product->photos = [];
-    array_push($allProducts, $product);
+foreach ($allProducts as &$product) {
+    $stmt2 = $req->prepareQuery("SELECT p.photo_id FROM \$moderation\$product_photo pp JOIN photos p USING (photo_id) WHERE pp.product_id = @{i:productId}", [
+        "productId" => $product["id"],
+    ]);
+    $stmt2->execute();
+    $result2 = $stmt2->get_result();
+
+    $product["photos"] = [];
+    while ($row = $result2->fetch_array()) {
+        array_push($product["photos"], $row["photo_id"]);
+    }
 }
 
 $resObj = new \stdClass();

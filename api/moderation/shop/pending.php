@@ -4,20 +4,39 @@ require_once '../../utils/request.php';
 
 $req->requireEmployeePrivileges();
 
-$allShops = array();
+$stmt = $req->prepareQuery("SELECT
+    s.shop_id as id,
+    s.name as name,
+    s.zone as zone,
+    mn.municipality_id as municipality,
+    dp.department_id as department,
+    s.latitude as latitude,
+    s.longitude as longitude,
+    s.phone_number as phoneNumber,
+    s.description as description,
+    s.disabled as disabled
+FROM
+    \$moderation\$shops s
+JOIN
+    municipalities mn USING (municipality_id)
+JOIN
+    departments dp USING (department_id)", []);
+$stmt->execute();
+$result = $stmt->get_result();
 
-for ($currId = 0; $currId < 10; $currId++) {
-    $shop = new \stdClass();
+$allShops = $result->fetch_all(MYSQLI_ASSOC);
 
-    $shop->id = $currId;
-    $shop->name = "Tienda " . $currId;
-    $shop->zone = 1;
-    $shop->municipality = "Guatemala";
-    $shop->department = "Guatemala";
-    $shop->phoneNumber =  ($currId % 9 + 1) . "123456" . ($currId % 9 + 1);
-    $shop->description = "Shop description " . $currId;
-    $shop->photos = [];
-    array_push($allShops, $shop);
+foreach ($allShops as &$shop) {
+    $stmt2 = $req->prepareQuery("SELECT p.photo_id FROM \$moderation\$shop_photo sp JOIN photos p USING (photo_id) WHERE sp.shop_id = @{i:shopId}", [
+        "shopId" => $shop["id"],
+    ]);
+    $stmt2->execute();
+    $result2 = $stmt2->get_result();
+
+    $shop["photos"] = [];
+    while ($row = $result2->fetch_array()) {
+        array_push($shop["photos"], $row["photo_id"]);
+    }
 }
 
 $resObj = new \stdClass();
