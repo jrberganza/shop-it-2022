@@ -19,6 +19,8 @@ LEFT JOIN
     (SELECT avg(rating) as average_rating, shop_id FROM shop_ratings GROUP BY shop_id) r USING (shop_id)
 LEFT JOIN
     (SELECT count(*) as comments, shop_id FROM comments GROUP BY shop_id) c USING (shop_id)
+WHERE
+    s.disabled = FALSE
 ORDER BY
     (comments * average_rating) DESC;
 
@@ -43,6 +45,8 @@ LEFT JOIN
     (SELECT avg(rating) as average_rating, shop_id FROM shop_ratings GROUP BY shop_id) r USING (shop_id)
 LEFT JOIN
     (SELECT count(*) as comments, shop_id FROM comments GROUP BY shop_id) c USING (shop_id)
+WHERE
+    s.disabled = FALSE
 ORDER BY
     average_rating DESC;
 
@@ -67,6 +71,8 @@ LEFT JOIN
     (SELECT avg(rating) as average_rating, shop_id FROM shop_ratings GROUP BY shop_id) r USING (shop_id)
 LEFT JOIN
     (SELECT count(*) as comments, shop_id FROM comments GROUP BY shop_id) c USING (shop_id)
+WHERE
+    s.disabled = FALSE
 ORDER BY
     s.updated_at DESC;
 
@@ -86,6 +92,8 @@ LEFT JOIN
     (SELECT avg(rating) as average_rating, product_id FROM product_ratings GROUP BY product_id) r USING (product_id)
 LEFT JOIN
     (SELECT count(*) as comments, product_id FROM comments GROUP BY product_id) c USING (product_id)
+WHERE
+    p.disabled = FALSE
 ORDER BY
     (comments * average_rating) DESC;
 
@@ -105,6 +113,8 @@ LEFT JOIN
     (SELECT avg(rating) as average_rating, product_id FROM product_ratings GROUP BY product_id) r USING (product_id)
 LEFT JOIN
     (SELECT count(*) as comments, product_id FROM comments GROUP BY product_id) c USING (product_id)
+WHERE
+    p.disabled = FALSE
 ORDER BY
     average_rating DESC;
 
@@ -124,5 +134,7 @@ LEFT JOIN
     (SELECT avg(rating) as average_rating, product_id FROM product_ratings GROUP BY product_id) r USING (product_id)
 LEFT JOIN
     (SELECT count(*) as comments, product_id FROM comments GROUP BY product_id) c USING (product_id)
+WHERE
+    p.disabled = FALSE
 ORDER BY
     p.updated_at DESC;
