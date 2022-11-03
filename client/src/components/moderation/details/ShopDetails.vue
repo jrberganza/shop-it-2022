@@ -6,7 +6,8 @@
     <VCardSubtitle>Zona {{ shop.zone }}, {{ shop.municipality }}, {{ shop.department }} - {{ shop.phoneNumber }}
     </VCardSubtitle>
     <VCardText>{{ shop.description }}</VCardText>
-    <VCardActions>
+    <VCardText v-if="!shop.moderatable">Please publish or reject all pending products from this shop</VCardText>
+    <VCardActions v-else>
       <VBtn @click="$emit('publish')">Publish</VBtn>
       <VBtn @click="$emit('reject')">Reject</VBtn>
     </VCardActions>

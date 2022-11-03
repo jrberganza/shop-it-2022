@@ -14,7 +14,8 @@ $stmt = $req->prepareQuery("SELECT
     s.longitude as longitude,
     s.phone_number as phoneNumber,
     s.description as description,
-    s.disabled as disabled
+    s.disabled as disabled,
+    (s.shop_id NOT IN (SELECT p.shop_id FROM \$moderation\$products p)) as moderatable
 FROM
     \$moderation\$shops s
 JOIN
