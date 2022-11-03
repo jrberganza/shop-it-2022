@@ -1,12 +1,12 @@
 <template>
   <VCard>
-    <VCardTitle>{{comment.author}}</VCardTitle>
-    <VCardSubtitle>{{comment.publishedAt}}</VCardSubtitle>
-    <VCardText>{{comment.content}}</VCardText>
+    <VCardTitle>{{ comment.author }}</VCardTitle>
+    <VCardSubtitle>{{ comment.publishedAt }}</VCardSubtitle>
+    <VCardText>{{ comment.content }}</VCardText>
     <VCardActions>
-      <VBtn @click="() => $emit('seeDetails', comment.id)">Details</VBtn>
-      <VBtn>Publish</VBtn>
-      <VBtn>Reject</VBtn>
+      <VBtn @click="() => $emit('seeDetails')">Details</VBtn>
+      <VBtn @click="$emit('publish')">Publish</VBtn>
+      <VBtn @click="$emit('reject')">Reject</VBtn>
     </VCardActions>
   </VCard>
 </template>

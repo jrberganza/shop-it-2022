@@ -2,12 +2,12 @@
   <VCard>
     <VImg v-if="product.photos.length > 0" :src="'/api/photo/get.php?id=' + product.photos[0]" height="250" />
     <VImg v-else src="/images/placeholder.png" height="250" />
-    <VCardTitle>{{product.name}}</VCardTitle>
-    <VCardSubtitle>{{product.price}} - {{product.shopName}}</VCardSubtitle>
-    <VCardText>{{product.description}}</VCardText>
+    <VCardTitle>{{ product.name }}</VCardTitle>
+    <VCardSubtitle>{{ product.price }} - {{ product.shopName }}</VCardSubtitle>
+    <VCardText>{{ product.description }}</VCardText>
     <VCardActions>
-      <VBtn>Publish</VBtn>
-      <VBtn>Reject</VBtn>
+      <VBtn @click="$emit('publish')">Publish</VBtn>
+      <VBtn @click="$emit('reject')">Reject</VBtn>
     </VCardActions>
   </VCard>
 </template>

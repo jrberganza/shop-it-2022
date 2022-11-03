@@ -4,14 +4,15 @@
       <VTextarea v-model="content" :rules="[rules.required]" label="Comment"></VTextarea>
       <VBtn @click="publishComment">Publish</VBtn>
     </div>
-    <div class="comment" v-for="comment in comments">
+    <div class="comment" v-for="(comment, i) in internalComments">
       <VCard v-if="comment.data.disapproved">
         <VCardText>A comment has been hidden because it has been disapproved by the community</VCardText>
       </VCard>
       <template v-else>
-        <Comment :comment="comment.data" @reply="childrenReplyOpen = true"></Comment>
+        <Comment :comment="comment.data" @askToReply="askToReply(i)">
+        </Comment>
         <CommentTree :comments="comment.children" :itemType="itemType" :itemId="itemId"
-          :parentCommentId="comment.data.id" :replyOpen="childrenReplyOpen" @reply="childrenReplyOpen = false"
+          :parentCommentId="comment.data.id" :replyOpen="commentReplyOpen[i]" @reply="closeReply(i)"
           class="pl-10 my-4 inner-tree">
         </CommentTree>
       </template>
@@ -34,16 +35,31 @@ export default {
   name: 'CommentTree',
   props: ['comments', 'itemType', 'itemId', 'parentCommentId', 'replyOpen'],
   data: () => ({
-    childrenReplyOpen: false,
+    commentReplyOpen: [],
+    internalComments: [],
     content: '',
     rules: {
       required: v => !!v || "Required",
-    }
+    },
   }),
   computed: {
     ...mapState(['session']),
   },
+  watch: {
+    comments(newVal) {
+      this.internalComments = [...newVal];
+      this.commentReplyOpen = newVal.map(() => false);
+    }
+  },
   methods: {
+    askToReply(i) {
+      this.commentReplyOpen[i] = true
+      this.commentReplyOpen = [...this.commentReplyOpen];
+    },
+    closeReply(i) {
+      this.commentReplyOpen[i] = false
+      this.commentReplyOpen = [...this.commentReplyOpen];
+    },
     publishComment() {
       let body = {
         itemType: this.itemType,
@@ -58,7 +74,7 @@ export default {
         .then(res => res.json())
         .then(json => {
           if (json.success) {
-            this.comments.unshift({
+            this.internalComments.unshift({
               data: {
                 id: json.id,
                 author: this.session.displayName,
@@ -73,6 +89,10 @@ export default {
           }
         });
     }
+  },
+  mounted() {
+    this.internalComments = [...this.comments];
+    this.commentReplyOpen = this.comments.map(() => false);
   },
   components: { VTextarea, VBtn, VExpansionPanels, VExpansionPanel, VExpansionPanelHeader, VExpansionPanelContent, Comment }
 }

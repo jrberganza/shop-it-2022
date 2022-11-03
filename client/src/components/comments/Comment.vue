@@ -13,7 +13,7 @@
       <VBtn icon @click="downvote">
         <VIcon :color="comment.voted == -1 ? 'primary' : 'default'">mdi-arrow-down</VIcon>
       </VBtn>
-      <VBtn text @click="$emit('reply')">
+      <VBtn text @click="$emit('askToReply')">
         Reply
       </VBtn>
     </VCardActions>

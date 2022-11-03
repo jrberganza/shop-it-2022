@@ -2,9 +2,15 @@
   <div class="dashboard">
     <VRow>
       <VCol cols="12" lg="6" order="1" order-lg="12">
-        <ShopDetails v-if="selected.type == 'shop'" :shop="selected.data"></ShopDetails>
-        <ProductDetails v-else-if="selected.type == 'product'" :product="selected.data"></ProductDetails>
-        <CommentDetails v-else-if="selected.type == 'comment'" :comment="selected.data"></CommentDetails>
+        <ShopDetails v-if="selected.type == 'shop'" :shop="selected.data"
+          @publish="publish(selected.type, selected.data.id)" @reject="reject(selected.type, selected.data.id)">
+        </ShopDetails>
+        <ProductDetails v-else-if="selected.type == 'product'" :product="selected.data"
+          @publish="publish(selected.type, selected.data.id)" @reject="reject(selected.type, selected.data.id)">
+        </ProductDetails>
+        <CommentDetails v-else-if="selected.type == 'comment'" :comment="selected.data"
+          @publish="publish(selected.type, selected.data.id)" @reject="reject(selected.type, selected.data.id)">
+        </CommentDetails>
         <p v-else><em>No item has been selected</em></p>
       </VCol>
       <VCol cols="12" lg="6" order="12" order-lg="1">
@@ -16,26 +22,30 @@
         </VTabs>
         <VTabsItems v-model="tab">
           <VTabItem class="ma-2">
-            <VDataIterator :items="shops" :items-per-page="5">
+            <VDataIterator :items="pending.shop" :items-per-page="5">
               <template v-slot:default="{ items }">
-                <ShopPreview class="my-2" v-for="shop in items" :key="shop.id" :shop="shop" @seeDetails="selectShop">
+                <ShopPreview class="my-2" v-for="shop in items" :key="shop.id" :shop="shop"
+                  @seeDetails="select('shop', shop.id)" @publish="publish('shop', shop.id)"
+                  @reject="reject('shop', shop.id)">
                 </ShopPreview>
               </template>
             </VDataIterator>
           </VTabItem>
           <VTabItem class="ma-2">
-            <VDataIterator :items="products" :items-per-page="5">
+            <VDataIterator :items="pending.product" :items-per-page="5">
               <template v-slot:default="{ items }">
                 <ProductPreview class="my-2" v-for="product in items" :key="product.id" :product="product"
-                  @seeDetails="selectProduct"></ProductPreview>
+                  @seeDetails="select('product', product.id)" @publish="publish('product', product.id)"
+                  @reject="reject('product', product.id)"></ProductPreview>
               </template>
             </VDataIterator>
           </VTabItem>
           <VTabItem class="ma-2">
-            <VDataIterator :items="comments" :items-per-page="5">
+            <VDataIterator :items="pending.comment" :items-per-page="5">
               <template v-slot:default="{ items }">
                 <CommentPreview class="my-2" v-for="comment in items" :key="comment.id" :comment="comment"
-                  @seeDetails="selectComment"></CommentPreview>
+                  @seeDetails="select('comment', comment.id)" @publish="publish('comment', comment.id)"
+                  @reject="reject('comment', comment.id)"></CommentPreview>
               </template>
             </VDataIterator>
           </VTabItem>
@@ -63,67 +73,65 @@ export default {
     },
     tabs: ['Shops', 'Products', 'Comments'],
     tab: null,
-    /** @type {any[]} */ shops: [],
-    /** @type {any[]} */ products: [],
-    /** @type {any[]} */ comments: [],
+    pending: {
+      /** @type {any[]} */ shop: [],
+      /** @type {any[]} */ product: [],
+      /** @type {any[]} */ comment: [],
+    },
   }),
   methods: {
-    getPendingShops() {
-      fetch('/api/moderation/shop/pending.php')
+    getPending(/** @type {"shop"|"product"|"comment"} */ type) {
+      fetch(`/api/moderation/${type}/pending.php`)
         .then(res => res.json())
         .then(json => {
           if (json.success) {
-            this.shops = json.pending;
+            this.pending[type] = json.pending;
           }
         });
     },
-    getPendingProducts() {
-      fetch('/api/moderation/product/pending.php')
+    select(/** @type {"shop"|"product"|"comment"} */ type, id) {
+      fetch(`/api/moderation/${type}/details.php?id=${id}`)
+        .then(res => res.json())
+        .then(json => {
+          this.selected.type = type;
+          this.selected.data = json;
+        });
+    },
+    publish(/** @type {"shop"|"product"|"comment"} */ type, id) {
+      fetch(`/api/moderation/${type}/publish.php`, {
+        "method": "POST",
+        "body": JSON.stringify({ id })
+      })
         .then(res => res.json())
         .then(json => {
           if (json.success) {
-            this.products = json.pending;
+            this.getPending(type);
+            if (this.selected.data.id == id) {
+              this.selected.type = null;
+            }
           }
         });
     },
-    getPendingComments() {
-      fetch('/api/moderation/comment/pending.php')
+    reject(/** @type {"shop"|"product"|"comment"} */ type, id) {
+      fetch(`/api/moderation/${type}/reject.php`, {
+        "method": "POST",
+        "body": JSON.stringify({ id })
+      })
         .then(res => res.json())
         .then(json => {
           if (json.success) {
-            this.comments = json.pending;
+            this.getPending(type);
+            if (this.selected.data.id == id) {
+              this.selected.type = null;
+            }
           }
-        });
-    },
-    selectShop(id) {
-      fetch(`/api/moderation/shop/details.php?id=${id}`)
-        .then(res => res.json())
-        .then(json => {
-          this.selected.type = "shop";
-          this.selected.data = json;
-        });
-    },
-    selectProduct(id) {
-      fetch(`/api/moderation/product/details.php?id=${id}`)
-        .then(res => res.json())
-        .then(json => {
-          this.selected.type = "product";
-          this.selected.data = json;
-        });
-    },
-    selectComment(id) {
-      fetch(`/api/moderation/comment/details.php?id=${id}`)
-        .then(res => res.json())
-        .then(json => {
-          this.selected.type = "comment";
-          this.selected.data = json;
         });
     },
   },
   mounted() {
-    this.getPendingShops();
-    this.getPendingProducts();
-    this.getPendingComments();
+    this.getPending("shop");
+    this.getPending("product");
+    this.getPending("comment");
   },
   components: { VCol, VRow, VTabs, VTab, VTabsItems, VTabItem, VDataIterator, VCard, VTabsSlider, CommentPreview, ProductPreview, ShopPreview, ShopDetails, ProductDetails, CommentDetails }
 }

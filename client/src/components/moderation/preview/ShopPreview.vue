@@ -7,9 +7,9 @@
     </VCardSubtitle>
     <VCardText>{{ shop.description }}</VCardText>
     <VCardActions>
-      <VBtn @click="() => $emit('seeDetails', shop.id)">Details</VBtn>
-      <VBtn>Publish</VBtn>
-      <VBtn>Reject</VBtn>
+      <VBtn @click="() => $emit('seeDetails')">Details</VBtn>
+      <VBtn @click="$emit('publish')">Publish</VBtn>
+      <VBtn @click="$emit('reject')">Reject</VBtn>
     </VCardActions>
   </VCard>
 </template>
