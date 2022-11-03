@@ -14,6 +14,17 @@ $stmt = $req->prepareQuery("SELECT
     price as price,
     description as description,
     disabled as disabled
+FROM \$moderation\$products
+WHERE
+    product_id = @{i:productId} AND
+    shop_id = @{i:shopId}
+UNION
+SELECT
+    product_id as id,
+    name as name,
+    price as price,
+    description as description,
+    disabled as disabled
 FROM products
 WHERE
     product_id = @{i:productId} AND
@@ -32,7 +43,9 @@ if (!$resObj) {
 
 $resObj->disabled = $resObj->disabled != 0;
 
-$stmt = $req->prepareQuery("SELECT p.photo_id FROM product_photo pp JOIN photos p USING (photo_id) WHERE pp.product_id = @{i:productId}", [
+$stmt = $req->prepareQuery("SELECT p.photo_id FROM \$moderation\$product_photo pp JOIN photos p USING (photo_id) WHERE pp.product_id = @{i:productId}
+UNION
+SELECT p.photo_id FROM product_photo pp JOIN photos p USING (photo_id) WHERE pp.product_id = @{i:productId}", [
     "productId" => $params["id"],
 ]);
 $stmt->execute();
@@ -43,7 +56,9 @@ while ($row = $result->fetch_array()) {
     array_push($resObj->photos, $row["photo_id"]);
 }
 
-$stmt = $req->prepareQuery("SELECT c.category_id FROM product_category pc JOIN categories c USING (category_id) WHERE pc.product_id = @{i:productId}", [
+$stmt = $req->prepareQuery("SELECT c.category_id FROM \$moderation\$product_category pc JOIN categories c USING (category_id) WHERE pc.product_id = @{i:productId}
+UNION
+SELECT c.category_id FROM product_category pc JOIN categories c USING (category_id) WHERE pc.product_id = @{i:productId}", [
     "productId" => $params["id"],
 ]);
 $stmt->execute();

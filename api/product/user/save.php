@@ -25,15 +25,32 @@ $jsonBody = $req->getJsonBody([
     "disabled" => [
         "type" => "boolean",
     ],
+    "categories" => [
+        "type" => "array"
+    ],
+    "photos" => [
+        "type" => "array"
+    ],
 ]);
 
 if (!$req->getSession()->shopId) {
     $req->fail("No shop has been created for this user");
 }
 
+$stmt = $req->prepareQuery("INSERT INTO \$moderation\$shops SELECT * FROM shops WHERE shop_id = @{i:shopId} ON DUPLICATE KEY UPDATE shop_id = shops.shop_id", [
+    "shopId" => $req->getSession()->shopId,
+]);
+$stmt->execute();
+
+$stmt = $req->prepareQuery("INSERT INTO \$moderation\$products SELECT * FROM products WHERE product_id = @{i:productId} AND shop_id = @{i:shopId} ON DUPLICATE KEY UPDATE product_id = products.product_id", [
+    "productId" => isset($jsonBody->id) ? $jsonBody->id : null,
+    "shopId" => $req->getSession()->shopId,
+]);
+$stmt->execute();
+
 if (isset($jsonBody->id)) {
     $stmt = $req->prepareQuery("UPDATE
-        products
+        \$moderation\$products
     SET
         name = @{s:name},
         price = @{s:price},
@@ -51,19 +68,32 @@ if (isset($jsonBody->id)) {
     ]);
     $stmt->execute();
 } else {
-    $stmt = $req->prepareQuery("INSERT INTO products(
+    $stmt = $req->prepareQuery("SELECT AUTO_INCREMENT FROM information_schema.tables WHERE table_name = 'products' AND table_schema = DATABASE()", []);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $nextId = $result->fetch_column(0);
+
+    $stmt = $req->prepareQuery("SELECT max(product_id)+1 FROM \$moderation\$products", []);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $nextId = max($nextId, $result->fetch_column(0));
+
+    $stmt = $req->prepareQuery("INSERT INTO \$moderation\$products(
+        product_id,
         name,
         price,
         description,
         disabled,
         shop_id
     ) VALUES (
+        @{i:productId},
         @{s:name},
         @{s:price},
         @{s:description},
         @{i:disabled},
         @{i:shopId}
     )", [
+        "productId" => $nextId,
         "name" => $jsonBody->name,
         "price" => $jsonBody->price,
         "description" => $jsonBody->description,
@@ -74,13 +104,13 @@ if (isset($jsonBody->id)) {
     $jsonBody->id = $stmt->insert_id;
 }
 
-$stmt = $req->prepareQuery("DELETE FROM product_category WHERE product_id = @{i:productId}", [
+$stmt = $req->prepareQuery("DELETE FROM \$moderation\$product_category WHERE product_id = @{i:productId}", [
     "productId" => $jsonBody->id,
 ]);
 $stmt->execute();
 
 foreach ($jsonBody->categories as $categoryId) {
-    $stmt = $req->prepareQuery("INSERT INTO product_category(
+    $stmt = $req->prepareQuery("INSERT INTO \$moderation\$product_category(
         category_id,
         product_id
     ) VALUES (
@@ -93,8 +123,13 @@ foreach ($jsonBody->categories as $categoryId) {
     $stmt->execute();
 }
 
+$stmt = $req->prepareQuery("DELETE FROM \$moderation\$product_photo WHERE product_id = @{i:productId}", [
+    "productId" => $jsonBody->id,
+]);
+$stmt->execute();
+
 foreach ($jsonBody->photos as $photoId) {
-    $stmt = $req->prepareQuery("INSERT INTO product_photo(
+    $stmt = $req->prepareQuery("INSERT INTO \$moderation\$product_photo(
         photo_id,
         product_id
     ) VALUES (
