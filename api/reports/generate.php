@@ -95,7 +95,7 @@ $params = array();
 $currVarI = 0;
 
 $query = "SELECT ";
-$query .= join(", ", $body->fields);
+$query .= count($body->fields) == 0 ? '*' : join(", ", $body->fields);
 $query .= " FROM ";
 $query .= "(" . $view . ") view";
 

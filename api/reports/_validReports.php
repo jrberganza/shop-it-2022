@@ -209,5 +209,5 @@ $baseQueries = [
     JOIN
         users mu USING (user_id)
     JOIN
-        users iou ON me.item_owner_id = u.user_id',
+        users iou ON me.item_owner_id = iou.user_id',
 ];

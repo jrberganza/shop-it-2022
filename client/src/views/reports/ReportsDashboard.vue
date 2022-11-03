@@ -177,9 +177,14 @@ export default {
         .then(json => {
           if (json.success) {
             this.generatedReport = json.report;
-            this.tableHeaders = this.report.fields
-              .map(f => this.tableGenerator.columns.filter(c => c.column == f)[0])
-              .map(f => ({ ...f, text: f.name, value: f.column, sortable: false, }));
+            if (this.report.fields.length > 0) {
+              this.tableHeaders = this.report.fields
+                .map(f => this.tableGenerator.columns.filter(c => c.column == f)[0])
+                .map(f => ({ ...f, text: f.name, value: f.column, sortable: false, }));
+            } else {
+              this.tableHeaders = this.tableGenerator.columns
+                .map(f => ({ ...f, text: f.name, value: f.column, sortable: false, }));
+            }
           }
         });
     },
