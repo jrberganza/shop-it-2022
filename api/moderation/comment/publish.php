@@ -5,7 +5,9 @@ require_once '../../utils/request.php';
 $req->requireEmployeePrivileges();
 
 $jsonBody = $req->getJsonBody([
-    "id" => [],
+    "id" => [
+        "type" => "integer"
+    ],
 ]);
 
 $stmt = $req->prepareQuery("INSERT INTO comments SELECT * FROM \$moderation\$comments c WHERE c.comment_id = @{i:commentId}", [
