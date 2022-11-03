@@ -13,7 +13,8 @@ $stmt = $req->prepareQuery("SELECT
     name as name,
     price as price,
     description as description,
-    disabled as disabled
+    disabled as disabled,
+    false as moderated
 FROM \$moderation\$products
 WHERE
     product_id = @{i:productId} AND
@@ -24,7 +25,8 @@ SELECT
     name as name,
     price as price,
     description as description,
-    disabled as disabled
+    disabled as disabled,
+    true as moderated
 FROM products
 WHERE
     product_id = @{i:productId} AND

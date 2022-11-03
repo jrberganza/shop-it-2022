@@ -12,7 +12,8 @@ $stmt = $req->prepareQuery("SELECT
     p.price as price,
     substr(p.description, 1, 100) as description,
     p.disabled as disabled,
-    s.name as shopName
+    s.name as shopName,
+    false as moderated
 FROM
     \$moderation\$products p
 JOIN
@@ -25,7 +26,8 @@ SELECT
     p.price as price,
     substr(p.description, 1, 100) as description,
     p.disabled as disabled,
-    s.name as shopName
+    s.name as shopName,
+    true as moderated
 FROM
     products p
 JOIN

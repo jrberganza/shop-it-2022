@@ -37,28 +37,24 @@
           multiple chips></VSelect>
         <VCheckbox label="Disabled?" v-model="myShop.disabled"></VCheckbox>
       </VCardText>
+      <VCardText v-if="myShop.id && !myShop.moderated">
+        <em>This shop hasn't been checked by a moderator</em>
+      </VCardText>
     </VCard>
-    <VRow class="my-1">
-      <template v-if="myShop">
-        <VCol cols="12" sm="4">
-          <VBtn block @click="saveShop">
-            <VIcon>mdi-floppy</VIcon> Save
-          </VBtn>
-        </VCol>
-        <VCol cols="12" sm="4">
-          <VBtn block :disabled="!myShop.id" @click="() => $router.push(`/my/shop/products`)">
-            <VIcon>mdi-shopping</VIcon> Products
-          </VBtn>
-        </VCol>
-        <VCol cols="12" sm="4">
-          <VBtn block :disabled="!myShop.id" @click="exportShop">
-            <VIcon>mdi-export</VIcon> Export
-          </VBtn>
-        </VCol>
-      </template>
-      <VCol cols="12" v-else>
-        <VBtn block @click="newShop">
-          <VIcon>mdi-plus</VIcon> Create shop
+    <VRow class="my-1" v-if="myShop">
+      <VCol cols="12" sm="4">
+        <VBtn block @click="saveShop">
+          <VIcon>mdi-floppy</VIcon> Save
+        </VBtn>
+      </VCol>
+      <VCol cols="12" sm="4">
+        <VBtn block :disabled="!myShop.id" @click="() => $router.push(`/my/shop/products`)">
+          <VIcon>mdi-shopping</VIcon> Products
+        </VBtn>
+      </VCol>
+      <VCol cols="12" sm="4">
+        <VBtn block :disabled="!myShop.id" @click="exportShop">
+          <VIcon>mdi-export</VIcon> Export
         </VBtn>
       </VCol>
     </VRow>
@@ -87,6 +83,7 @@ export default {
       categories: [],
       disabled: true,
       photos: [],
+      moderated: false,
     },
     shopCategories: [],
     departments: null,
@@ -120,6 +117,7 @@ export default {
         categories: [],
         disabled: true,
         photos: [],
+        moderated: false,
       }
     },
     saveShop() {

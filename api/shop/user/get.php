@@ -12,7 +12,8 @@ $stmt = $req->prepareQuery("SELECT
     s.longitude as longitude,
     s.phone_number as phoneNumber,
     s.description as description,
-    s.disabled as disabled
+    s.disabled as disabled,
+    false as moderated
 FROM
     \$moderation\$shops s
 JOIN
@@ -32,7 +33,8 @@ SELECT
     s.longitude as longitude,
     s.phone_number as phoneNumber,
     s.description as description,
-    s.disabled as disabled
+    s.disabled as disabled,
+    true as moderated
 FROM
     shops s
 JOIN

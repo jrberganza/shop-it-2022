@@ -21,6 +21,9 @@
                 label="Categories" multiple chips></VSelect>
               <VCheckbox label="Disabled?" v-model="myProduct.disabled"></VCheckbox>
             </VCardText>
+            <VCardText v-if="myProduct.id && !myProduct.moderated">
+              <em>This product hasn't been checked by a moderator</em>
+            </VCardText>
             <VCardActions>
               <VBtn block @click="saveProduct">
                 <VIcon>mdi-floppy</VIcon> Save
@@ -42,6 +45,9 @@
               <VCardTitle>{{ product.name }}</VCardTitle>
               <VCardSubtitle>{{ product.price }} - {{ product.shopName }}</VCardSubtitle>
               <VCardText>{{ product.description }}</VCardText>
+              <VCardText v-if="product.id && !product.moderated">
+                <em>This product hasn't been checked by a moderator</em>
+              </VCardText>
             </VCard>
           </template>
         </VDataIterator>
@@ -75,6 +81,7 @@ export default {
         categories: [],
         disabled: true,
         photos: [],
+        moderated: false,
       }
     },
     saveProduct() {

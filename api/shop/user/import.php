@@ -141,14 +141,14 @@ $stmt = $req->prepareQuery("INSERT INTO \$moderation\$shops(
     description = @{s:description},
     disabled = @{i:disabled}", [
     "shopId" => $req->getSession()->shopId,
-    "name" => $jsonBody->name,
-    "zone" => $jsonBody->zone,
-    "municipalityId" => $jsonBody->municipality,
-    "latitude" => $jsonBody->latitude,
-    "longitude" => $jsonBody->longitude,
-    "phoneNumber" => $jsonBody->phoneNumber,
-    "description" => $jsonBody->description,
-    "disabled" => $jsonBody->disabled,
+    "name" => $body->name,
+    "zone" => $body->zone,
+    "municipalityId" => $body->municipality,
+    "latitude" => $body->latitude,
+    "longitude" => $body->longitude,
+    "phoneNumber" => $body->phonenumber,
+    "description" => $body->description,
+    "disabled" => $body->disabled,
     "userId" => $req->getSession()->id,
 ]);
 $stmt->execute();
@@ -185,11 +185,11 @@ $stmt->execute();
 //             WHERE
 //                 product_id = @{i:productId} AND
 //                 shop_id = @{i:shopId}", [
-//                 "name" => $jsonBody->name,
-//                 "price" => $jsonBody->price,
-//                 "description" => $jsonBody->description,
-//                 "disabled" => $jsonBody->disabled,
-//                 "productId" => $jsonBody->id,
+//                 "name" => $body->name,
+//                 "price" => $body->price,
+//                 "description" => $body->description,
+//                 "disabled" => $body->disabled,
+//                 "productId" => $body->id,
 //                 "shopId" => $req->getSession()->shopId,
 //             ]);
 //             $stmt->execute();
@@ -220,14 +220,14 @@ $stmt->execute();
 //                 @{i:shopId}
 //             )", [
 //                 "productId" => $nextId,
-//                 "name" => $jsonBody->name,
-//                 "price" => $jsonBody->price,
-//                 "description" => $jsonBody->description,
-//                 "disabled" => $jsonBody->disabled,
+//                 "name" => $body->name,
+//                 "price" => $body->price,
+//                 "description" => $body->description,
+//                 "disabled" => $body->disabled,
 //                 "shopId" => $req->getSession()->shopId,
 //             ]);
 //             $stmt->execute();
-//             $jsonBody->id = $stmt->insert_id;
+//             $body->id = $stmt->insert_id;
 //         }
 //     }
 // }
