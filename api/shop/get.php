@@ -25,12 +25,11 @@ JOIN
 JOIN
     departments dp USING (department_id)
 LEFT JOIN
-    (SELECT avg(rating) as rating, shop_id FROM shop_ratings WHERE shop_id = @{i:shopId}) r USING (shop_id)
+    (SELECT avg(rating) as rating, shop_id FROM shop_ratings GROUP BY shop_id) r USING (shop_id)
 WHERE
     disabled = FALSE AND
     shop_id = @{i:shopId}", [
     "shopId" => $params["id"],
-    "userId" => $req->getSession()->id,
 ]);
 $stmt->execute();
 $result = $stmt->get_result();
