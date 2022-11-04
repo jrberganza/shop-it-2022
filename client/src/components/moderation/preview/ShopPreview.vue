@@ -8,12 +8,12 @@
     <VCardText>{{ shop.description }}</VCardText>
     <VCardActions>
       <VBtn @click="() => $emit('seeDetails')">Details</VBtn>
-      <template v-if="shop.moderatable">
-        <VBtn @click="$emit('publish')">Publish</VBtn>
-        <VBtn @click="$emit('reject')">Reject</VBtn>
-      </template>
+      <!-- <template v-if="shop.moderatable"> -->
+      <VBtn @click="$emit('publish')">Publish</VBtn>
+      <VBtn @click="$emit('reject')">Reject</VBtn>
+      <!-- </template> -->
     </VCardActions>
-    <VCardText v-if="!shop.moderatable">Please publish or reject all pending products from this shop</VCardText>
+    <!-- <VCardText v-if="!shop.moderatable">Please publish or reject all pending products from this shop</VCardText> -->
   </VCard>
 </template>
 

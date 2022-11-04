@@ -57,20 +57,28 @@ $stmt = $req->prepareQuery("INSERT INTO shop_photo SELECT * FROM \$moderation\$s
 ]);
 $stmt->execute();
 
-$stmt = $req->prepareQuery("DELETE FROM \$moderation\$shop_category WHERE shop_id = @{i:shopId}", [
+$stmt = $req->prepareQuery("SELECT p.product_id FROM \$moderation\$products p WHERE p.shop_id = @{i:shopId}", [
     "shopId" => $jsonBody->id,
 ]);
 $stmt->execute();
+$result = $stmt->get_result();
 
-$stmt = $req->prepareQuery("DELETE FROM \$moderation\$shop_photo WHERE shop_id = @{i:shopId}", [
-    "shopId" => $jsonBody->id,
-]);
-$stmt->execute();
+if (!$result->fetch_object()) {
+    $stmt = $req->prepareQuery("DELETE FROM \$moderation\$shop_category WHERE shop_id = @{i:shopId}", [
+        "shopId" => $jsonBody->id,
+    ]);
+    $stmt->execute();
 
-$stmt = $req->prepareQuery("DELETE FROM \$moderation\$shops WHERE shop_id = @{i:shopId}", [
-    "shopId" => $jsonBody->id,
-]);
-$stmt->execute();
+    $stmt = $req->prepareQuery("DELETE FROM \$moderation\$shop_photo WHERE shop_id = @{i:shopId}", [
+        "shopId" => $jsonBody->id,
+    ]);
+    $stmt->execute();
+
+    $stmt = $req->prepareQuery("DELETE FROM \$moderation\$shops WHERE shop_id = @{i:shopId}", [
+        "shopId" => $jsonBody->id,
+    ]);
+    $stmt->execute();
+}
 
 $stmt = $req->prepareQuery("INSERT INTO moderation_events (
     user_id,
