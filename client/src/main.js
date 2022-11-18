@@ -11,7 +11,7 @@ router.beforeEach(function (to, from, next) {
   if (store.state.session == null) {
     store.dispatch('fetchSession', function (session) {
       if (privileges == "user") {
-        if (session.role != "visitor") {
+        if (session.role == "visitor") {
           router.push('/login');
         }
       } else if (privileges == "employee") {
