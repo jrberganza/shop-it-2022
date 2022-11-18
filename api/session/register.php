@@ -51,11 +51,12 @@ $resObj = new \stdClass();
 $resObj->displayName = $jsonBody->displayName;
 $resObj->role = 'user';
 
-setcookie("session_token", $token, [
-    'expires' => time() + 86400 * 7,
-    'path' => '/',
-    'httponly' => true,
-    'samesite' => 'Strict',
-]);
+// setcookie("session_token", $token, [
+//     'expires' => time() + 86400 * 7,
+//     'path' => '/',
+//     'httponly' => true,
+//     'samesite' => 'Strict',
+// ]);
+setcookie("session_token", $token, time() + 86400 * 7, '/', '', false, true);
 
 $req->success($resObj);
