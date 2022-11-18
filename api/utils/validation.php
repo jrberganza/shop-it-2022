@@ -1,6 +1,6 @@
 <?php
 
-function getfield(mixed &$obj, string $name)
+function getfield(&$obj, string $name)
 {
     if (gettype($obj) == "array") {
         return $obj[$name];
@@ -11,7 +11,7 @@ function getfield(mixed &$obj, string $name)
     }
 }
 
-function setfield(mixed &$obj, string $name, mixed $value): void
+function setfield(&$obj, string $name, $value): void
 {
     if (gettype($obj) == "array") {
         $obj[$name] = $value;
@@ -22,7 +22,7 @@ function setfield(mixed &$obj, string $name, mixed $value): void
     }
 }
 
-function hasfield(mixed &$obj, string $name): bool
+function hasfield(&$obj, string $name): bool
 {
     if (gettype($obj) == "array") {
         return isset($obj[$name]);
@@ -33,7 +33,7 @@ function hasfield(mixed &$obj, string $name): bool
     }
 }
 
-function unsetfield(mixed &$obj, string $name): void
+function unsetfield(&$obj, string $name): void
 {
     if (gettype($obj) == "array") {
         unset($obj[$name]);
@@ -44,7 +44,7 @@ function unsetfield(mixed &$obj, string $name): void
     }
 }
 
-function validate(mixed &$toCheck, array $expected)
+function validate(&$toCheck, array $expected)
 {
     $expectedFields = array();
 
@@ -146,7 +146,7 @@ function validate(mixed &$toCheck, array $expected)
 
 $VALIDATION_EMPTY_VAL = new \stdClass;
 
-function domToJson(array $domlist, array $schema): mixed
+function domToJson(array $domlist, array $schema)
 {
     global $VALIDATION_EMPTY_VAL;
 
