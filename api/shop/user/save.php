@@ -62,12 +62,12 @@ if (!$req->getSession()->shopId) {
     $stmt = $req->prepareQuery("SELECT AUTO_INCREMENT FROM information_schema.tables WHERE table_name = 'shops' AND table_schema = DATABASE()", []);
     $stmt->execute();
     $result = $stmt->get_result();
-    $nextId = $result->fetch_column(0);
+    $nextId = $result->fetch_array()[0];
 
     $stmt = $req->prepareQuery("SELECT max(shop_id)+1 FROM \$moderation\$shops", []);
     $stmt->execute();
     $result = $stmt->get_result();
-    $nextId = max($nextId, $result->fetch_column(0));
+    $nextId = max($nextId, $result->fetch_array()[0]);
 }
 
 $stmt = $req->prepareQuery("INSERT INTO \$moderation\$shops(

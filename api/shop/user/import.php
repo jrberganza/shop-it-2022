@@ -197,12 +197,12 @@ $stmt->execute();
 //             $stmt = $req->prepareQuery("SELECT AUTO_INCREMENT FROM information_schema.tables WHERE table_name = 'products' AND table_schema = DATABASE()", []);
 //             $stmt->execute();
 //             $result = $stmt->get_result();
-//             $nextId = $result->fetch_column(0);
+//             $nextId = $result->fetch_array()[0];
 
 //             $stmt = $req->prepareQuery("SELECT max(product_id)+1 FROM \$moderation\$products", []);
 //             $stmt->execute();
 //             $result = $stmt->get_result();
-//             $nextId = max($nextId, $result->fetch_column(0));
+//             $nextId = max($nextId, $result->fetch_array()[0]);
 
 //             $stmt = $req->prepareQuery("INSERT INTO \$moderation\$products(
 //                 product_id,
