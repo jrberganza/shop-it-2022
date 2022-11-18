@@ -2,9 +2,18 @@
 
 class ParsedQuery
 {
-    public string $query = "";
-    public string $types = "";
-    public array $params = [];
+    /**
+     * @var string $query
+     */
+    public $query = "";
+    /**
+     * @var string $types
+     */
+    public $types = "";
+    /**
+     * @var array $params
+     */
+    public $params = [];
 }
 
 function parseSql(string $query, array $params)

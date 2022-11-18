@@ -9,9 +9,18 @@ require_once "validation.php";
 // TODO: handle GET and POST payloads better
 class Request
 {
-    public string $mimeType = 'application/json';
-    private ?DbWrapper $db = null;
-    private ?Session $session = null;
+    /**
+     * @var string $mimeType
+     */
+    public $mimeType = 'application/json';
+    /**
+     * @var ?\DbWrapper $db
+     */
+    private $db = null;
+    /**
+     * @var ?\Session $session
+     */
+    private $session = null;
 
     private function useDb()
     {

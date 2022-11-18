@@ -4,7 +4,10 @@ require_once "query.php";
 
 class DbWrapper
 {
-    public ?mysqli $db = null;
+    /**
+     * @var ?\mysqli $db
+     */
+    public $db = null;
 
     public function connectDb()
     {

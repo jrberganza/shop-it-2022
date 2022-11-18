@@ -2,12 +2,30 @@
 
 class Session
 {
-    public ?int $id = null;
-    public ?string $displayName = null;
-    public string $role;
-    public ?string $token = null;
-    public ?string $lastAccessAt = null;
-    public ?int $shopId = null;
+    /**
+     * @var ?int $id
+     */
+    public $id = null;
+    /**
+     * @var ?string $displayName
+     */
+    public $displayName = null;
+    /**
+     * @var string $role
+     */
+    public $role;
+    /**
+     * @var ?string $token
+     */
+    public $token = null;
+    /**
+     * @var ?string $lastAccessAt
+     */
+    public $lastAccessAt = null;
+    /**
+     * @var ?int $shopId
+     */
+    public $shopId = null;
 
     public function isLoggedIn()
     {
