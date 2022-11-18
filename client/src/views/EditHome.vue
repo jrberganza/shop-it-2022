@@ -77,6 +77,9 @@ export default {
         .then(json => {
           if (json.success) {
             this.blocks = json.blocks
+            if (this.blocks.length == 0) {
+              this.insertAfter(0, this.newBlock());
+            }
           } else {
             this.openSnackbar({ shown: true, message: json._error });
           }
