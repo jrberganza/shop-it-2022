@@ -11,7 +11,7 @@ class DbWrapper
 
     public function connectDb()
     {
-        $this->db = new mysqli("localhost", "shopit", "shopit_1234", "shopit_db");
+        $this->db = new mysqli("shopitdb", "root", "12345", "shopit");
     }
 
     public function startTransaction()
